@@ -10,6 +10,8 @@ await page.goto('http://127.0.0.1:5332');
 await page.locator('#ai').fill('100');
 for(const sector of SECTORS){
   await page.getByLabel('Valdkond').selectOption(sector.id);
+  assert.equal(await page.getByLabel('Valdkond').evaluate(element=>document.activeElement===element),false);
+  assert.notEqual(await page.getByLabel('Valdkond').evaluate(element=>getComputedStyle(element).borderTopColor),'rgb(241, 202, 114)');
   assert.equal(await page.locator('.control-column .sector-picker').count(),0);
   assert.equal(await page.locator('.hero-sector-select').count(),1);
   assert.equal(await page.locator('.sector-context-separator').count(),0);

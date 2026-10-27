@@ -431,7 +431,7 @@ main{height:auto;min-height:100dvh}
 .hero-title .sector-context-label{display:inline-block;flex-shrink:0;padding:3px 6px;border:1px solid #7aa287;border-radius:4px;color:#d9eddf;font-size:10px;font-weight:800;letter-spacing:.65px;text-transform:uppercase}
 .hero-sector-select-wrap{position:relative;flex:0 1 auto;min-width:240px;width:clamp(240px,24vw,330px)}
 .hero-sector-select{appearance:none;width:100%;min-height:36px;padding:6px 82px 6px 11px;border:2px solid #b8d2b7;border-radius:7px;background:#eaf3e7;color:#244c2d;font:700 15px/1.25 'DM Sans',sans-serif;cursor:pointer;box-shadow:0 2px 7px #102d1d30;transition:background .2s,border-color .2s,box-shadow .2s}
-.hero-sector-select:hover{border-color:#f1ca72;background:#f0f7ed;box-shadow:0 0 0 3px #f1ca722b,0 2px 8px #102d1d36}
+.hero-sector-select:hover{border-color:#87b48a;background:#f0f7ed;box-shadow:0 0 0 3px #8fba9128,0 2px 8px #102d1d36}
 .hero-sector-select:focus-visible{outline:3px solid #f1ca72;outline-offset:3px;border-color:#f1ca72;box-shadow:0 0 0 1px #234d35}
 .hero-sector-select option{background:#eef6eb;color:#294e20}
 .hero-sector-action{position:absolute;right:2px;top:2px;bottom:2px;display:flex;align-items:center;gap:3px;padding:0 8px;border-left:1px solid #a9c8a8;border-radius:0 5px 5px 0;background:#cfe3cc;color:#315f3b;font-size:9px;font-weight:900;letter-spacing:.45px;text-transform:uppercase;pointer-events:none}
