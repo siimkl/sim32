@@ -427,8 +427,18 @@ main{height:auto;min-height:100dvh}
 .base-service{background:#d7e8ef;color:#315f71}
 .new-service{background:#e3edd9;color:#41652f}
 .not-created .new-service{background:#e5dff0;color:#67558d}
-.hero-title .sector-context>span{display:inline-block;margin-right:7px;padding:2px 6px;border:1px solid #7aa287;border-radius:4px;color:#d9eddf;font-size:.72em;font-weight:700;letter-spacing:.65px;text-transform:uppercase;vertical-align:2px}
-.hero-title .sector-context>strong{color:#fff;font-weight:700;margin-right:3px}
+.hero-title .sector-context{display:flex;align-items:center;gap:7px;min-width:0;color:#d2e4d8;font-size:15px;line-height:1.4}
+.hero-title .sector-context-label{display:inline-block;flex-shrink:0;padding:3px 6px;border:1px solid #7aa287;border-radius:4px;color:#d9eddf;font-size:10px;font-weight:800;letter-spacing:.65px;text-transform:uppercase}
+.hero-sector-select-wrap{position:relative;flex:0 1 auto;min-width:190px;width:clamp(190px,21vw,300px)}
+.hero-sector-select{appearance:none;width:100%;min-height:32px;padding:5px 34px 5px 10px;border:1px solid #88ad94;border-radius:6px;background:#ffffff12;color:#fff;font:700 15px/1.25 'DM Sans',sans-serif;cursor:pointer;box-shadow:inset 0 1px 0 #ffffff12;transition:background .2s,border-color .2s,box-shadow .2s}
+.hero-sector-select:hover{border-color:#c0dac8;background:#ffffff1d}
+.hero-sector-select:focus-visible{outline:3px solid #f1ca72;outline-offset:3px;border-color:#f1ca72;box-shadow:0 0 0 1px #234d35}
+.hero-sector-select option{background:#fffef8;color:#294e20}
+.hero-sector-chevron{position:absolute;right:9px;top:50%;width:17px;height:17px;transform:translateY(-50%);pointer-events:none;fill:none;stroke:#c7e4cf;stroke-width:2.2;stroke-linecap:round;stroke-linejoin:round}
+.sector-context-separator{flex-shrink:0;color:#9fc6aa;font-weight:800}
+.sector-context-description{min-width:0;color:#d2e4d8}
+@media(min-width:1600px){.hero-title .sector-context{font-size:17px}.hero-title .sector-context-label{font-size:11px}.hero-sector-select{min-height:36px;font-size:17px}}
+@media(max-width:600px){.hero-title .sector-context{flex-wrap:wrap;gap:6px}.hero-title .sector-context-label{font-size:9px}.hero-sector-select-wrap{flex:1;min-width:185px;width:auto}.hero-sector-select{min-height:31px;font-size:14px}.sector-context-separator{display:none}.sector-context-description{flex-basis:100%;font-size:14px}}
 .service-state:has(small){display:flex;flex-direction:column;gap:1px;max-width:102px;line-height:1.12}
 .service-state small{font-size:.82em;font-weight:800;letter-spacing:.15px;white-space:nowrap}
 .cross-sector .service-state:has(small){max-width:78px}
