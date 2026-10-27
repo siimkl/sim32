@@ -44,6 +44,7 @@ const matured=await step();await page.clock.runFor(2000);assert.equal(await step
 assert.equal(matured,10);
 assert.equal(await page.locator('.growth-ready-signal').count(),1);
 assert.ok((await page.locator('main').getAttribute('class')).includes('growth-ready'));
+assert.equal(await page.locator('.progress-button').evaluate(button=>getComputedStyle(button,'::after').display),'none');
 await page.screenshot({path:'story-growth.png',fullPage:true});
 assert.ok(await sceneIsSeparated());
 await page.getByRole('button',{name:'Katkesta AI tugi täielikult'}).click();

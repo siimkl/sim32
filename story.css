@@ -392,3 +392,14 @@ main{height:auto;min-height:100dvh}
 .control-column .progress-button:disabled:after{background:#6653a2;border-top-color:#58458f}
 .control-column .progress-button:disabled:before{display:none}
 @media(min-width:1600px){.control-column .progress-button:not(:disabled){padding-bottom:18px}.control-column .progress-button:before,.control-column .progress-button:after{height:12px}}
+
+/* Treat the control title and 20-step clock as the panel's primary header. */
+.control-column .controls-title{margin:-20px calc(var(--control-padding) * -1) 18px;padding:15px var(--control-padding);border-bottom:1px solid #a9c2cb;border-radius:11px 11px 0 0;background:linear-gradient(110deg,#d8e9ee,#edf5f7);color:#214b59;font-size:22px;font-weight:800;box-shadow:0 3px 10px #31586512}
+.control-column .controls-title>span{line-height:1.15}
+.control-column .step-counter{padding:7px 10px;border-color:#285868;background:#285868;color:#fff;font-size:12px;box-shadow:0 2px 6px #214b5928}
+
+/* Once growth is complete, the control becomes a single-colour status. */
+.control-column .progress-button:disabled{border-color:#6653a2!important;background:#6653a2!important;color:#fff!important;text-shadow:none;box-shadow:0 3px 9px #4e3a8b2e!important}
+.control-column .progress-button:disabled:before,.control-column .progress-button:disabled:after{display:none}
+@media(min-width:1600px){.control-column .controls-title{margin-top:-24px;padding-top:18px;padding-bottom:18px;font-size:25px}.control-column .step-counter{padding:8px 12px;font-size:14px}}
+@media(min-width:1001px) and (max-height:850px){.control-column .controls-title{margin:-13px -16px 11px;padding:11px 16px;font-size:19px}.control-column .step-counter{padding:6px 8px;font-size:11px}}
