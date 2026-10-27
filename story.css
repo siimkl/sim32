@@ -347,3 +347,29 @@ main{height:auto;min-height:100dvh}
 @media(min-width:1600px){.scene-content{min-height:380px}.story-scene.cross-sector .scene-content{min-height:500px}.simulation-footer{min-height:228px}.trend-chart{padding:15px 20px 11px}.trend-heading strong{font-size:20px}.trend-heading small{font-size:13px}.trend-legend{font-size:15px}.trend-legend b{font-size:20px}.trend-chart svg{height:178px}.chart-grid text,.chart-axis-label,.outage-marker text{font-size:12px}}
 @media(max-width:1000px){.scene-content{min-height:400px}.story-scene.cross-sector .scene-content{min-height:540px}.simulation-footer{min-height:0}.trend-chart svg{height:170px}}
 @media(max-width:600px){.scene-content{min-height:700px;overflow:hidden}.story-scene.cross-sector .scene-content{min-height:820px}.trend-chart svg{height:170px}.chart-grid text,.chart-axis-label,.outage-marker text{font-size:11px}}
+
+/* When growth is complete, a transparent signal travels across the simulation
+   toward the disruption control. It guides attention without obscuring content. */
+.main-layout{position:relative}
+.growth-ready .simulation{position:relative;box-shadow:0 0 0 2px #d28a3d55,0 10px 28px #a85c2522;animation:readyFrame 2.3s ease-in-out infinite}
+.growth-ready .simulation:after{content:'';position:absolute;z-index:7;inset:0;pointer-events:none;background:linear-gradient(105deg,transparent 0 58%,#f4b85c0a 69%,#e08a3630 100%);animation:readyWash 2.3s ease-in-out infinite}
+.growth-ready-signal{position:absolute;z-index:10;inset:0;overflow:visible;pointer-events:none}
+.growth-ready-signal svg{display:block;width:100%;height:100%;overflow:visible}
+.growth-ready-signal path{fill:none;vector-effect:non-scaling-stroke;stroke-linecap:round;stroke-linejoin:round}
+.ready-signal-rail{stroke:#fff2ce;stroke-width:13;opacity:.56;filter:drop-shadow(0 0 9px #da8a37)}
+.ready-signal-flow{stroke:#c66a2f;stroke-width:4;stroke-dasharray:12 10;filter:drop-shadow(0 0 4px #fff0bd);animation:readyFlow .75s linear infinite}
+.growth-ready-signal #ready-arrow path{fill:#b95a29;stroke:none;filter:none}
+.ready-signal-pulse{fill:none;stroke:#c96e32;stroke-width:3;vector-effect:non-scaling-stroke;transform-box:fill-box;transform-origin:center;animation:readyPulse 1.8s ease-out infinite}
+.ready-signal-pulse.pulse-two{animation-delay:.9s}
+.growth-ready .control-column{position:relative;z-index:12}
+.growth-ready .outage-action{position:relative;border:1px solid #d28a58;border-radius:10px;padding:12px;background:#fff7f0;box-shadow:0 0 0 4px #d9814430,0 9px 24px #8c431e24;animation:targetLift 2.3s ease-in-out infinite}
+.growth-ready .disruption-cue{border-width:2px;border-color:#bd5f35;background:#fff0e5;box-shadow:0 0 0 4px #cf72402b}
+.growth-ready .disruption-cue>span{animation:cueBounce .8s ease-in-out infinite,readyButtonGlow 1.8s ease-in-out infinite}
+.growth-ready .disrupt:not(:disabled){border-color:#7f311b;background:#a84928;box-shadow:0 0 0 4px #c8663b36,0 7px 16px #74321c33;animation:readyButtonGlow 1.8s ease-in-out infinite}
+@keyframes readyFlow{to{stroke-dashoffset:-44}}
+@keyframes readyPulse{0%{opacity:.8;transform:scale(.45)}80%,100%{opacity:0;transform:scale(2.4)}}
+@keyframes readyFrame{0%,100%{box-shadow:0 0 0 2px #d28a3d45,0 8px 24px #a85c2518}50%{box-shadow:0 0 0 4px #d28a3d66,0 12px 34px #a85c2530}}
+@keyframes readyWash{0%,100%{opacity:.42}50%{opacity:.9}}
+@keyframes targetLift{0%,100%{box-shadow:0 0 0 4px #d9814430,0 9px 24px #8c431e24}50%{box-shadow:0 0 0 7px #d9814440,0 11px 28px #8c431e32}}
+@keyframes readyButtonGlow{0%,100%{filter:brightness(1);box-shadow:0 0 0 3px #c8663b28}50%{filter:brightness(1.1);box-shadow:0 0 0 7px #c8663b3d}}
+@media(max-width:1000px){.growth-ready-signal{display:none}.growth-ready .simulation:after{background:linear-gradient(180deg,transparent 0 72%,#e08a3628 100%)}.growth-ready .outage-action{animation:none}}

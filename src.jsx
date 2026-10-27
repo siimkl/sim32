@@ -19,6 +19,7 @@ function App(){
   const sector=getSector(sectorId);
   const view=sectorServices(describe(state),sector),outage=state.outageAge!==null;
   const finished=outage?view.complete:state.step>0&&view.mature&&state.ai===ai;
+  const growthReady=finished&&!outage;
   useEffect(()=>{
     if(!running||finished)return;
     const timer=setInterval(()=>setState(previous=>advance(previous,ai)),1000);
@@ -45,9 +46,17 @@ function App(){
   const outageText=state.outageLoss>=.99?'AI tugi kaob':`${Math.round(state.outageLoss*100)}% AI toest kaob`;
   const failureText=state.outageLoss>=.99?sector.failure:sector.failure.replaceAll('AI kaob','AI tugi väheneb').replaceAll('AI-ta','väiksema AI-toega');
   const message=outage?view.complete?failureText:state.outageAge<2?`${outageText}. ${sector.staff} ja ${sector.automation.toLocaleLowerCase('et')} kaotavad esimesena töövõimet.`:sector.waiting+' Töö kuhjub ja uued tegevused aeglustuvad või seiskuvad.':view.mature&&state.step>0?`${sector.org} on kasvanud AI võimekuse ümber. Katkesta AI tugi: kas kõik lubadused on endiselt täidetavad?`:state.step>0?sector.growth:`Käivita kasv. Vaata, kuidas AI lisavõimekusest saavad uued kohustused. ${sector.waiting}`;
-  return <main className={running?'running':'paused'} data-step={state.step}>
+  return <main className={`${running?'running':'paused'} ${growthReady?'growth-ready':''}`} data-step={state.step}>
     <header className="hero-intro"><div className="header-copy"><div className="hero-top"><div className="simulation-label"><i/>Interaktiivne simulatsioon <span>AI-sõltuvuse kujunemine</span></div><div className="hero-question"><span>Põhiküsimus</span><p>{sectorQuestion}</p></div></div><div className="hero-main"><div className="hero-title"><h1><em>AI-võimestatud töötaja</em> ja organisatsiooni <strong className="continuity-focus">toimepidevus</strong></h1><p>{sectorContext}</p></div></div></div></header>
     <section className="main-layout">
+      {growthReady&&<div className="growth-ready-signal" aria-hidden="true">
+        <svg viewBox="0 0 1000 800" preserveAspectRatio="none">
+          <defs><marker id="ready-arrow" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="8" markerHeight="8" orient="auto"><path d="M0 0 10 5 0 10Z"/></marker></defs>
+          <path className="ready-signal-rail" d="M720 255 V505 H760"/>
+          <path className="ready-signal-flow" d="M720 255 V505 H760" markerEnd="url(#ready-arrow)"/>
+          <circle className="ready-signal-pulse pulse-one" cx="760" cy="505" r="13"/><circle className="ready-signal-pulse pulse-two" cx="760" cy="505" r="13"/>
+        </svg>
+      </div>}
       <div className="simulation">
         <div className="story-steps" aria-label="Simulatsiooni etapid">
           {[
