@@ -18,6 +18,7 @@ for(const sector of SECTORS){
   assert.equal(await page.locator('.new-service').count(),sector.services.length-2);
   const subtitleParts=sector.subtitle.match(/^(.+?\.)\s+(.+)$/);
   const headerText=await page.locator('header').innerText();
+  assert.ok(headerText.includes(sector.label));
   assert.ok(headerText.includes(subtitleParts?.[1]||sector.subtitle));
   if(subtitleParts?.[2])assert.ok(headerText.includes(subtitleParts[2]));
   assert.ok(await page.locator('.workforce').innerText().then(text=>text.includes(sector.staff)));

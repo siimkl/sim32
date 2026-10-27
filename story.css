@@ -427,5 +427,7 @@ main{height:auto;min-height:100dvh}
 .base-service{background:#d7e8ef;color:#315f71}
 .new-service{background:#e3edd9;color:#41652f}
 .not-created .new-service{background:#e5dff0;color:#67558d}
+.hero-title .sector-context>span{display:inline-block;margin-right:7px;padding:2px 6px;border:1px solid #7aa287;border-radius:4px;color:#d9eddf;font-size:.72em;font-weight:700;letter-spacing:.65px;text-transform:uppercase;vertical-align:2px}
+.hero-title .sector-context>strong{color:#fff;font-weight:700;margin-right:3px}
 @media(min-width:1600px){.base-service,.new-service{font-size:11px}}
 @media(max-width:600px){.base-service,.new-service{font-size:8px;margin-left:4px;padding:2px 4px}}
