@@ -54,6 +54,8 @@ assert.ok((await page.getByTestId('balance-comparison').innerText()).includes('V
 assert.ok(await page.locator('.capacity-point').count()>=10);
 const matured=await step();await page.clock.runFor(2000);assert.equal(await step(),matured);
 assert.equal(matured,10);
+assert.equal((await page.locator('.progress-button').innerText()).trim(),'Kasvufaas lõpetatud');
+assert.ok((await page.locator('.disruption-cue').innerText()).includes('Organisatsioon on AI-toega kohanenud'));
 assert.equal(await page.getByLabel('AI-toe katkestuse ulatus').isDisabled(),false);
 await page.getByLabel('AI-toe katkestuse ulatus').fill('100');
 assert.equal(await page.locator('.growth-ready-signal').count(),1);
