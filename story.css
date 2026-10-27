@@ -285,3 +285,37 @@ header{display:block}
   .disruption-cue small{display:none}
   .control-column .reset{min-height:40px;margin-top:7px;padding:7px;font-size:14px}
 }
+
+/* The timeline makes the central trade-off visible: capacity can collapse while
+   the work already promised by the organisation remains. */
+.simulation-footer{display:grid;grid-template-columns:minmax(0,1.65fr) minmax(300px,.85fr);min-height:132px;border-top:1px solid #cbdabc;background:#f7f9f3;flex-shrink:0}
+.trend-chart{min-width:0;padding:10px 14px 7px;border-right:1px solid #cbdabc;background:#f8faf5}
+.trend-heading{display:flex;align-items:flex-end;justify-content:space-between;gap:18px;margin-bottom:2px}
+.trend-heading>div:first-child{display:flex;align-items:baseline;gap:8px;min-width:0}
+.trend-heading small{color:#657b5b;font-size:10px;font-weight:800;letter-spacing:.7px;text-transform:uppercase;white-space:nowrap}
+.trend-heading strong{color:#304f35;font-size:15px;line-height:1.2;white-space:nowrap}
+.trend-legend{display:flex;align-items:center;justify-content:flex-end;gap:15px;color:#52654d;font-size:11px;font-weight:600;white-space:nowrap}
+.trend-legend span{position:relative;padding-left:17px}
+.trend-legend span:before{content:'';position:absolute;left:0;top:50%;width:11px;height:3px;border-radius:3px;transform:translateY(-50%);background:#3f7c57}
+.trend-legend .promise-key:before{background:#695ca4}
+.trend-legend b{font:700 15px 'Space Grotesk',sans-serif;color:#304f35}
+.trend-chart svg{display:block;width:100%;height:92px;overflow:visible}
+.chart-grid line{stroke:#dce5d7;stroke-width:1;vector-effect:non-scaling-stroke}
+.chart-grid text{fill:#768770;font:600 9px 'DM Sans',sans-serif;text-anchor:end}
+.capacity-area{fill:url(#capacity-area)}
+.trend-line{fill:none;stroke-width:3;stroke-linecap:round;stroke-linejoin:round;vector-effect:non-scaling-stroke;filter:drop-shadow(0 1px 1px #263d2920)}
+.capacity-line{stroke:#3f7c57}
+.outage-capacity-line{stroke:#b85f3e}
+.promise-line{stroke:#695ca4;stroke-width:2.5}
+.trend-point{vector-effect:non-scaling-stroke;stroke:#f8faf5;stroke-width:1.5}
+.capacity-point{fill:#3f7c57}.promise-point{fill:#695ca4}.capacity-point.outage-point{fill:#b85f3e}
+.trend-chart.has-outage .capacity-key:before{background:#b85f3e}.trend-chart.has-outage .capacity-key b{color:#9d4d31}
+.outage-marker rect{fill:#c76b4410}.outage-marker line{stroke:#b85f3e;stroke-width:1.5;stroke-dasharray:4 4;vector-effect:non-scaling-stroke}.outage-marker text{fill:#9d4d31;font:800 9px 'DM Sans',sans-serif;letter-spacing:.35px;text-transform:uppercase}
+.chart-axis-label{fill:#75836f;font:600 9px 'DM Sans',sans-serif}.chart-axis-label.end{text-anchor:end}
+.simulation-footer .takeaway{min-height:0;border-top:0;padding:14px 17px}
+.simulation-footer .takeaway>span{font-size:27px}
+.simulation-footer .takeaway p{font-size:16px;line-height:1.35}
+@media(min-width:1600px){.simulation-footer{min-height:156px;grid-template-columns:minmax(0,1.7fr) minmax(360px,.8fr)}.trend-chart{padding:13px 18px 9px}.trend-heading strong{font-size:18px}.trend-heading small{font-size:12px}.trend-legend{font-size:13px}.trend-legend b{font-size:18px}.trend-chart svg{height:112px}.simulation-footer .takeaway{padding:18px 21px}.simulation-footer .takeaway p{font-size:19px}.story-scene:not(.cross-sector) .icon-stage{height:112px}.story-scene:not(.cross-sector) .worker-symbol{width:86px;height:86px}.story-scene:not(.cross-sector) .worker-symbol svg{width:72px;height:72px}.story-scene:not(.cross-sector) .workforce{padding:5px 0 20px}.story-scene:not(.cross-sector) .workforce-actor{gap:2px}.story-scene:not(.cross-sector) .service{min-height:66px;padding:10px 13px}}
+@media(min-width:1001px) and (max-height:850px){.simulation-footer{min-height:116px}.trend-chart{padding:7px 11px 5px}.trend-heading{margin-bottom:0}.trend-heading strong{font-size:13px}.trend-heading small{font-size:9px}.trend-legend{gap:11px;font-size:10px}.trend-legend b{font-size:13px}.trend-chart svg{height:78px}.simulation-footer .takeaway{padding:10px 13px}.simulation-footer .takeaway p{font-size:14px}.simulation-footer .takeaway>span{font-size:23px}}
+@media(max-width:1000px){.simulation-footer{grid-template-columns:1fr}.trend-chart{border-right:0;border-bottom:1px solid #cbdabc}.simulation-footer .takeaway{min-height:90px}}
+@media(max-width:600px){.trend-chart{padding:10px 9px 7px}.trend-heading{align-items:flex-start;flex-direction:column;gap:5px}.trend-heading>div:first-child{width:100%;justify-content:space-between}.trend-heading strong{font-size:14px}.trend-legend{width:100%;justify-content:space-between;gap:8px;font-size:10px}.trend-chart svg{height:100px}.simulation-footer .takeaway p{font-size:16px}}

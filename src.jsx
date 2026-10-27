@@ -2,14 +2,20 @@ import React,{useEffect,useState} from 'react';
 import {createRoot} from 'react-dom/client';
 import {initialState,advance,disrupt,describe} from './story-model.js';
 import StoryScene from './StoryScene.jsx';
+import CapacityChart from './CapacityChart.jsx';
 import {SECTORS,getSector,sectorServices} from './sectors.js';
 import './story.css';
 
 const SORTED_SECTORS=[...SECTORS].sort((a,b)=>a.label.localeCompare(b.label,'et'));
+const historyPoint=state=>{
+  const snapshot=describe(state);
+  return {key:`${state.step}-${state.outageAge??'growth'}-${state.ai}-${state.adaptation}`,step:state.step,capacity:snapshot.capacity,promised:snapshot.promised,outage:state.outageAge!==null};
+};
 
 function App(){
   const [ai,setAI]=useState(50),[state,setState]=useState(initialState),[running,setRunning]=useState(false);
   const [sectorId,setSectorId]=useState('public'),[outageLoss,setOutageLoss]=useState(.5);
+  const [history,setHistory]=useState(()=>[historyPoint(initialState())]);
   const sector=getSector(sectorId);
   const view=sectorServices(describe(state),sector),outage=state.outageAge!==null;
   const finished=outage?view.complete:state.step>0&&view.mature&&state.ai===ai;
@@ -19,8 +25,12 @@ function App(){
     return()=>clearInterval(timer);
   },[running,finished,ai]);
   useEffect(()=>{if(finished)setRunning(false)},[finished]);
-  function reset(){setRunning(false);setState(initialState(sectorId==='cross-sector'));}
-  function changeSector(value){setSectorId(value);setRunning(false);setState(initialState(value==='cross-sector'));}
+  useEffect(()=>{
+    const point=historyPoint(state);
+    setHistory(previous=>previous.at(-1)?.key===point.key?previous:[...previous,point]);
+  },[state]);
+  function reset(){const next=initialState(sectorId==='cross-sector');setRunning(false);setState(next);setHistory([historyPoint(next)]);}
+  function changeSector(value){const next=initialState(value==='cross-sector');setSectorId(value);setRunning(false);setState(next);setHistory([historyPoint(next)]);}
   function cutAI(){setState(previous=>disrupt(previous,outageLoss));setRunning(true);}
   const phase=outage?2:state.step>0?1:0;
   const subtitleParts=sector.subtitle.match(/^(.+?\.)\s+(.+)$/);
@@ -59,7 +69,10 @@ function App(){
           {view.shortfall>1&&<div className="balance-note danger" role="alert" aria-live="polite"><small>Võimekuse puudujääk</small><div><strong>{Math.round(view.shortfall)}</strong><span>ühiku jagu töövõimet on puudu</span></div></div>}
         </div>
         <StoryScene state={state} view={view} sector={sector}/>
-        <div className={`takeaway ${outage?'warning':''}`} aria-live="polite"><span>{phase+1}</span><p>{message}</p></div>
+        <div className="simulation-footer">
+          <CapacityChart history={history}/>
+          <div className={`takeaway ${outage?'warning':''}`} aria-live="polite"><span>{phase+1}</span><p>{message}</p></div>
+        </div>
       </div>
       <div className="control-column">
         <div className="sector-picker"><label htmlFor="sector">Vali valdkond</label><div className="sector-select-wrap"><select id="sector" aria-label="Valdkond" value={sectorId} onChange={e=>changeSector(e.target.value)}>{SORTED_SECTORS.map(item=><option key={item.id} value={item.id}>{item.label}</option>)}</select><svg className="sector-chevron" viewBox="0 0 20 20" aria-hidden="true"><path d="m5 7 5 5 5-5"/></svg></div></div>
