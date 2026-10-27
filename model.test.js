@@ -1,8 +1,8 @@
 import {test} from 'node:test';
 import assert from 'node:assert/strict';
-import {initialState,advance,disrupt,describe} from './story-model.js';
+import {initialState,advance,disrupt,describe,GROWTH_STEPS,OUTAGE_STEPS,TOTAL_STEPS} from './story-model.js';
 import {SECTORS,sectorServices} from './sectors.js';
-function grown(ai=100){let state=initialState();for(let i=0;i<20;i++)state=advance(state,ai);return state;}
+function grown(ai=100){let state=initialState();for(let i=0;i<GROWTH_STEPS;i++)state=advance(state,ai);return state;}
 test('baseline work is balanced without AI',()=>{
   const view=describe(initialState());
   assert.equal(view.capacity,100);assert.equal(view.promised,100);
@@ -13,6 +13,7 @@ test('AI capacity precedes new promises and services',()=>{
   const first=describe(advance(initialState(),100));
   assert.ok(first.capacity>100);assert.equal(first.promised,100);
   const view=describe(grown());
+  assert.equal(grown().step,GROWTH_STEPS);
   assert.equal(view.capacity,310);assert.equal(view.promised,280);
   assert.equal(view.services.filter(s=>s.active).length,5);
   assert.ok(view.services.every(s=>s.status==='working'));
@@ -21,8 +22,9 @@ test('outage reaches workers before services; promises remain',()=>{
   let state=advance(disrupt(grown()),100);
   const early=describe(state);assert.ok(early.capacity<310);
   assert.ok(early.services.every(s=>s.status==='working'));
-  for(let i=0;i<3;i++)state=advance(state,100);
+  for(let i=1;i<OUTAGE_STEPS;i++)state=advance(state,100);
   const view=describe(state);
+  assert.equal(state.step,TOTAL_STEPS);
   assert.equal(view.capacity,78);assert.equal(view.promised,280);
   assert.equal(view.shortfall,202);assert.equal(view.stopped,3);
   assert.ok(view.services.slice(0,2).every(s=>s.status==='delayed'));
@@ -30,7 +32,7 @@ test('outage reaches workers before services; promises remain',()=>{
 });
 test('a 50% AI outage leaves more capacity but commitments still exceed it',()=>{
   let state=disrupt(grown(),.5);
-  for(let i=0;i<4;i++)state=advance(state,100);
+  for(let i=0;i<OUTAGE_STEPS;i++)state=advance(state,100);
   const view=describe(state);
   assert.equal(view.capacity,194);assert.equal(view.promised,280);
   assert.equal(view.shortfall,86);assert.ok(view.stopped<3);
@@ -50,16 +52,17 @@ test('all sectors provide complete names, promises and failure descriptions',()=
 });
 test('cross-sector failure advances one supplier layer per step',()=>{
   let state=initialState(true);
-  for(let i=0;i<12;i++)state=advance(state,100);
+  for(let i=0;i<GROWTH_STEPS;i++)state=advance(state,100);
   assert.equal(Math.round(describe(state).promised),280);
   state=disrupt(state);
-  for(let age=1;age<=10;age++){
+  for(let age=1;age<=OUTAGE_STEPS;age++){
     state=advance(state,100);
     const view=describe(state);
     assert.equal(view.stopped,Math.max(0,age-5));
-    assert.equal(view.complete,age===10);
+    assert.equal(view.complete,age===OUTAGE_STEPS);
     assert.equal(Math.round(view.promised),280);
   }
   assert.equal(describe(state).capacity,78);
+  assert.equal(state.step,TOTAL_STEPS);
   assert.equal(describe(state).services.at(-1).status,'stopped');
 });

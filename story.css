@@ -373,3 +373,9 @@ main{height:auto;min-height:100dvh}
 @keyframes targetLift{0%,100%{box-shadow:0 0 0 4px #d9814430,0 9px 24px #8c431e24}50%{box-shadow:0 0 0 7px #d9814440,0 11px 28px #8c431e32}}
 @keyframes readyButtonGlow{0%,100%{filter:brightness(1);box-shadow:0 0 0 3px #c8663b28}50%{filter:brightness(1.1);box-shadow:0 0 0 7px #c8663b3d}}
 @media(max-width:1000px){.growth-ready-signal{display:none}.growth-ready .simulation:after{background:linear-gradient(180deg,transparent 0 72%,#e08a3628 100%)}.growth-ready .outage-action{animation:none}}
+
+/* The complete narrative now has an explicit 20-step clock: ten growth steps
+   followed by ten disruption steps. */
+.controls-title{display:flex;align-items:center;justify-content:space-between;gap:12px}
+.step-counter{flex-shrink:0;padding:5px 8px;border:1px solid #aac2ca;border-radius:999px;background:#f8fbfb;color:#426673;font:700 11px/1 'Space Grotesk',sans-serif;letter-spacing:.25px;white-space:nowrap}
+@media(min-width:1600px){.step-counter{padding:6px 10px;font-size:13px}}

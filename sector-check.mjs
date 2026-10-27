@@ -26,7 +26,7 @@ for(const sector of SECTORS){
     await page.clock.runFor(6000);assert.equal(await page.locator('.service.stopped').count(),1);
     await page.clock.runFor(1000);assert.equal(await page.locator('.service.stopped').count(),2);
     await page.clock.runFor(3000);assert.equal(await page.locator('.service.stopped').count(),5);
-  }else await page.clock.runFor(4000);
+  }else await page.clock.runFor(10000);
   assert.ok(await page.locator('.takeaway').innerText().then(text=>text.includes(sector.failure)));
   for(let i=0;i<sector.services.length;i++){
     assert.ok(await page.locator('.service').nth(i).innerText().then(text=>text.includes(i<2?sector.services[i].delayed:sector.services[i].stopped)));

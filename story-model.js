@@ -1,10 +1,20 @@
 export const clamp=n=>Math.max(0,Math.min(1,n));
+export const GROWTH_STEPS=10;
+export const OUTAGE_STEPS=10;
+export const TOTAL_STEPS=GROWTH_STEPS+OUTAGE_STEPS;
 export const initialState=(crossSector=false)=>({step:0,ai:0,adaptation:0,outageAge:null,outageLoss:0,crossSector,parentRatios:{}});
 export function advance(state,ai){
-  if(state.outageAge!==null)return {...state,step:state.step+1,outageAge:Math.min(state.crossSector?10:4,state.outageAge+1),parentRatios:Object.fromEntries(describe(state).services.map(s=>[s.id,s.ratio]))};
-  return {...state,step:state.step+1,ai,adaptation:Math.max(state.adaptation,Math.min(ai/100,state.adaptation+.085))};
+  if(state.outageAge!==null){
+    if(state.outageAge>=OUTAGE_STEPS)return state;
+    return {...state,step:state.step+1,outageAge:state.outageAge+1,parentRatios:Object.fromEntries(describe(state).services.map(s=>[s.id,s.ratio]))};
+  }
+  const target=ai/100;
+  if(state.ai===ai&&state.adaptation>=target-1e-9)return state;
+  const nextAdaptation=state.adaptation+target/GROWTH_STEPS;
+  const adaptation=nextAdaptation>=target-1e-9?target:nextAdaptation;
+  return {...state,step:state.step+1,ai,adaptation:Math.max(state.adaptation,adaptation)};
 }
-export function disrupt(state,loss=1){return state.ai>0&&state.outageAge===null?{...state,outageAge:0,outageLoss:clamp(loss)}:state;}
+export function disrupt(state,loss=1){return state.ai>0&&state.outageAge===null?{...state,step:Math.max(state.step,GROWTH_STEPS),outageAge:0,outageLoss:clamp(loss)}:state;}
 export const SERVICE_DEFINITIONS=[
   {id:'support',name:'Klienditugi',promise:'Vastame klientide küsimustele',base:40,parent:null},
   {id:'orders',name:'Tellimuste täitmine',promise:'Täidame juba võetud tellimused',base:60,parent:null},
@@ -25,10 +35,10 @@ export function describe(state){
   const {ai,adaptation,outageAge,outageLoss=0}=state;
   const peak=100+ai/100*70+adaptation*140;
   const manual=100-adaptation*22;
-  const workforceLoss=outageAge===null?0:clamp(outageAge/2);
+  const workforceLoss=outageAge===null?0:clamp(outageAge/(state.crossSector?2:OUTAGE_STEPS));
   const capacity=peak-(peak-manual)*workforceLoss*outageLoss;
   // Existing work buffers the immediate shock. Service failures follow the capacity loss.
-  const serviceLoss=outageAge===null?0:clamp((outageAge-1)/3);
+  const serviceLoss=outageAge===null?0:clamp((outageAge-1)/(state.crossSector?3:OUTAGE_STEPS-1));
   const serviceCapacity=peak-(peak-manual)*serviceLoss*outageLoss;
   const baseRatio=Math.min(1,serviceCapacity/100);
   const crossBaseRatio=outageAge===null?1:outageLoss>=.99?baseRatio:Math.min(baseRatio,1-.22*outageLoss*serviceLoss);
@@ -48,7 +58,7 @@ export function describe(state){
   }
   const promised=services.reduce((sum,s)=>sum+s.demand,0);
   return {peak,manual,capacity,promised,services,shortfall:Math.max(0,promised-capacity),
-    mature:adaptation>=ai/100,complete:outageAge===(state.crossSector?10:4),
+    mature:adaptation>=ai/100-1e-9,complete:outageAge===OUTAGE_STEPS,
     people:Math.round(capacity*.55),automation:capacity-Math.round(capacity*.55),
     stopped:services.filter(s=>s.active&&s.status==='stopped').length};
 }

@@ -1,6 +1,6 @@
 import React,{useEffect,useState} from 'react';
 import {createRoot} from 'react-dom/client';
-import {initialState,advance,disrupt,describe} from './story-model.js';
+import {initialState,advance,disrupt,describe,OUTAGE_STEPS,TOTAL_STEPS} from './story-model.js';
 import StoryScene from './StoryScene.jsx';
 import CapacityChart from './CapacityChart.jsx';
 import {SECTORS,getSector,sectorServices} from './sectors.js';
@@ -39,7 +39,7 @@ function App(){
   const sectorQuestion=subtitleParts?.[2]||'Kuidas ühe valdkonna katkestus mõjutab kogu teenustevõrgustikku?';
   const growthTarget=ai/100;
   const growthProgress=growthTarget===0?100:Math.min(100,state.adaptation/growthTarget*100);
-  const outageProgress=outage?Math.min(100,state.outageAge/(state.crossSector?10:4)*100):0;
+  const outageProgress=outage?Math.min(100,state.outageAge/OUTAGE_STEPS*100):0;
   const simulationProgress=outage?outageProgress:growthProgress;
   const progressRemaining=Math.max(0,Math.ceil(100-simulationProgress));
   const progressLabel=finished&&!outage?'Kasv valmis':running?`Paus · ${progressRemaining}% jäänud`:state.step>0&&!finished?`Jätka · ${progressRemaining}% jäänud`:'Kasvata organisatsiooni';
@@ -86,7 +86,7 @@ function App(){
       <div className="control-column">
         <div className="sector-picker"><label htmlFor="sector">Vali valdkond</label><div className="sector-select-wrap"><select id="sector" aria-label="Valdkond" value={sectorId} onChange={e=>changeSector(e.target.value)}>{SORTED_SECTORS.map(item=><option key={item.id} value={item.id}>{item.label}</option>)}</select><svg className="sector-chevron" viewBox="0 0 20 20" aria-hidden="true"><path d="m5 7 5 5 5-5"/></svg></div></div>
         <aside>
-        <div className="controls-title">{outage?'AI-toe katkestuse mõju':'Simulatsiooni juhtimine'}</div>
+        <div className="controls-title"><span>{outage?'AI-toe katkestuse mõju':'Simulatsiooni juhtimine'}</span><b className="step-counter">Samm {Math.min(state.step,TOTAL_STEPS)} / {TOTAL_STEPS}</b></div>
         {!outage&&<>
         <div className="control-phase-title growth-phase"><span>1</span><strong>Kasvata organisatsiooni AI toel</strong></div>
         <label className="ai-label" htmlFor="ai">AI-võimenduse tase <strong>{ai}%</strong></label>
