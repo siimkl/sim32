@@ -95,13 +95,14 @@ function App(){
         </>}
         {(!outage||!view.complete)&&<button className={`grow progress-button ${running?'is-running':'is-paused'}`} data-testid="progress-button" style={{'--progress':`${simulationProgress}%`}} disabled={finished} onClick={()=>setRunning(!running)}><span>{progressLabel}</span></button>}
         {state.step>0&&!(finished&&!outage)&&<div className={`run-status ${running?'is-running':'is-paused'}`} role="status">{finished?'Katkestuse mõju on nähtav':running?outage?'Katkestus levib…':'Töövõime ja kohustused kasvavad…':'Simulatsioon on pausil'}</div>}
-        {!outage&&<div className="outage-action">
+        {!outage&&<div className={`outage-action ${growthReady?'is-ready':'is-locked'}`} aria-disabled={!growthReady}>
           <div className="control-phase-title outage-phase"><span>2</span><strong>Katkesta AI tugi</strong></div>
           <label className="outage-slider-label" htmlFor="outage-loss"><span>AI-toe katkestuse ulatus</span><strong>{Math.round(outageLoss*100)}%</strong></label>
-          <input id="outage-loss" className="outage-range" aria-label="AI-toe katkestuse ulatus" type="range" min="0" max="100" step="10" value={Math.round(outageLoss*100)} disabled={running} onChange={e=>setOutageLoss(Number(e.target.value)/100)} style={{'--range':`${outageLoss*100}%`}}/>
+          <input id="outage-loss" className="outage-range" aria-label="AI-toe katkestuse ulatus" type="range" min="0" max="100" step="10" value={Math.round(outageLoss*100)} disabled={running||!growthReady} onChange={e=>setOutageLoss(Number(e.target.value)/100)} style={{'--range':`${outageLoss*100}%`}}/>
           <div className="range-ends outage-ends"><span>AI tugi säilib</span><span>AI tugi kaob täielikult</span></div>
-          {state.step>0&&<div className="disruption-cue" role="status"><span aria-hidden="true">↓</span><div><strong>{finished?'Kasv on valmis — vähenda nüüd AI tuge':'Katseta riski — vähenda AI tuge'}</strong><small>{finished?'Vaata, kas lubatud töömaht jääb täidetavaks.':'Võid toe vähendada juba kasvu ajal või oodata kasvu lõpuni.'}</small></div></div>}
-          <button className="disrupt" onClick={cutAI} disabled={state.ai===0||outageLoss===0}>{outageLoss===1?'Katkesta AI tugi täielikult':outageLoss===0?'Vali AI-toe katkestuse ulatus':`Vähenda AI tuge ${Math.round(outageLoss*100)}%`}</button>
+          {!growthReady&&<div className="outage-locked-note">Saadaval pärast kasvu lõppu</div>}
+          {growthReady&&<div className="disruption-cue" role="status"><span aria-hidden="true">↓</span><div><strong>Kasv on valmis — vähenda nüüd AI tuge</strong><small>Vaata, kas lubatud töömaht jääb täidetavaks.</small></div></div>}
+          <button className="disrupt" onClick={cutAI} disabled={!growthReady||state.ai===0||outageLoss===0}>{outageLoss===1?'Katkesta AI tugi täielikult':outageLoss===0?'Vali AI-toe katkestuse ulatus':`Vähenda AI tuge ${Math.round(outageLoss*100)}%`}</button>
         </div>}
         {outage&&<div className="outcome" aria-live="polite"><h2>Mis muutus?</h2><div><span>Enne AI-d</span><strong>100</strong></div><div><span>AI toel</span><strong>{Math.round(view.peak)}</strong></div><div className="after"><span>Pärast katkestust</span><strong>{Math.round(view.capacity)}</strong></div>{view.complete&&<p><b>{view.stopped} {sector.stoppedNoun} seiskus.</b> {state.outageLoss>=.99?`Senise töö jaoks jäi alles ${Math.round(view.manual)}% algsest võimekusest.`:`Alles jäi ${Math.round(view.capacity)} tööühikut, kuid lubatud ${Math.round(view.promised)} tööühikut enam täita ei suudeta.`}</p>}</div>}
         <button className="reset" onClick={()=>reset()} aria-label="Alusta uuesti">Alusta uuesti</button>

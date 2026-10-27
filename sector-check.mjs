@@ -8,7 +8,6 @@ await page.clock.install({time:new Date('2026-10-27T10:00:00Z')});
 await page.clock.pauseAt(new Date('2026-10-27T10:00:01Z'));
 await page.goto('http://127.0.0.1:5332');
 await page.locator('#ai').fill('100');
-await page.getByLabel('AI-toe katkestuse ulatus').fill('100');
 for(const sector of SECTORS){
   await page.getByLabel('Valdkond').selectOption(sector.id);
   assert.equal(await page.locator('main').getAttribute('data-step'),'0');
@@ -21,6 +20,7 @@ for(const sector of SECTORS){
   await page.getByRole('button',{name:sector.id==='cross-sector'?'Kasvata ühiskonda':'Kasvata organisatsiooni'}).click();
   await page.clock.runFor(12000);
   assert.equal(await page.locator('.service.active').count(),sector.services.length);
+  await page.getByLabel('AI-toe katkestuse ulatus').fill('100');
   await page.getByRole('button',{name:'Katkesta AI tugi täielikult'}).click();
   if(sector.id==='cross-sector'){
     await page.clock.runFor(6000);assert.equal(await page.locator('.service.stopped').count(),1);
