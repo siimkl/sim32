@@ -228,12 +228,23 @@ header{display:block}
 @media(min-width:1600px){.ai-core>.ai-core-label{max-width:96px;font-size:16px}}
 @media(max-width:600px){.ai-core>.ai-core-label{max-width:64px;font-size:11px}}
 
-/* Active dependencies carry a visible directional signal. */
-.supply-lines path:not(.future):not(.cut){stroke:url(#active-flow);stroke-width:3;stroke-linecap:round;stroke-dasharray:9 6;opacity:.95;filter:drop-shadow(0 0 2px #70a95e);animation:networkFlow .9s linear infinite,networkPulse 1.8s ease-in-out infinite}
-.supply-lines .future{stroke-width:1.25;opacity:.58;filter:none}
-.supply-lines .cut{stroke-width:2.5;stroke-linecap:round;opacity:.9;filter:drop-shadow(0 0 1px #bd795b)}
-@keyframes networkFlow{to{stroke-dashoffset:-30}}
-@keyframes networkPulse{0%,100%{opacity:.82;filter:drop-shadow(0 0 1px #70a95e)}50%{opacity:1;filter:drop-shadow(0 0 4px #87bf6e)}}
+/* Dependency lines use a continuous rail below the moving dashes. The rail keeps
+   every elbow visibly connected, while the routes stay clear of actor labels. */
+.supply-lines .dependency-path path{fill:none;vector-effect:non-scaling-stroke;stroke-linecap:round;stroke-linejoin:round}
+.supply-lines .dependency-rail{stroke:#6d9a68;stroke-width:6;opacity:.2;animation:none}
+.supply-lines .dependency-flow{stroke:url(#active-flow);stroke-width:3.25;stroke-dasharray:10 7;opacity:1;filter:drop-shadow(0 0 2px #70a95e);animation:networkFlow .85s linear infinite}
+.supply-lines .dependency-path.future .dependency-rail{stroke:#b8c8ae;stroke-width:3;opacity:.34}
+.supply-lines .dependency-path.future .dependency-flow{stroke:#b5c5aa;stroke-width:1.5;stroke-dasharray:3 7;opacity:.62;filter:none;animation:none}
+.supply-lines .dependency-path.cut .dependency-rail{stroke:#c57858;stroke-width:5;opacity:.22}
+.supply-lines .dependency-path.cut .dependency-flow{stroke:#b85f3e;stroke-width:2.75;stroke-dasharray:4 8;opacity:.92;filter:drop-shadow(0 0 1px #bd795b);animation:none}
+.supply-lines marker path{stroke:none;animation:none;filter:none}
+.supply-lines #dependency-arrow-active path{fill:#5e9857}
+.supply-lines #dependency-arrow-future path{fill:#aebfa4}
+.supply-lines #dependency-arrow-cut path{fill:#b85f3e}
+.dependency-junctions circle{vector-effect:non-scaling-stroke;fill:#f7fbf2;stroke:#67965f;stroke-width:2.5;filter:drop-shadow(0 0 2px #70a95e)}
+.dependency-junctions.cut circle{fill:#fff3ed;stroke:#b85f3e;filter:none}
+.paused .supply-lines .dependency-flow{animation-play-state:paused}
+@keyframes networkFlow{to{stroke-dashoffset:-34}}
 
 /* The shortfall is the simulation's central result, so it reads as an alarm rather than a footnote. */
 .balance.has-shortfall{grid-template-columns:minmax(0,1fr) 36px minmax(0,1fr) minmax(260px,.9fr)}

@@ -10,6 +10,9 @@ const capacity=async()=>Number(await page.getByTestId('capacity').innerText().th
 const step=async()=>Number(await page.locator('main').getAttribute('data-step'));
 assert.equal(await capacity(),100);
 assert.equal(await page.locator('.service.active').count(),2);
+assert.equal(await page.locator('.dependency-rail').count(),9);
+assert.equal(await page.locator('.dependency-junctions circle').count(),2);
+assert.equal(await page.locator('.dependency-flow[marker-end]').count(),7);
 await page.clock.runFor(3000);assert.equal(await step(),0);
 await page.screenshot({path:'story-initial.png'});
 assert.ok(await page.evaluate(()=>document.documentElement.scrollHeight<=innerHeight));
