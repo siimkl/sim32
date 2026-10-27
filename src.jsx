@@ -66,7 +66,7 @@ function App(){
           ].map((step,i)=><React.Fragment key={step.text}>
             <div className={`story-step tone-${step.tone} ${phase===i?'current':phase>i?'completed':'upcoming'}`} aria-current={phase===i?'step':undefined}>
               <span className="step-number">{i+1}</span>
-              <span className="step-copy"><small>{step.eyebrow}<b className="step-state">{phase===i?'Aktiivne':phase>i?'Läbitud':'Ootel'}</b></small><strong>{step.text}</strong></span>
+              <div className="step-copy"><div className="step-heading"><strong>{step.eyebrow}</strong><b className="step-state">{phase===i?'Aktiivne':phase>i?'Läbitud':'Ootel'}</b></div><div className="step-description">{step.text}</div></div>
             </div>
             {i<2&&<div className={`step-connector ${i===0?'to-growth':'to-disruption'} ${phase>i?'active':''}`} aria-hidden="true"><span/></div>}
           </React.Fragment>)}

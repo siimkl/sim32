@@ -25,6 +25,13 @@ assert.notEqual(buttonColors.grow,buttonColors.reset);
 await page.clock.runFor(3000);assert.equal(await step(),0);
 await page.screenshot({path:'story-initial.png',fullPage:true});
 assert.ok(await sceneIsSeparated());
+assert.ok(await page.locator('.story-step').evaluateAll(cards=>cards.every(card=>{
+  const bounds=card.getBoundingClientRect();
+  return [...card.querySelectorAll('.step-heading,.step-description,.step-state')].every(element=>{
+    const box=element.getBoundingClientRect();
+    return box.left>=bounds.left-1&&box.right<=bounds.right+1&&box.top>=bounds.top-1&&box.bottom<=bounds.bottom+1;
+  });
+})), 'stage headings, descriptions and states must stay inside their cards');
 assert.equal(await page.locator('#ai').inputValue(),'50');
 assert.equal(await page.getByLabel('AI-toe katkestuse ulatus').inputValue(),'50');
 assert.equal(await page.getByLabel('AI-toe katkestuse ulatus').isDisabled(),true);

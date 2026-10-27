@@ -78,8 +78,9 @@ header{display:block}
 .simulation>.story-steps>.story-step{position:relative;display:grid;grid-template-columns:38px minmax(0,1fr);align-items:center;gap:11px;min-width:0;padding:11px 13px;border:1px solid #d4dfce;border-radius:9px;background:#fffefa;color:#65745f;transition:border-color .3s,background .3s,box-shadow .3s,color .3s}
 .story-step .step-number{width:34px;height:34px;border:1px solid #bdcdb5;border-radius:50%;display:grid;place-items:center;background:#f5f8f1;color:#607258;font:600 15px 'Space Grotesk',sans-serif}
 .simulation>.story-steps .step-copy{display:flex;flex:1;min-width:0;width:auto;height:auto;place-items:initial;flex-direction:column;gap:2px;border:0;border-radius:0;background:transparent;font-size:inherit}
-.step-copy small{color:#7b8a75;font-size:10px;font-weight:700;letter-spacing:.8px;line-height:1.2;text-transform:uppercase}
-.step-copy strong{color:inherit;font-size:15px;font-weight:600;line-height:1.25}
+.step-heading{display:flex;align-items:center;justify-content:space-between;gap:8px;color:#5b6f55;font-size:15px;font-weight:800;letter-spacing:-.1px;line-height:1.15}
+.step-heading>strong{color:inherit;font:inherit}
+.step-description{color:inherit;font-size:13px;font-weight:600;line-height:1.25;opacity:.88}
 .story-step.current{z-index:1;border-color:#5d8d4d;background:#eef5e8;color:#2f5929;box-shadow:0 0 0 3px #79a6691c}
 .story-step.current .step-number{border-color:#3e7438;background:#3e7438;color:#fff}
 .simulation>.story-steps>.story-step.current .step-copy{border:0;background:transparent;color:#2f5929}
@@ -95,8 +96,8 @@ header{display:block}
 .step-connector.active span:after{border-color:#5d8950}
 .step-connector.danger span{background:linear-gradient(90deg,#7e9e70,#bb7050)}
 .step-connector.danger span:after{border-color:#aa5d3d}
-@media(min-width:1600px){.simulation>.story-steps{grid-template-columns:minmax(0,1fr) 70px minmax(0,1fr) 70px minmax(0,1fr);padding:16px 22px}.simulation>.story-steps>.story-step{padding:13px 15px}.step-copy strong{font-size:17px}.step-copy small{font-size:11px}.story-step .step-number{width:38px;height:38px;font-size:16px}}
-@media(min-width:1001px) and (max-height:850px){.simulation>.story-steps{padding:9px 14px;grid-template-columns:minmax(0,1fr) 46px minmax(0,1fr) 46px minmax(0,1fr)}.simulation>.story-steps>.story-step{grid-template-columns:31px minmax(0,1fr);gap:8px;padding:7px 9px}.story-step .step-number{width:29px;height:29px;font-size:13px}.step-copy strong{font-size:13px}.step-copy small{font-size:9px}.step-connector{padding:0 6px}}
+@media(min-width:1600px){.simulation>.story-steps{grid-template-columns:minmax(0,1fr) 70px minmax(0,1fr) 70px minmax(0,1fr);padding:16px 22px}.simulation>.story-steps>.story-step{padding:13px 15px}.step-heading{font-size:18px}.step-description{font-size:15px}.story-step .step-number{width:38px;height:38px;font-size:16px}}
+@media(min-width:1001px) and (max-height:850px){.simulation>.story-steps{padding:9px 14px;grid-template-columns:minmax(0,1fr) 46px minmax(0,1fr) 46px minmax(0,1fr)}.simulation>.story-steps>.story-step{grid-template-columns:31px minmax(0,1fr);gap:8px;padding:7px 9px}.story-step .step-number{width:29px;height:29px;font-size:13px}.step-heading{font-size:14px}.step-description{font-size:12px}.step-connector{padding:0 6px}}
 @media(max-width:700px){.simulation>.story-steps{grid-template-columns:1fr;padding:12px;gap:0}.simulation>.story-steps>.story-step{grid-template-columns:36px minmax(0,1fr);padding:10px 12px}.step-connector{height:24px;width:2px;margin-left:29px;padding:0;background:#cbd6c5}.step-connector span{display:none}.step-connector.active{background:#78a069}.step-connector.danger{background:#bb7050}}
 
 /* Projector-readable units and actor capacity labels. */
@@ -127,13 +128,13 @@ header{display:block}
 
 /* Each stage has its own semantic color: stable baseline, expansion, and disruption. */
 .simulation>.story-steps>.story-step.tone-baseline{border-color:#a9c5d1;background:#f1f7fa;color:#29566a}
-.story-step.tone-baseline .step-copy small{color:#4f7f92}
+.story-step.tone-baseline .step-heading{color:#356d83}
 .story-step.tone-baseline .step-number{border-color:#83aaba;background:#e2eff4;color:#295f75}
 .simulation>.story-steps>.story-step.tone-growth{border-color:#b9b1d8;background:#f4f1fa;color:#4f427f}
-.story-step.tone-growth .step-copy small{color:#7766ae}
+.story-step.tone-growth .step-heading{color:#6653a2}
 .story-step.tone-growth .step-number{border-color:#9b8fc6;background:#eae5f6;color:#59488f}
 .simulation>.story-steps>.story-step.tone-disruption{border-color:#d7aa96;background:#fbf2ed;color:#824127}
-.story-step.tone-disruption .step-copy small{color:#a85d3e}
+.story-step.tone-disruption .step-heading{color:#984a2d}
 .story-step.tone-disruption .step-number{border-color:#c9876b;background:#f6e3d9;color:#94482b}
 .simulation>.story-steps>.story-step.tone-baseline.current{border-color:#3f7c95;background:#eaf4f8;color:#214f63;box-shadow:0 0 0 3px #4c89a21f}
 .story-step.tone-baseline.current .step-number{border-color:#326d85;background:#326d85;color:#fff}
@@ -204,7 +205,6 @@ header{display:block}
 .simulation>.story-steps>.story-step.completed{opacity:.8;filter:saturate(.55)}
 .simulation>.story-steps>.story-step.current{z-index:2;transform:translateY(-2px);border-width:2px;box-shadow:0 5px 13px var(--stage-shadow),0 0 0 3px var(--stage-shadow)}
 .simulation>.story-steps>.story-step.current:after{content:'';position:absolute;left:-2px;top:8px;bottom:8px;width:5px;border-radius:0 5px 5px 0;background:var(--stage-accent)}
-.step-copy small{display:flex;align-items:center;justify-content:space-between;gap:7px}
 .step-state{padding:2px 5px;border:1px solid currentColor;border-radius:4px;color:#71806c;font-size:9px;font-weight:800;letter-spacing:.45px;line-height:1;text-transform:uppercase;white-space:nowrap}
 .story-step.current .step-state{border-color:var(--stage-accent);background:var(--stage-accent);color:#fff}
 .story-step.completed .step-state{border-color:#94a18f;background:#eef1eb;color:#596653}
