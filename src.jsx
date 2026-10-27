@@ -42,7 +42,7 @@ function App(){
   const outageProgress=outage?Math.min(100,state.outageAge/OUTAGE_STEPS*100):0;
   const simulationProgress=outage?outageProgress:growthProgress;
   const progressRemaining=Math.max(0,Math.ceil(100-simulationProgress));
-  const progressLabel=finished&&!outage?'Kasv valmis':running?`Paus · ${progressRemaining}% jäänud`:state.step>0&&!finished?`Jätka · ${progressRemaining}% jäänud`:'Kasvata organisatsiooni';
+  const progressLabel=finished&&!outage?'Kasv valmis':running?`Paus · ${progressRemaining}% jäänud`:state.step>0&&!finished?`Jätka · ${progressRemaining}% jäänud`:state.crossSector?'Kasvata ühiskonda':'Kasvata organisatsiooni';
   const outageText=state.outageLoss>=.99?'AI tugi kaob':`${Math.round(state.outageLoss*100)}% AI toest kaob`;
   const failureText=state.outageLoss>=.99?sector.failure:sector.failure.replaceAll('AI kaob','AI tugi väheneb').replaceAll('AI-ta','väiksema AI-toega');
   const message=outage?view.complete?failureText:state.outageAge<2?`${outageText}. ${sector.staff} ja ${sector.automation.toLocaleLowerCase('et')} kaotavad esimesena töövõimet.`:sector.waiting+' Töö kuhjub ja uued tegevused aeglustuvad või seiskuvad.':view.mature&&state.step>0?`${sector.org} on kasvanud AI võimekuse ümber. Katkesta AI tugi: kas kõik lubadused on endiselt täidetavad?`:state.step>0?sector.growth:`Käivita kasv. Vaata, kuidas AI lisavõimekusest saavad uued kohustused. ${sector.waiting}`;

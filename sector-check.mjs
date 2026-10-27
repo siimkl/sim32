@@ -18,7 +18,7 @@ for(const sector of SECTORS){
   assert.ok(headerText.includes(subtitleParts?.[1]||sector.subtitle));
   if(subtitleParts?.[2])assert.ok(headerText.includes(subtitleParts[2]));
   assert.ok(await page.locator('.workforce').innerText().then(text=>text.includes(sector.staff)));
-  await page.getByRole('button',{name:'Kasvata organisatsiooni'}).click();
+  await page.getByRole('button',{name:sector.id==='cross-sector'?'Kasvata ühiskonda':'Kasvata organisatsiooni'}).click();
   await page.clock.runFor(12000);
   assert.equal(await page.locator('.service.active').count(),sector.services.length);
   await page.getByRole('button',{name:'Katkesta AI tugi täielikult'}).click();
@@ -42,7 +42,7 @@ await page.setViewportSize({width:1920,height:1080});await page.screenshot({path
 await page.setViewportSize({width:390,height:844});await page.screenshot({path:'sector-cross-mobile.png',fullPage:true});
 assert.ok(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth));
 await page.getByRole('button',{name:'Alusta uuesti'}).click();
-await page.getByRole('button',{name:'Kasvata organisatsiooni'}).click();
+await page.getByRole('button',{name:'Kasvata ühiskonda'}).click();
 await page.clock.runFor(3000);
 await page.getByLabel('Valdkond').selectOption('it');
 await page.clock.runFor(2000);assert.equal(await page.locator('main').getAttribute('data-step'),'0');
