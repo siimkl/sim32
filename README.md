@@ -28,7 +28,7 @@ Valdkonnakaardil saab valida avaliku sektori, hariduse, IT, julgeoleku, kaubandu
 
 Igal sektoril on oma töötajate rollid, automaatika, viis tegevust, lubadused ning hilinemise ja seiskumise kirjeldused. Arvulised eeldused on üksiksektorites samad: võrdleme mehhanismi, mitte valdkondade tegelikku riski. Tervishoiunäide käsitleb haldust ja vastuvõttude korraldust.
 
-Valdkondadeüleses näites on seitse tegelikult seotud lüli: IT-taristu → maksed → logistika → tootmine → hoolekanne → omavalitsus → elaniku tugiteenus. Järgmise lüli väljund sõltub eelmise sammu partneri väljundist. Lüli lühike puhver lükkab mõju edasi; lisateenused vajavad selles näites vähemalt 95% partneri lubatud mahust. Seetõttu algab täielik katkestus IT-st ja jõuab viimase teenuseni kümnendal katkestussammul. Kokku seiskub viis uut partnerteenust. See on illustratiivne, teadlikult range sõltuvusahela eeldus.
+„Ühiskond tervikuna” näites on seitse omavahel seotud lüli: digitaristu → maksed → kriitilised varud → tervishoid → hoolekanne → kohalik kriisiabi → elanike igapäevane toimetulek. Järgmise lüli väljund sõltub eelmise sammu partneri väljundist. Lüli lühike puhver lükkab mõju edasi; lisateenused vajavad selles näites vähemalt 95% partneri lubatud mahust. Seetõttu algab täielik katkestus digitaristust ja jõuab elanike igapäevase toimetulekuni kümnendal katkestussammul. Kokku seiskub viis kriitilist teenust. See on illustratiivne, teadlikult range ühiskondliku sõltuvusahela eeldus.
 
 ## Arvulised eeldused
 
