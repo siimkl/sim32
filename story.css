@@ -434,3 +434,17 @@ main{height:auto;min-height:100dvh}
 .cross-sector .service-state:has(small){max-width:78px}
 @media(min-width:1600px){.base-service,.new-service{font-size:11px}}
 @media(max-width:600px){.base-service,.new-service{font-size:8px;margin-left:4px;padding:2px 4px}}
+
+/* Explain the relationship instead of showing a bare mathematical sign. */
+.balance:not(.has-shortfall){grid-template-columns:minmax(0,1fr) 92px minmax(0,1fr)}
+.balance.has-shortfall{grid-template-columns:minmax(0,1fr) 96px minmax(0,1fr) minmax(260px,.9fr)}
+.balance-comparison{align-self:center;justify-self:center;display:flex;min-width:78px;flex-direction:column;align-items:center;gap:1px;padding:6px 8px;border:1px solid #b9c9b1;border-radius:9px;background:#f4f7f1;line-height:1}
+.balance-comparison strong{font:700 21px/1 'Space Grotesk',sans-serif}
+.balance-comparison small{font-size:9px;font-weight:800;letter-spacing:.65px;text-transform:uppercase}
+.balance-comparison.balanced{border-color:#aabdc3;background:#edf4f5;color:#3e6673}
+.balance-comparison.surplus{border-color:#9abd91;background:#edf6e9;color:#39723d}
+.balance-comparison.deficit{border-color:#cf9378;background:#faece4;color:#a34c2e}
+@media(min-width:1600px){.balance.has-shortfall{grid-template-columns:minmax(0,1fr) 110px minmax(0,1fr) minmax(320px,.95fr)}.balance-comparison{min-width:92px;padding:8px 10px}.balance-comparison strong{font-size:25px}.balance-comparison small{font-size:10px}}
+@media(min-width:1001px) and (max-height:850px){.balance.has-shortfall{grid-template-columns:minmax(0,1fr) 86px minmax(0,1fr) minmax(230px,.85fr)}.balance-comparison{min-width:72px;padding:5px 6px}.balance-comparison strong{font-size:18px}.balance-comparison small{font-size:8px}}
+@media(max-width:1000px){.balance:not(.has-shortfall),.balance.has-shortfall{grid-template-columns:minmax(0,1fr) 78px minmax(0,1fr)}.balance-comparison{min-width:68px;padding:5px 6px}.balance-comparison strong{font-size:18px}.balance-comparison small{font-size:8px}}
+@media(max-width:600px){.balance:not(.has-shortfall),.balance.has-shortfall{grid-template-columns:minmax(0,1fr) 66px minmax(0,1fr)}.balance-comparison{min-width:58px;padding:5px 4px}.balance-comparison strong{font-size:17px}}

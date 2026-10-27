@@ -65,6 +65,8 @@ function App(){
   const progressLabel=finished&&!outage?'Kasv valmis':running?`Paus · ${progressRemaining}% jäänud`:state.step>0&&!finished?`Jätka · ${progressRemaining}% jäänud`:state.crossSector?'Kasvata ühiskonda':'Kasvata organisatsiooni';
   const outageText=state.outageLoss>=.99?'AI tugi kaob':`${Math.round(state.outageLoss*100)}% AI toest kaob`;
   const failureText=state.outageLoss>=.99?sector.failure:sector.failure.replaceAll('AI kaob','AI tugi väheneb').replaceAll('AI-ta','väiksema AI-toega');
+  const balanceDelta=Math.round(view.capacity-view.promised);
+  const balanceComparison=view.shortfall>1?{tone:'deficit',value:`−${Math.round(view.shortfall)}`,label:'puudu'}:balanceDelta>1?{tone:'surplus',value:`+${balanceDelta}`,label:'varu'}:{tone:'balanced',value:'0',label:'tasakaal'};
   const message=outage?view.complete?failureText:state.outageAge<2?`${outageText}. ${sector.staff} ja ${sector.automation.toLocaleLowerCase('et')} kaotavad esimesena töövõimet.`:sector.waiting+' Töö kuhjub ja uued tegevused aeglustuvad või seiskuvad.':view.mature&&state.step>0?(sector.ready||`${sector.org} on kasvanud AI võimekuse ümber. Katkesta AI tugi: kas kõik lubadused on endiselt täidetavad?`):state.step>0?sector.growth:`Käivita kasv. Vaata, kuidas AI lisavõimekusest saavad uued kohustused. ${sector.waiting}`;
   return <main className={`${running?'running':'paused'} ${growthReady?'growth-ready':''}`} data-step={state.step}>
     <header className="hero-intro"><div className="header-copy"><div className="hero-top"><div className="simulation-label"><i/>Interaktiivne simulatsioon <span>AI-sõltuvuse kujunemine</span></div><div className="hero-question"><span>Põhiküsimus</span><p>{sectorQuestion}</p></div></div><div className="hero-main"><div className="hero-title"><h1><em>AI-võimestatud töötaja</em> ja organisatsiooni <strong className="continuity-focus">toimepidevus</strong></h1><p className="sector-context"><span>Valitud valdkond</span><strong>{sector.label}:</strong> {sectorContext}</p></div></div></div></header>
@@ -93,7 +95,7 @@ function App(){
         </div>
         <div className={`balance ${view.shortfall>1?'has-shortfall':''}`}>
           <div className={`balance-metric ${outage?'loss':''}`}><span>Suudame teha</span><strong data-testid="capacity">{Math.round(view.capacity)}<small>ühikut tööd</small></strong><div className="capacity-bar"><span style={{width:`${view.capacity/340*100}%`}}/></div></div>
-          <div className="balance-sign">{view.shortfall>1?'<':'≥'}</div>
+          <div className={`balance-comparison ${balanceComparison.tone}`} data-testid="balance-comparison" aria-label={`${balanceComparison.value} ${balanceComparison.label}`}><strong>{balanceComparison.value}</strong><small>{balanceComparison.label}</small></div>
           <div className="balance-metric promises"><span>Oleme lubanud teha</span><strong data-testid="promised">{Math.round(view.promised)}<small>ühikut tööd</small></strong><div className="capacity-bar"><span style={{width:`${view.promised/340*100}%`}}/></div></div>
           {view.shortfall>1&&<div className="balance-note danger" role="alert" aria-live="polite"><small>Võimekuse puudujääk</small><div><strong>{Math.round(view.shortfall)}</strong><span>ühiku jagu töövõimet on puudu</span></div></div>}
         </div>
