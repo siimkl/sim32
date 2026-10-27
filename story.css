@@ -417,5 +417,15 @@ main{height:auto;min-height:100dvh}
 .outage-action.is-ready{opacity:1;filter:none;transition:opacity .3s,filter .3s}
 @media(min-width:1600px){.outage-locked-note{padding:9px 11px;font-size:14px}}
 
-.base-service{font-size:9px;letter-spacing:.55px;margin-left:7px;padding:2px 4px;border-radius:3px;background:#dbe9ef;color:#315f71;vertical-align:middle;white-space:nowrap}
-@media(min-width:1600px){.base-service{font-size:11px}}
+.service.existing-service{background:#f4f8fa;border-color:#9ebac5;box-shadow:inset 4px 0 #5d8b9b,0 2px 3px #40562908}
+.service.added-service{background:#fffef8;border-color:#a9c598;box-shadow:inset 4px 0 #78a45f,0 2px 3px #40562908}
+.service.added-service.not-created{background:#f6f3fa;border-color:#b9afd0;box-shadow:inset 4px 0 #8a79af}
+.service.existing-service .service-icon{background:#dceaf0;color:#376b7d}
+.service.added-service.not-created .service-icon{background:#e7e0f0;color:#725f9d}
+.service.existing-service .service-progress span{background:#5f91a3}
+.base-service,.new-service{display:inline-block;font-size:9px;line-height:1.2;letter-spacing:.55px;margin-left:7px;padding:2px 5px;border-radius:3px;vertical-align:middle;white-space:nowrap}
+.base-service{background:#d7e8ef;color:#315f71}
+.new-service{background:#e3edd9;color:#41652f}
+.not-created .new-service{background:#e5dff0;color:#67558d}
+@media(min-width:1600px){.base-service,.new-service{font-size:11px}}
+@media(max-width:600px){.base-service,.new-service{font-size:8px;margin-left:4px;padding:2px 4px}}
