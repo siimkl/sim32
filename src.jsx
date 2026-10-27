@@ -50,11 +50,11 @@ function App(){
     <header className="hero-intro"><div className="header-copy"><div className="hero-top"><div className="simulation-label"><i/>Interaktiivne simulatsioon <span>AI-sõltuvuse kujunemine</span></div><div className="hero-question"><span>Põhiküsimus</span><p>{sectorQuestion}</p></div></div><div className="hero-main"><div className="hero-title"><h1><em>AI-võimestatud töötaja</em> ja organisatsiooni <strong className="continuity-focus">toimepidevus</strong></h1><p className="sector-context"><span>Valitud valdkond</span><strong>{sector.label}:</strong> {sectorContext}</p></div></div></div></header>
     <section className="main-layout">
       {growthReady&&<div className="growth-ready-signal" aria-hidden="true">
-        <svg viewBox="0 0 1000 800" preserveAspectRatio="none">
+        <svg viewBox="0 0 100 800" preserveAspectRatio="none">
           <defs><marker id="ready-arrow" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="8" markerHeight="8" orient="auto"><path d="M0 0 10 5 0 10Z"/></marker></defs>
-          <path className="ready-signal-rail" d="M720 255 V505 H760"/>
-          <path className="ready-signal-flow" d="M720 255 V505 H760" markerEnd="url(#ready-arrow)"/>
-          <circle className="ready-signal-pulse pulse-one" cx="760" cy="505" r="13"/><circle className="ready-signal-pulse pulse-two" cx="760" cy="505" r="13"/>
+          <path className="ready-signal-rail" d="M50 235 V505 H94"/>
+          <path className="ready-signal-flow" d="M50 235 V505 H94" markerEnd="url(#ready-arrow)"/>
+          <circle className="ready-signal-pulse pulse-one" cx="94" cy="505" r="13"/><circle className="ready-signal-pulse pulse-two" cx="94" cy="505" r="13"/>
         </svg>
       </div>}
       <div className="simulation">
