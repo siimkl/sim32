@@ -59,12 +59,18 @@ assert.equal(await page.locator('.progress-button').evaluate(button=>getComputed
 const signalBox=await page.locator('.ready-signal-flow').boundingBox();
 const serviceStateRight=Math.max(...await page.locator('.service-state').evaluateAll(nodes=>nodes.map(node=>node.getBoundingClientRect().right)));
 assert.ok(signalBox.x>=serviceStateRight+4,'growth-ready signal must stay outside service status labels');
+const signalEnd=await page.locator('.ready-signal-flow').evaluate(path=>{const point=path.getPointAtLength(path.getTotalLength()).matrixTransform(path.getScreenCTM());return{x:point.x,y:point.y};});
+const disruptBox=await page.locator('.disrupt').boundingBox();
+assert.ok(Math.abs(signalEnd.x-disruptBox.x)<=4&&Math.abs(signalEnd.y-(disruptBox.y+disruptBox.height/2))<=4,'growth-ready signal must end at the disruption button');
 await page.screenshot({path:'story-growth.png',fullPage:true});
 assert.ok(await sceneIsSeparated());
 await page.setViewportSize({width:1920,height:1080});
 const projectorSignalBox=await page.locator('.ready-signal-flow').boundingBox();
 const projectorServiceStateRight=Math.max(...await page.locator('.service-state').evaluateAll(nodes=>nodes.map(node=>node.getBoundingClientRect().right)));
 assert.ok(projectorSignalBox.x>=projectorServiceStateRight+4,'projector signal must stay outside service status labels');
+const projectorSignalEnd=await page.locator('.ready-signal-flow').evaluate(path=>{const point=path.getPointAtLength(path.getTotalLength()).matrixTransform(path.getScreenCTM());return{x:point.x,y:point.y};});
+const projectorDisruptBox=await page.locator('.disrupt').boundingBox();
+assert.ok(Math.abs(projectorSignalEnd.x-projectorDisruptBox.x)<=4&&Math.abs(projectorSignalEnd.y-(projectorDisruptBox.y+projectorDisruptBox.height/2))<=4,'projector signal must end at the disruption button');
 await page.screenshot({path:'story-growth-projector.png',fullPage:true});
 await page.setViewportSize({width:1366,height:768});
 await page.getByRole('button',{name:'Katkesta AI tugi täielikult'}).click();

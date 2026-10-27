@@ -1,4 +1,4 @@
-import React,{useEffect,useState} from 'react';
+import React,{useEffect,useLayoutEffect,useRef,useState} from 'react';
 import {createRoot} from 'react-dom/client';
 import {initialState,advance,disrupt,describe,OUTAGE_STEPS,TOTAL_STEPS} from './story-model.js';
 import StoryScene from './StoryScene.jsx';
@@ -16,10 +16,30 @@ function App(){
   const [ai,setAI]=useState(50),[state,setState]=useState(initialState),[running,setRunning]=useState(false);
   const [sectorId,setSectorId]=useState('public'),[outageLoss,setOutageLoss]=useState(.5);
   const [history,setHistory]=useState(()=>[historyPoint(initialState())]);
+  const [readySignal,setReadySignal]=useState(null);
+  const layoutRef=useRef(null),controlRef=useRef(null),disruptRef=useRef(null);
   const sector=getSector(sectorId);
   const view=sectorServices(describe(state),sector),outage=state.outageAge!==null;
   const finished=outage?view.complete:state.step>0&&view.mature&&state.ai===ai;
   const growthReady=finished&&!outage;
+  useLayoutEffect(()=>{
+    if(!growthReady){setReadySignal(null);return;}
+    const updateSignal=()=>{
+      const layout=layoutRef.current?.getBoundingClientRect(),control=controlRef.current?.getBoundingClientRect(),button=disruptRef.current?.getBoundingClientRect();
+      if(!layout||!control||!button)return;
+      const gap=parseFloat(getComputedStyle(layoutRef.current).columnGap)||20;
+      const x=control.left-layout.left-gap/2;
+      const endX=button.left-layout.left+2;
+      const endY=button.top-layout.top+button.height/2;
+      const startY=Math.max(80,Math.min(endY-80,layout.height*.28));
+      setReadySignal({width:layout.width,height:layout.height,path:`M${x} ${startY} V${endY} H${endX}`,endX,endY});
+    };
+    updateSignal();
+    const observer=new ResizeObserver(updateSignal);
+    [layoutRef.current,controlRef.current,disruptRef.current].forEach(element=>element&&observer.observe(element));
+    window.addEventListener('resize',updateSignal);
+    return ()=>{observer.disconnect();window.removeEventListener('resize',updateSignal);};
+  },[growthReady,outageLoss,sectorId]);
   useEffect(()=>{
     if(!running||finished)return;
     const timer=setInterval(()=>setState(previous=>advance(previous,ai)),1000);
@@ -48,13 +68,13 @@ function App(){
   const message=outage?view.complete?failureText:state.outageAge<2?`${outageText}. ${sector.staff} ja ${sector.automation.toLocaleLowerCase('et')} kaotavad esimesena töövõimet.`:sector.waiting+' Töö kuhjub ja uued tegevused aeglustuvad või seiskuvad.':view.mature&&state.step>0?(sector.ready||`${sector.org} on kasvanud AI võimekuse ümber. Katkesta AI tugi: kas kõik lubadused on endiselt täidetavad?`):state.step>0?sector.growth:`Käivita kasv. Vaata, kuidas AI lisavõimekusest saavad uued kohustused. ${sector.waiting}`;
   return <main className={`${running?'running':'paused'} ${growthReady?'growth-ready':''}`} data-step={state.step}>
     <header className="hero-intro"><div className="header-copy"><div className="hero-top"><div className="simulation-label"><i/>Interaktiivne simulatsioon <span>AI-sõltuvuse kujunemine</span></div><div className="hero-question"><span>Põhiküsimus</span><p>{sectorQuestion}</p></div></div><div className="hero-main"><div className="hero-title"><h1><em>AI-võimestatud töötaja</em> ja organisatsiooni <strong className="continuity-focus">toimepidevus</strong></h1><p className="sector-context"><span>Valitud valdkond</span><strong>{sector.label}:</strong> {sectorContext}</p></div></div></div></header>
-    <section className="main-layout">
-      {growthReady&&<div className="growth-ready-signal" aria-hidden="true">
-        <svg viewBox="0 0 100 800" preserveAspectRatio="none">
+    <section className="main-layout" ref={layoutRef}>
+      {growthReady&&readySignal&&<div className="growth-ready-signal" aria-hidden="true">
+        <svg viewBox={`0 0 ${readySignal.width} ${readySignal.height}`} preserveAspectRatio="none">
           <defs><marker id="ready-arrow" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="8" markerHeight="8" orient="auto"><path d="M0 0 10 5 0 10Z"/></marker></defs>
-          <path className="ready-signal-rail" d="M50 235 V505 H94"/>
-          <path className="ready-signal-flow" d="M50 235 V505 H94" markerEnd="url(#ready-arrow)"/>
-          <circle className="ready-signal-pulse pulse-one" cx="94" cy="505" r="13"/><circle className="ready-signal-pulse pulse-two" cx="94" cy="505" r="13"/>
+          <path className="ready-signal-rail" d={readySignal.path}/>
+          <path className="ready-signal-flow" d={readySignal.path} markerEnd="url(#ready-arrow)"/>
+          <circle className="ready-signal-pulse pulse-one" cx={readySignal.endX} cy={readySignal.endY} r="13"/><circle className="ready-signal-pulse pulse-two" cx={readySignal.endX} cy={readySignal.endY} r="13"/>
         </svg>
       </div>}
       <div className="simulation">
@@ -83,7 +103,7 @@ function App(){
           <div className={`takeaway ${outage?'warning':''}`} aria-live="polite"><span>{phase+1}</span><p>{message}</p></div>
         </div>
       </div>
-      <div className="control-column">
+      <div className="control-column" ref={controlRef}>
         <div className="sector-picker"><label htmlFor="sector">Vali valdkond</label><div className="sector-select-wrap"><select id="sector" aria-label="Valdkond" value={sectorId} onChange={e=>changeSector(e.target.value)}>{SORTED_SECTORS.map(item=><option key={item.id} value={item.id}>{item.label}</option>)}</select><svg className="sector-chevron" viewBox="0 0 20 20" aria-hidden="true"><path d="m5 7 5 5 5-5"/></svg></div></div>
         <aside>
         <div className="controls-title"><span>{outage?'AI-toe katkestuse mõju':'Simulatsiooni juhtimine'}</span><b className="step-counter">Samm {Math.min(state.step,TOTAL_STEPS)} / {TOTAL_STEPS}</b></div>
@@ -102,7 +122,7 @@ function App(){
           <div className="range-ends outage-ends"><span>AI tugi säilib</span><span>AI tugi kaob täielikult</span></div>
           {!growthReady&&<div className="outage-locked-note">Saadaval pärast kasvu lõppu</div>}
           {growthReady&&<div className="disruption-cue" role="status"><span aria-hidden="true">↓</span><div><strong>Kasv on valmis — vähenda nüüd AI tuge</strong><small>Vaata, kas lubatud töömaht jääb täidetavaks.</small></div></div>}
-          <button className="disrupt" onClick={cutAI} disabled={!growthReady||state.ai===0||outageLoss===0}>{outageLoss===1?'Katkesta AI tugi täielikult':outageLoss===0?'Vali AI-toe katkestuse ulatus':`Vähenda AI tuge ${Math.round(outageLoss*100)}%`}</button>
+          <button className="disrupt" ref={disruptRef} onClick={cutAI} disabled={!growthReady||state.ai===0||outageLoss===0}>{outageLoss===1?'Katkesta AI tugi täielikult':outageLoss===0?'Vali AI-toe katkestuse ulatus':`Vähenda AI tuge ${Math.round(outageLoss*100)}%`}</button>
         </div>}
         {outage&&<div className="outcome" aria-live="polite"><h2>Mis muutus?</h2><div><span>Enne AI-d</span><strong>100</strong></div><div><span>AI toel</span><strong>{Math.round(view.peak)}</strong></div><div className="after"><span>Pärast katkestust</span><strong>{Math.round(view.capacity)}</strong></div>{view.complete&&<p><b>{view.stopped} {sector.stoppedNoun} seiskus.</b> {state.outageLoss>=.99?`Senise töö jaoks jäi alles ${Math.round(view.manual)}% algsest võimekusest.`:`Alles jäi ${Math.round(view.capacity)} tööühikut, kuid lubatud ${Math.round(view.promised)} tööühikut enam täita ei suudeta.`}</p>}</div>}
         <button className="reset" onClick={()=>reset()} aria-label="Alusta uuesti">Alusta uuesti</button>
