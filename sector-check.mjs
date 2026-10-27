@@ -16,6 +16,7 @@ for(const sector of SECTORS){
   assert.equal(await page.locator('.added-service').count(),sector.services.length-2);
   assert.equal(await page.locator('.base-service').count(),2);
   assert.equal(await page.locator('.new-service').count(),sector.services.length-2);
+  assert.equal(await page.locator('.dependency-flow').count(),sector.services.length+4);
   const subtitleParts=sector.subtitle.match(/^(.+?\.)\s+(.+)$/);
   const headerText=await page.locator('header').innerText();
   assert.ok(headerText.includes(sector.label));

@@ -32,7 +32,7 @@ export default function StoryScene({state,view,sector}){
         <DependencyPath state={outage?'cut':'active'} d="M170 210 V310 H212"/>
         <DependencyPath state={workforceHit?'cut':'active'} arrow={false} d="M420 110 H478 V210"/>
         <DependencyPath state={workforceHit?'cut':'active'} arrow={false} d="M420 310 H478 V210"/>
-        {view.services.filter((_,i)=>!state.crossSector||i===0).map((s,i)=>{
+        {view.services.map((s,i)=>{
           const pathState=!s.active?'future':s.status!=='working'?'cut':'active';
           const targetY=210/view.services.length+i*420/view.services.length;
           return <DependencyPath key={s.id} state={pathState} d={`M478 210 V${targetY} H510`}/>;
