@@ -14,6 +14,7 @@ const sceneIsSeparated=async()=>{
   return last.y+last.height<=caption.y+1;
 };
 assert.equal(await capacity(),100);
+assert.ok((await page.locator('.scene-caption').innerText()).includes('Alguses on võimekus ja lubatud töö tasakaalus.'));
 assert.ok((await page.getByTestId('balance-comparison').innerText()).includes('TASAKAAL'));
 assert.equal(await page.locator('.service.active').count(),2);
 assert.equal(await page.locator('.dependency-rail').count(),9);

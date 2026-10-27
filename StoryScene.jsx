@@ -52,6 +52,6 @@ export default function StoryScene({state,view,sector}){
         </div>)}
       </div>
     </div>
-    <div className="scene-caption">{outage?<><b>Lubadused ei kao koos AI-ga.</b> {sector.waiting}</>:state.adaptation>.1?<><b>{state.crossSector?'AI loob põhiteenuste peale uue ühise juhtimiskihi.':'Lisavõimekus muutub uueks töömahuks.'}</b> {sector.org} eeldab, et AI tugi jääb alles.</>:<><b>Alguses on töö ja võimekus tasakaalus.</b> {sector.org} täidab oma seniseid kohustusi.</>}</div>
+    <div className="scene-caption">{outage?<><b>Lubadused ei kao koos AI-ga.</b> {sector.waiting}</>:state.adaptation>.1?<><b>{state.crossSector?'AI loob põhiteenuste peale uue ühise juhtimiskihi.':'Lisavõimekus muutub uueks töömahuks.'}</b> {sector.org} eeldab, et AI tugi jääb alles.</>:<><b>Alguses on võimekus ja lubatud töö tasakaalus.</b> {sector.org} täidab oma seniseid kohustusi.</>}</div>
   </div>;
 }
