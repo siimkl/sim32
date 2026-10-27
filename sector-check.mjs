@@ -20,6 +20,10 @@ for(const sector of SECTORS){
   await page.getByRole('button',{name:sector.id==='cross-sector'?'Kasvata ühiskonda':'Kasvata organisatsiooni'}).click();
   await page.clock.runFor(12000);
   assert.equal(await page.locator('.service.active').count(),sector.services.length);
+  if(sector.id==='cross-sector'){
+    assert.equal(await page.locator('.base-service').count(),2);
+    assert.equal(await page.locator('.new-service').count(),5);
+  }
   await page.getByLabel('AI-toe katkestuse ulatus').fill('100');
   await page.getByRole('button',{name:'Katkesta AI tugi täielikult'}).click();
   if(sector.id==='cross-sector'){

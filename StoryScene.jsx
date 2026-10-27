@@ -47,11 +47,11 @@ export default function StoryScene({state,view,sector}){
       <div className="services">
         {view.services.map(service=><div key={service.id} data-service={service.id} title={state.crossSector?`${service.promise}${service.parent?'. Sõltub: '+view.services.find(s=>s.id===service.parent)?.name:'. Ahela algus'}`:service.promise} className={`service ${service.active?'active':'not-created'} ${service.status}`}>
           <div className="service-icon">{!service.active?'+':service.status==='stopped'?'×':service.status==='delayed'?'!':'✓'}</div>
-          <div className="service-description"><div className="service-name">{service.name}{!service.base&&service.active&&<span className="new-service">UUS</span>}</div><p>{!service.active?'Tekib siis, kui töövõime kasvab':service.status==='stopped'?service.stopped:service.status==='delayed'?service.delayed:service.promise}</p><div className="service-progress"><span style={{width:`${service.active?service.ratio*100:0}%`}}/></div></div>
+          <div className="service-description"><div className="service-name">{service.name}{state.crossSector&&service.base&&<span className="base-service">PÕHITEENUS</span>}{!service.base&&service.active&&<span className="new-service">UUS</span>}</div><p>{!service.active?service.promise:service.status==='stopped'?service.stopped:service.status==='delayed'?service.delayed:service.promise}</p><div className="service-progress"><span style={{width:`${service.active?service.ratio*100:0}%`}}/></div></div>
           <strong className="service-state">{!service.active?'Veel avamata':service.status==='stopped'?'SEISKUNUD':service.status==='delayed'?'HILINEB':service.base?'Toimib':'Uus lubadus'}</strong>
         </div>)}
       </div>
     </div>
-    <div className="scene-caption">{outage?<><b>Lubadused ei kao koos AI-ga.</b> {sector.waiting}</>:state.adaptation>.1?<><b>Lisavõimekus muutub uueks töömahuks.</b> {sector.org} eeldab, et AI tugi jääb alles.</>:<><b>Alguses on töö ja võimekus tasakaalus.</b> {sector.org} täidab oma seniseid kohustusi.</>}</div>
+    <div className="scene-caption">{outage?<><b>Lubadused ei kao koos AI-ga.</b> {sector.waiting}</>:state.adaptation>.1?<><b>{state.crossSector?'AI loob põhiteenuste peale uue ühise juhtimiskihi.':'Lisavõimekus muutub uueks töömahuks.'}</b> {sector.org} eeldab, et AI tugi jääb alles.</>:<><b>Alguses on töö ja võimekus tasakaalus.</b> {sector.org} täidab oma seniseid kohustusi.</>}</div>
   </div>;
 }
