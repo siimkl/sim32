@@ -82,7 +82,7 @@ function App(){
       <div className="simulation">
         <div className="story-steps" aria-label="Simulatsiooni etapid">
           {[
-            {eyebrow:'Lähtekoht',text:'Senine töö saab tehtud',tone:'baseline'},
+            {eyebrow:'Baastase',text:'Senine töö saab tehtud',tone:'baseline'},
             {eyebrow:'Kasv',text:'AI toel võetakse rohkem tööd',tone:'growth'},
             {eyebrow:'Katkestus',text:'AI kaob, kohustused jäävad',tone:'disruption'}
           ].map((step,i)=><React.Fragment key={step.text}>
