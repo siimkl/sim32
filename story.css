@@ -319,3 +319,31 @@ header{display:block}
 @media(min-width:1001px) and (max-height:850px){.simulation-footer{min-height:116px}.trend-chart{padding:7px 11px 5px}.trend-heading{margin-bottom:0}.trend-heading strong{font-size:13px}.trend-heading small{font-size:9px}.trend-legend{gap:11px;font-size:10px}.trend-legend b{font-size:13px}.trend-chart svg{height:78px}.simulation-footer .takeaway{padding:10px 13px}.simulation-footer .takeaway p{font-size:14px}.simulation-footer .takeaway>span{font-size:23px}}
 @media(max-width:1000px){.simulation-footer{grid-template-columns:1fr}.trend-chart{border-right:0;border-bottom:1px solid #cbdabc}.simulation-footer .takeaway{min-height:90px}}
 @media(max-width:600px){.trend-chart{padding:10px 9px 7px}.trend-heading{align-items:flex-start;flex-direction:column;gap:5px}.trend-heading>div:first-child{width:100%;justify-content:space-between}.trend-heading strong{font-size:14px}.trend-legend{width:100%;justify-content:space-between;gap:8px;font-size:10px}.trend-chart svg{height:100px}.simulation-footer .takeaway p{font-size:16px}}
+
+/* Never trade legibility for a forced one-screen fit. Service cards and their
+   caption have reserved space, while short displays may scroll vertically. */
+main{height:auto;min-height:100dvh}
+.main-layout{flex:1;min-height:0}
+.simulation{height:auto;min-height:0}
+.story-scene{flex:0 0 auto;min-height:0}
+.scene-content{min-height:330px;overflow:hidden}
+.story-scene.cross-sector .scene-content{min-height:430px}
+.scene-caption{position:relative;z-index:4;min-height:48px;padding:13px 22px;background:#f2f6e9}
+
+/* A taller chart makes the rise, disruption point, and capacity collapse
+   readable from a distance instead of reducing the timeline to a sparkline. */
+.simulation-footer{min-height:202px}
+.trend-chart{padding:12px 16px 9px}
+.trend-heading{margin-bottom:5px}
+.trend-heading small{font-size:11px}
+.trend-heading strong{font-size:17px}
+.trend-legend{font-size:12px}
+.trend-legend b{font-size:17px}
+.trend-chart svg{height:156px}
+.chart-grid text,.chart-axis-label{font-size:11px}
+.outage-marker text{font-size:11px}
+.trend-line{stroke-width:3.5}
+.promise-line{stroke-width:3}
+@media(min-width:1600px){.scene-content{min-height:380px}.story-scene.cross-sector .scene-content{min-height:500px}.simulation-footer{min-height:228px}.trend-chart{padding:15px 20px 11px}.trend-heading strong{font-size:20px}.trend-heading small{font-size:13px}.trend-legend{font-size:15px}.trend-legend b{font-size:20px}.trend-chart svg{height:178px}.chart-grid text,.chart-axis-label,.outage-marker text{font-size:12px}}
+@media(max-width:1000px){.scene-content{min-height:400px}.story-scene.cross-sector .scene-content{min-height:540px}.simulation-footer{min-height:0}.trend-chart svg{height:170px}}
+@media(max-width:600px){.scene-content{min-height:700px;overflow:hidden}.story-scene.cross-sector .scene-content{min-height:820px}.trend-chart svg{height:170px}.chart-grid text,.chart-axis-label,.outage-marker text{font-size:11px}}

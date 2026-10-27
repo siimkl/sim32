@@ -31,10 +31,11 @@ for(const sector of SECTORS){
   for(let i=0;i<sector.services.length;i++){
     assert.ok(await page.locator('.service').nth(i).innerText().then(text=>text.includes(i<2?sector.services[i].delayed:sector.services[i].stopped)));
   }
-  assert.ok(await page.evaluate(()=>document.documentElement.scrollHeight<=innerHeight));
   const scene=await page.locator('.scene-content').boundingBox();
   const last=await page.locator('.service').last().boundingBox();
+  const caption=await page.locator('.scene-caption').boundingBox();
   assert.ok(last.y+last.height<=scene.y+scene.height+1,`${sector.id}: service cards must stay inside the scene`);
+  assert.ok(!caption||last.y+last.height<=caption.y+1,`${sector.id}: service cards must never overlap the caption`);
 }
 await page.screenshot({path:'sector-cross-desktop.png'});
 await page.setViewportSize({width:1920,height:1080});await page.screenshot({path:'sector-cross-projector.png'});
