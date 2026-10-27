@@ -17,6 +17,8 @@ for(const sector of SECTORS){
   assert.equal(await page.locator('.base-service').count(),2);
   assert.equal(await page.locator('.new-service').count(),sector.services.length-2);
   assert.equal(await page.locator('.dependency-flow').count(),sector.services.length+4);
+  assert.ok((await page.locator('.added-service .service-state').first().innerText()).includes('Veel kasutamata'));
+  assert.ok((await page.locator('.added-service .service-state').first().innerText()).includes('AI-võimekus'));
   const subtitleParts=sector.subtitle.match(/^(.+?\.)\s+(.+)$/);
   const headerText=await page.locator('header').innerText();
   assert.ok(headerText.includes(sector.label));
@@ -26,6 +28,8 @@ for(const sector of SECTORS){
   await page.getByRole('button',{name:sector.id==='cross-sector'?'Kasvata ühiskonda':'Kasvata organisatsiooni'}).click();
   await page.clock.runFor(12000);
   assert.equal(await page.locator('.service.active').count(),sector.services.length);
+  assert.ok((await page.locator('.added-service .service-state').first().innerText()).includes('Uus võimekus'));
+  assert.ok((await page.locator('.added-service .service-state').first().innerText()).includes('uus töö'));
   await page.getByLabel('AI-toe katkestuse ulatus').fill('100');
   await page.getByRole('button',{name:'Katkesta AI tugi täielikult'}).click();
   if(sector.id==='cross-sector'){

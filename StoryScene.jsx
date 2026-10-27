@@ -48,7 +48,7 @@ export default function StoryScene({state,view,sector}){
         {view.services.map(service=><div key={service.id} data-service={service.id} title={state.crossSector?`${service.promise}${service.parent?'. Sõltub: '+view.services.find(s=>s.id===service.parent)?.name:'. Ahela algus'}`:service.promise} className={`service ${service.base?'existing-service':'added-service'} ${service.active?'active':'not-created'} ${service.status}`}>
           <div className="service-icon">{!service.active?'+':service.status==='stopped'?'×':service.status==='delayed'?'!':'✓'}</div>
           <div className="service-description"><div className="service-name">{service.name}{service.base?<span className="base-service">OLEMAS ENNE AI-D</span>:<span className="new-service">AI TOEL LISANDUV</span>}</div><p>{!service.active?service.promise:service.status==='stopped'?service.stopped:service.status==='delayed'?service.delayed:service.promise}</p><div className="service-progress"><span style={{width:`${service.active?service.ratio*100:0}%`}}/></div></div>
-          <strong className="service-state">{!service.active?'Veel avamata':service.status==='stopped'?'SEISKUNUD':service.status==='delayed'?'HILINEB':service.base?'Toimib':'Uus lubadus'}</strong>
+          <strong className="service-state">{!service.active?<><span>Veel kasutamata</span><small>AI-võimekus</small></>:service.status==='stopped'?'SEISKUNUD':service.status==='delayed'?'HILINEB':service.base?'Toimib':<><span>Uus võimekus</span><small>→ uus töö</small></>}</strong>
         </div>)}
       </div>
     </div>
