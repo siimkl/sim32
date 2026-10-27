@@ -12,6 +12,8 @@ for(const sector of SECTORS){
   await page.getByLabel('Valdkond').selectOption(sector.id);
   assert.equal(await page.locator('.control-column .sector-picker').count(),0);
   assert.equal(await page.locator('.hero-sector-select').count(),1);
+  assert.equal(await page.locator('.sector-context-separator').count(),0);
+  assert.equal((await page.locator('.hero-sector-action').innerText()).trim(),'MUUDA');
   assert.equal(await page.locator('main').getAttribute('data-step'),'0');
   assert.equal(await page.locator('.service').count(),sector.services.length);
   assert.equal(await page.locator('.existing-service').count(),2);
