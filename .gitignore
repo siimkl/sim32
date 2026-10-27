@@ -1,0 +1,8 @@
+node_modules/
+dist/
+test-results/
+debug-layout.png
+hero-*.png
+preview-*.png
+sector-*.png
+story-*.png
