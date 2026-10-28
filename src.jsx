@@ -107,13 +107,14 @@ function App(){
       <div className="control-column" ref={controlRef}>
         <aside>
         <div className="controls-title"><span>{outage?'Katkestuse tulemus':'Simulatsiooni juhtimine'}</span><b className="step-counter">{outage&&view.complete?`${TOTAL_STEPS} / ${TOTAL_STEPS} sammu`:`Samm ${Math.min(state.step,TOTAL_STEPS)} / ${TOTAL_STEPS}`}</b></div>
-        {!outage&&<>
-        <div className="control-phase-title growth-phase"><span>1</span><strong>Kasvata organisatsiooni AI toel</strong></div>
-        <label className="ai-label" htmlFor="ai">AI-võimenduse tase <strong>{ai}%</strong></label>
-        <input id="ai" aria-label="AI-võimenduse tase" type="range" min="0" max="100" step="5" value={ai} disabled={running||outage} onChange={e=>setAI(Number(e.target.value))} style={{'--range':`${ai}%`}}/>
-        <div className="range-ends"><span>AI tugi puudub</span><span>Maksimaalne võimendus</span></div>
-        </>}
-        {(!outage||!view.complete)&&<button className={`grow progress-button ${running?'is-running':'is-paused'}`} data-testid="progress-button" style={{'--progress':`${simulationProgress}%`}} disabled={finished} onClick={()=>setRunning(!running)}><span>{progressLabel}</span></button>}
+        {!outage&&<div className={`growth-action ${finished?'is-complete':''}`} aria-disabled={finished}>
+          <div className="control-phase-title growth-phase"><span>1</span><strong>Kasvata organisatsiooni AI toel</strong></div>
+          <label className="ai-label" htmlFor="ai">AI-võimenduse tase <strong>{ai}%</strong></label>
+          <input id="ai" aria-label="AI-võimenduse tase" type="range" min="0" max="100" step="5" value={ai} disabled={running||finished} onChange={e=>setAI(Number(e.target.value))} style={{'--range':`${ai}%`}}/>
+          <div className="range-ends"><span>AI tugi puudub</span><span>Maksimaalne võimendus</span></div>
+          <button className={`grow progress-button ${running?'is-running':'is-paused'}`} data-testid="progress-button" style={{'--progress':`${simulationProgress}%`}} disabled={finished} onClick={()=>setRunning(!running)}><span>{progressLabel}</span></button>
+        </div>}
+        {outage&&!view.complete&&<button className={`grow progress-button ${running?'is-running':'is-paused'}`} data-testid="progress-button" style={{'--progress':`${simulationProgress}%`}} onClick={()=>setRunning(!running)}><span>{progressLabel}</span></button>}
         {state.step>0&&!(finished&&!outage)&&<div className={`run-status ${running?'is-running':'is-paused'}`} role="status">{finished?'Simulatsioon lõpetatud · mõju on arvutatud':running?outage?'Katkestuse mõju levib…':'Vajuta pausi, kui tahad AI tuge vähendada.':outage?'Simulatsioon on pausil':'Simulatsioon on pausil. AI tuge saab nüüd vähendada.'}</div>}
         {!outage&&<div className={`outage-action ${canDisrupt?'is-ready':'is-locked'}`} aria-disabled={!canDisrupt}>
           <div className="control-phase-title outage-phase"><span>2</span><strong>Katkesta AI tugi</strong></div>
