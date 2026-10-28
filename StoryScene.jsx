@@ -19,6 +19,11 @@ export default function StoryScene({state,view,sector}){
     if(state.ai){const gain=Math.round(actor.value/actor.base*100-100);return actor.robot?`AI toel ${gain}% suurem läbilaskevõime`:`AI toel ${gain}% rohkem`;}
     return actor.robot?'Senised infosüsteemid ja automatiseeritud töövood':'Senised oskused ja tööviisid';
   };
+  const serviceProgress=service=>{
+    if(service.base)return Math.min(100,(60+state.adaptation*40)*service.ratio);
+    if(service.active)return Math.min(100,service.ratio*100);
+    return service.threshold?Math.min(100,state.adaptation/service.threshold*100):0;
+  };
   return <div className={`story-scene ${outage?'outage':''} ${state.crossSector?'cross-sector':''}`}>
     <div className="scene-content">
       <svg className="supply-lines" viewBox="0 0 1000 420" preserveAspectRatio="none" aria-hidden="true">
@@ -52,7 +57,7 @@ export default function StoryScene({state,view,sector}){
       <div className="services">
         {view.services.map(service=><div key={service.id} data-service={service.id} title={state.crossSector?`${service.promise}${service.parent?'. Sõltub: '+view.services.find(s=>s.id===service.parent)?.name:'. Ahela algus'}`:service.promise} className={`service ${service.base?'existing-service':'added-service'} ${service.active?'active':'not-created'} ${service.status}`}>
           <div className="service-icon">{!service.active?'+':service.status==='stopped'?'×':service.status==='delayed'?'!':'✓'}</div>
-          <div className="service-description"><div className="service-name">{service.name}{service.base?<><span className="base-service">OLEMAS ENNE AI-D</span>{state.adaptation>.05&&<span className="enhanced-service-group"><i aria-hidden="true">+</i><span className="enhanced-service">AI TOEL VEELGI EDASI ARENDATUD</span></span>}</>:<span className="new-service">AI TOEL LISANDUV</span>}</div><p>{!service.active?service.promise:service.status==='stopped'?service.stopped:service.status==='delayed'?service.delayed:service.promise}</p><div className={`service-progress ${service.base?'base-growth-progress':''}`}><span style={{width:`${service.active?(service.base?Math.min(100,(60+state.adaptation*40)*service.ratio):service.ratio*100):0}%`}}/></div></div>
+          <div className="service-description"><div className="service-name">{service.name}{service.base?<><span className="base-service">OLEMAS ENNE AI-D</span>{state.adaptation>.05&&<span className="enhanced-service-group"><i aria-hidden="true">+</i><span className="enhanced-service">AI TOEL VEELGI EDASI ARENDATUD</span></span>}</>:<span className="new-service">AI TOEL LISANDUV</span>}</div><p>{!service.active?service.promise:service.status==='stopped'?service.stopped:service.status==='delayed'?service.delayed:service.promise}</p><div className={`service-progress ${service.base?'base-growth-progress':'new-capability-progress'}`} role="progressbar" aria-label={`${service.name}: ${service.active?'töövõime':'kujunemise edenemine'}`} aria-valuemin="0" aria-valuemax="100" aria-valuenow={Math.round(serviceProgress(service))}><span style={{width:`${serviceProgress(service)}%`}}/></div></div>
           <strong className="service-state">{!service.active?<><span>Veel kasutamata</span><small>AI-võimekus</small></>:service.status==='stopped'?'SEISKUNUD':service.status==='delayed'?'HILINEB':service.base?'Toimib':<><span>Uus võimekus</span><small>→ uus töö</small></>}</strong>
         </div>)}
       </div>

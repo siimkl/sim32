@@ -21,6 +21,9 @@ for(const sector of SECTORS){
   assert.equal(await page.locator('.service').count(),sector.services.length);
   assert.equal(await page.locator('.existing-service').count(),2);
   assert.equal(await page.locator('.added-service').count(),sector.services.length-2);
+  assert.equal(await page.locator('.service-progress').count(),sector.services.length);
+  assert.ok(await page.locator('.service-progress').evaluateAll(elements=>elements.every(element=>getComputedStyle(element).display!=='none')));
+  assert.equal(await page.locator('.service-progress[role="progressbar"]').count(),sector.services.length);
   assert.equal(await page.locator('.base-service').count(),2);
   assert.equal(await page.locator('.base-growth-progress').count(),2);
   assert.equal(await page.locator('.base-growth-progress span').first().evaluate(element=>parseFloat(element.style.width)),60);

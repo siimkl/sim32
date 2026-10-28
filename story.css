@@ -748,3 +748,13 @@ main{height:auto;min-height:100dvh}
   .takeaway-copy>strong{font-size:20px}
   .simulation-footer .takeaway-copy>p{font-size:17px}
 }
+
+/* Every existing task and emerging commitment carries its own progress track.
+   Future capabilities fill toward their activation threshold; active services
+   show the share of work they can currently deliver. */
+.service.not-created .service-progress{display:block;background:#e8e2f0}
+.service.not-created .service-progress>span{background:#8a79af}
+.service.stopped .service-progress>span{background:#b85f3e}
+.service .new-capability-progress{height:5px}
+.story-scene.cross-sector .service-progress{display:block;height:3px;margin-top:4px}
+@media(max-width:600px){.story-scene.cross-sector .service-progress{height:3px;margin-top:3px}}
