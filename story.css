@@ -730,6 +730,65 @@ main{height:auto;min-height:100dvh}
   .footer-note>span{text-align:left}
 }
 
+/* A text-free companion view under the controls makes the mechanism readable
+   before the numbers are interpreted: paired growth, a shock, a frozen peak,
+   and a much faster fall in capability than in commitments. */
+.mechanism-card{position:relative;isolation:isolate;width:100%;aspect-ratio:300/190;overflow:hidden;border:1px solid #adc5b4;border-radius:14px;background:#dcebd7;box-shadow:0 5px 18px #31533a16}
+.mechanism-card:before{content:'';position:absolute;z-index:2;inset:0;border:1px solid #ffffff80;border-radius:13px;pointer-events:none}
+.mechanism-glyph{display:block;width:100%;height:100%}
+.glyph-field{transition:opacity .8s ease}
+.glyph-field-risk{opacity:0}
+.mechanism-card.is-disrupted{border-color:#d39a88;background:#efcfc4;box-shadow:0 7px 22px #843d3026}
+.is-disrupted .glyph-field-positive{opacity:0}
+.is-disrupted .glyph-field-risk{opacity:1}
+.glyph-horizon{fill:none;stroke:#527a5a;stroke-width:2;stroke-linecap:round;opacity:.24;transition:stroke .8s,opacity .8s}
+.is-disrupted .glyph-horizon{stroke:#9f4b41;opacity:.3}
+.glyph-energy-bridge{fill:none;stroke:#efffdc;stroke-width:5;stroke-linecap:round;stroke-dasharray:7 8;filter:drop-shadow(0 0 4px #5da75f);animation:mechanismFlow 1.15s linear infinite;transition:opacity .35s}
+.is-disrupted .glyph-energy-bridge{opacity:0;animation:none}
+.glyph-orb{transform-box:fill-box;transform-origin:center;transition:opacity .5s}
+.mechanism-card.is-moving.is-positive .glyph-orb{animation:mechanismBreath 2s ease-in-out infinite}
+.mechanism-card.is-moving.is-positive .promise-orb{animation-delay:-.65s}
+.glyph-live-orb,.glyph-orb-aura,.glyph-orb-shine,.glyph-orbit{transition:r .75s ease,cy .75s ease,cx .75s ease,opacity .55s,stroke .55s}
+.glyph-orb-aura{fill:none;stroke:#efffe4;stroke-width:2;opacity:.75;stroke-dasharray:3 5;animation:mechanismOrbit 8s linear infinite}
+.glyph-orb-shine{fill:#fff;opacity:.58}
+.glyph-orbit{fill:none;stroke:#f6ffe9;stroke-width:1.4;stroke-linecap:round;opacity:.66;stroke-dasharray:4 6;animation:mechanismFlow 1.4s linear infinite}
+.is-disrupted .glyph-orb-aura{stroke:#ffe4d7;opacity:.48}
+.is-disrupted .glyph-orb-shine{opacity:.42}
+.is-disrupted .glyph-orbit{stroke:#ffe7dc;opacity:.46;animation-duration:2.4s}
+.is-disrupted .capacity-orb{animation:mechanismStrain 1.9s ease-in-out infinite}
+.is-disrupted .promise-orb{animation:mechanismWeight 3.2s ease-in-out infinite}
+.glyph-stones{opacity:0;transition:opacity .45s ease .08s}
+.is-disrupted .glyph-stones{opacity:.72}
+.glyph-stone{filter:drop-shadow(0 4px 4px #4c474455)}
+.glyph-crack{fill:none;stroke:#656866;stroke-width:2.1;stroke-linecap:round;stroke-linejoin:round;opacity:.72}
+.glyph-drop-trail{fill:none;stroke:#a85749;stroke-width:2;stroke-linecap:round;stroke-dasharray:4 7;opacity:0;transition:opacity .5s;animation:mechanismFall 1.2s linear infinite}
+.is-disrupted .glyph-drop-trail{opacity:.62}
+.promise-trail{stroke:#b47050;animation-duration:1.8s}
+.glyph-blast{opacity:0;transform-box:fill-box;transform-origin:center;pointer-events:none}
+.blast-active .glyph-blast{opacity:1}
+.glyph-blast-core{fill:#fff2b7;stroke:#d4472f;stroke-width:3}
+.glyph-blast-ring{fill:none;stroke:#e04d31;stroke-width:3;opacity:0}
+.blast-active .ring-one{animation:mechanismBlast 1.15s ease-out infinite}
+.blast-active .ring-two{animation:mechanismBlast 1.15s ease-out .3s infinite}
+.glyph-blast-rays{fill:none;stroke:#cf402d;stroke-width:4;stroke-linecap:round;animation:mechanismRay .75s ease-in-out infinite alternate}
+.glyph-shards{fill:#b9352b;stroke:#fff0d1;stroke-width:1;animation:mechanismShard .9s ease-in-out infinite alternate}
+.glyph-impact-ember{fill:#b94732;opacity:0;filter:drop-shadow(0 0 7px #f06b3c)}
+.is-disrupted:not(.blast-active) .glyph-impact-ember{opacity:.82;animation:mechanismEmber 1.8s ease-in-out infinite}
+.mechanism-card.is-still *{animation-play-state:paused!important}
+@keyframes mechanismFlow{to{stroke-dashoffset:-30}}
+@keyframes mechanismFall{to{stroke-dashoffset:22}}
+@keyframes mechanismBreath{0%,100%{transform:scale(.985)}50%{transform:scale(1.035)}}
+@keyframes mechanismOrbit{to{stroke-dashoffset:-64}}
+@keyframes mechanismStrain{0%,100%{transform:translate(0)}45%{transform:translate(-1px,2px)}55%{transform:translate(1px,-1px)}}
+@keyframes mechanismWeight{0%,100%{transform:translateY(0)}50%{transform:translateY(1.5px)}}
+@keyframes mechanismBlast{0%{opacity:.9;transform:scale(.3)}100%{opacity:0;transform:scale(1.7)}}
+@keyframes mechanismRay{from{opacity:.55;transform:scale(.88)}to{opacity:1;transform:scale(1.08)}}
+@keyframes mechanismShard{from{opacity:.55;transform:scale(.9) rotate(-2deg)}to{opacity:1;transform:scale(1.08) rotate(2deg)}}
+@keyframes mechanismEmber{0%,100%{opacity:.48;transform:scale(.8)}50%{opacity:1;transform:scale(1.25)}}
+@media(min-width:1600px){.mechanism-card{border-radius:16px}.mechanism-card:before{border-radius:15px}}
+@media(max-width:1000px){.mechanism-card{max-width:430px;align-self:center}}
+@media(prefers-reduced-motion:reduce){.mechanism-card *{animation:none!important;transition:none!important}}
+
 /* The learning prompt is a guided action card: phase, action and explanation
    have separate visual roles instead of competing in one paragraph. */
 .simulation-footer .takeaway{position:relative;display:flex;align-items:flex-start;gap:16px;overflow:hidden;padding:18px 19px;border-left:1px solid #cad9bd;background:linear-gradient(145deg,#edf4e7 0%,#dfeacf 100%)}
