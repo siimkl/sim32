@@ -43,12 +43,18 @@ test('lowering AI does not remove commitments or unlearn adaptation',()=>{
   assert.ok(describe(lowered).capacity<describe(state).capacity);
 });
 test('all sectors provide complete names, promises and failure descriptions',()=>{
-  assert.equal(new Set(SECTORS.map(s=>s.id)).size,11);
+  assert.equal(new Set(SECTORS.map(s=>s.id)).size,12);
   for(const sector of SECTORS){
     const view=sectorServices(describe(initialState(sector.id==='cross-sector')),sector);
     assert.equal(view.services.length,sector.id==='cross-sector'?7:5);
     view.services.forEach(service=>['name','promise','delayed','stopped'].forEach(key=>assert.ok(service[key]?.length>0)));
   }
+});
+test('doctoral researcher focus covers expertise, control and digital sovereignty',()=>{
+  const focus=SECTORS.find(sector=>sector.id==='uti-doctoral-researcher');
+  assert.ok(focus.label.includes('Nooremteadur'));
+  assert.ok(focus.subtitle.includes('ekspertiis')&&focus.subtitle.includes('süsteemide kontroll'));
+  assert.ok(focus.services.some(service=>service.name.includes('Digitaalse suveräänsuse')));
 });
 test('cross-sector failure advances one supplier layer per step',()=>{
   let state=initialState(true);

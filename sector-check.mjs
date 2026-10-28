@@ -9,9 +9,9 @@ await page.clock.pauseAt(new Date('2026-10-27T10:00:01Z'));
 await page.goto('http://127.0.0.1:5332');
 await page.locator('#ai').fill('100');
 for(const sector of SECTORS){
-  await page.getByLabel('Näidisasutus').selectOption(sector.id);
-  assert.equal(await page.getByLabel('Näidisasutus').evaluate(element=>document.activeElement===element),false);
-  assert.notEqual(await page.getByLabel('Näidisasutus').evaluate(element=>getComputedStyle(element).borderTopColor),'rgb(241, 202, 114)');
+  await page.getByLabel('Fookus').selectOption(sector.id);
+  assert.equal(await page.getByLabel('Fookus').evaluate(element=>document.activeElement===element),false);
+  assert.notEqual(await page.getByLabel('Fookus').evaluate(element=>getComputedStyle(element).borderTopColor),'rgb(241, 202, 114)');
   assert.equal(await page.locator('.control-column .sector-picker').count(),0);
   assert.equal(await page.locator('.hero-sector-select').count(),1);
   assert.equal(await page.locator('.sector-context-separator').count(),0);
@@ -70,7 +70,7 @@ assert.ok(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWid
 await page.getByRole('button',{name:'Käivita simulatsioon uuesti'}).click();
 await page.getByRole('button',{name:'Käivita simulatsioon',exact:true}).click();
 await page.clock.runFor(3000);
-await page.getByLabel('Näidisasutus').selectOption('it');
+await page.getByLabel('Fookus').selectOption('it');
 await page.clock.runFor(2000);assert.equal(await page.locator('main').getAttribute('data-step'),'0');
 assert.deepEqual(errors,[]);await browser.close();
-console.log('PASS: eleven example-organisation stories, reset on change, customized failures, seven-layer cascade, desktop/projector/mobile.');
+console.log('PASS: twelve focus stories, reset on change, customized failures, seven-layer cascade, desktop/projector/mobile.');
