@@ -1,97 +1,100 @@
 import React from 'react';
-import {OUTAGE_STEPS} from './story-model.js';
 
 const clamp=(value,min,max)=>Math.max(min,Math.min(max,value));
-const scaleRadius=value=>18+clamp((value-60)/250,0,1)*24;
-const stonePath=(cx,cy,r,turn=0)=>{
-  const shape=[1,.9,.98,.86,1.03,.91,.97,.87,1.01,.92];
-  return shape.map((factor,index)=>{
-    const angle=-Math.PI/2+turn+index/shape.length*Math.PI*2;
-    const radius=r*factor;
-    const x=(cx+Math.cos(angle)*radius).toFixed(1);
-    const y=(cy+Math.sin(angle)*radius).toFixed(1);
-    return `${index?'L':'M'}${x} ${y}`;
-  }).join(' ')+' Z';
-};
+const levelY=value=>164-clamp(value/340,0,1)*124;
 
 export default function ContinuityGlyph({state,view,running}){
   const disrupted=state.outageAge!==null;
-  const outageProgress=disrupted?clamp(state.outageAge/OUTAGE_STEPS,0,1):0;
-  const peak=Math.max(100,view.peak);
-  const capacityRatio=clamp(view.capacity/peak,0,1);
-  const promiseRatio=clamp(view.promised/peak,0,1);
-  const capacityRadius=scaleRadius(view.capacity);
-  const promiseBaseRadius=scaleRadius(view.promised);
-  const promiseRadius=disrupted?promiseBaseRadius*(1-.12*outageProgress):promiseBaseRadius;
-  const peakRadius=scaleRadius(peak);
-  const capacityY=disrupted?112+(1-capacityRatio)*52:127-clamp((view.capacity-100)/210,0,1)*34;
-  const promiseY=disrupted?112+(1-promiseRatio)*34+outageProgress*5:127-clamp((view.promised-100)/180,0,1)*30;
-  const blastActive=disrupted&&state.outageAge<3;
+  const shortfall=view.shortfall>1;
+  const capacityY=levelY(view.capacity);
+  const promiseY=levelY(view.promised);
+  const activeCommitments=view.services.filter(service=>service.active).length;
+  const maximumCommitments=view.services.length;
+  const remainingAI=state.ai/100*(disrupted?1-state.outageLoss:1);
+  const shockActive=disrupted&&state.outageAge<3;
+  const nodeWidth=maximumCommitments>5?28:36;
+  const nodeGap=maximumCommitments>5?5:8;
+  const rowWidth=maximumCommitments*nodeWidth+(maximumCommitments-1)*nodeGap;
+  const rowStart=150-rowWidth/2;
+  const capacityPath=`M18 ${capacityY.toFixed(1)} C58 ${(capacityY-5).toFixed(1)} 91 ${(capacityY+5).toFixed(1)} 130 ${capacityY.toFixed(1)} S216 ${(capacityY-4).toFixed(1)} 282 ${capacityY.toFixed(1)} L282 174 L18 174 Z`;
+  const capacityLine=`M18 ${capacityY.toFixed(1)} C58 ${(capacityY-5).toFixed(1)} 91 ${(capacityY+5).toFixed(1)} 130 ${capacityY.toFixed(1)} S216 ${(capacityY-4).toFixed(1)} 282 ${capacityY.toFixed(1)}`;
   return <section
-    className={`mechanism-card ${disrupted?'is-disrupted':'is-positive'} ${blastActive?'blast-active':''} ${running?'is-moving':'is-still'}`}
+    className={`mechanism-card ${disrupted?'is-disrupted':'is-positive'} ${shortfall?'has-gap':'is-covered'} ${shockActive?'shock-active':''} ${running?'is-moving':'is-still'}`}
     data-testid="mechanism-card"
     data-phase={disrupted?'disrupted':'positive'}
-    data-capacity-radius={capacityRadius.toFixed(1)}
-    data-promise-radius={promiseRadius.toFixed(1)}
-    aria-label="Võimekuse ja kohustuste sõnadeta visuaal: AI katkestuse järel langeb võimekus kohustustest kiiremini"
+    data-capacity-y={capacityY.toFixed(1)}
+    data-promise-y={promiseY.toFixed(1)}
+    data-active-commitments={activeCommitments}
+    data-shortfall={shortfall?'true':'false'}
+    aria-label="Võimekuse ja kohustuste sõnadeta süsteemivaade: AI-toega töövõime kannab kohustusi, katkestuse järel võimekus langeb, kuid kohustused jäävad"
   >
-    <svg className="mechanism-glyph" viewBox="0 0 300 190" preserveAspectRatio="xMidYMid meet" aria-hidden="true">
+    <svg className="mechanism-glyph" viewBox="0 0 300 190" preserveAspectRatio="xMidYMid meet" aria-hidden="true" style={{'--ai-strength':remainingAI}}>
       <defs>
-        <radialGradient id="glyph-positive-field" cx="50%" cy="40%" r="72%"><stop offset="0" stopColor="#e9f7df"/><stop offset=".58" stopColor="#d8edcf"/><stop offset="1" stopColor="#bfd9bf"/></radialGradient>
-        <radialGradient id="glyph-risk-field" cx="50%" cy="46%" r="75%"><stop offset="0" stopColor="#fff1e7"/><stop offset=".62" stopColor="#f4d8cc"/><stop offset="1" stopColor="#ddaaa0"/></radialGradient>
-        <radialGradient id="glyph-capacity" cx="32%" cy="25%" r="76%"><stop offset="0" stopColor="#dff8c9"/><stop offset=".48" stopColor="#65ad69"/><stop offset="1" stopColor="#25653e"/></radialGradient>
-        <radialGradient id="glyph-promise" cx="32%" cy="25%" r="76%"><stop offset="0" stopColor="#edf7bc"/><stop offset=".5" stopColor="#8dbd61"/><stop offset="1" stopColor="#477345"/></radialGradient>
-        <radialGradient id="glyph-capacity-risk" cx="32%" cy="25%" r="76%"><stop offset="0" stopColor="#ffd5be"/><stop offset=".48" stopColor="#d86a48"/><stop offset="1" stopColor="#8e2f2d"/></radialGradient>
-        <radialGradient id="glyph-promise-risk" cx="32%" cy="25%" r="76%"><stop offset="0" stopColor="#ffe1b9"/><stop offset=".5" stopColor="#d38356"/><stop offset="1" stopColor="#934239"/></radialGradient>
-        <linearGradient id="glyph-stone" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stopColor="#d7d8d0"/><stop offset=".48" stopColor="#a9aaa4"/><stop offset="1" stopColor="#777b78"/></linearGradient>
-        <filter id="glyph-shadow" x="-50%" y="-50%" width="200%" height="200%"><feDropShadow dx="0" dy="5" stdDeviation="5" floodColor="#244933" floodOpacity=".24"/></filter>
-        <filter id="glyph-risk-shadow" x="-50%" y="-50%" width="200%" height="200%"><feDropShadow dx="0" dy="6" stdDeviation="6" floodColor="#712e28" floodOpacity=".28"/></filter>
-        <filter id="glyph-glow" x="-80%" y="-80%" width="260%" height="260%"><feGaussianBlur stdDeviation="4" result="blur"/><feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
-        <pattern id="glyph-grid" width="18" height="18" patternUnits="userSpaceOnUse"><path d="M18 0H0V18" fill="none" stroke="#54725d" strokeOpacity=".09" strokeWidth="1"/></pattern>
+        <linearGradient id="system-field-positive" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stopColor="#74bd72" stopOpacity=".82"/><stop offset=".55" stopColor="#3f8f5c" stopOpacity=".9"/><stop offset="1" stopColor="#28634b"/></linearGradient>
+        <linearGradient id="system-field-risk" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stopColor="#e7835c" stopOpacity=".88"/><stop offset=".55" stopColor="#b94f3d" stopOpacity=".94"/><stop offset="1" stopColor="#73333a"/></linearGradient>
+        <linearGradient id="system-background-positive" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stopColor="#e8f5e2"/><stop offset="1" stopColor="#c7dfc7"/></linearGradient>
+        <linearGradient id="system-background-risk" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stopColor="#fff0e7"/><stop offset="1" stopColor="#e8b9ad"/></linearGradient>
+        <linearGradient id="system-deck-positive" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stopColor="#2f7251"/><stop offset=".5" stopColor="#7bbf68"/><stop offset="1" stopColor="#2f7251"/></linearGradient>
+        <linearGradient id="system-deck-risk" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stopColor="#924236"/><stop offset=".5" stopColor="#da8651"/><stop offset="1" stopColor="#924236"/></linearGradient>
+        <linearGradient id="system-gap" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stopColor="#d44733" stopOpacity=".08"/><stop offset=".55" stopColor="#d44733" stopOpacity=".28"/><stop offset="1" stopColor="#8f2f31" stopOpacity=".5"/></linearGradient>
+        <radialGradient id="system-core-live" cx="38%" cy="30%" r="70%"><stop offset="0" stopColor="#ecffb7"/><stop offset=".4" stopColor="#76c66e"/><stop offset="1" stopColor="#2c6f52"/></radialGradient>
+        <radialGradient id="system-core-off" cx="38%" cy="30%" r="70%"><stop offset="0" stopColor="#ffd0b7"/><stop offset=".42" stopColor="#c95f47"/><stop offset="1" stopColor="#71343a"/></radialGradient>
+        <pattern id="system-grid" width="15" height="15" patternUnits="userSpaceOnUse"><path d="M15 0H0V15" fill="none" stroke="#526c5c" strokeOpacity=".075" strokeWidth="1"/></pattern>
+        <filter id="system-soft-shadow" x="-50%" y="-50%" width="200%" height="200%"><feDropShadow dx="0" dy="4" stdDeviation="4" floodColor="#263f35" floodOpacity=".28"/></filter>
+        <filter id="system-glow" x="-80%" y="-80%" width="260%" height="260%"><feGaussianBlur stdDeviation="4" result="blur"/><feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
       </defs>
 
-      <rect className="glyph-field glyph-field-positive" x="1" y="1" width="298" height="188" rx="18" fill="url(#glyph-positive-field)"/>
-      <rect className="glyph-field glyph-field-risk" x="1" y="1" width="298" height="188" rx="18" fill="url(#glyph-risk-field)"/>
-      <rect x="1" y="1" width="298" height="188" rx="18" fill="url(#glyph-grid)"/>
-      <path className="glyph-horizon" d="M20 148C65 132 102 142 150 129S240 118 280 131"/>
-      <path className="glyph-energy-bridge" d={`M${92+capacityRadius*.72} ${capacityY-4} C130 ${capacityY-24} 171 ${promiseY-24} ${208-promiseRadius*.72} ${promiseY-4}`}/>
-      <path className="glyph-drop-trail capacity-trail" d={`M92 55 C78 83 82 102 92 ${capacityY}`}/>
-      <path className="glyph-drop-trail promise-trail" d={`M208 55 C222 82 220 100 208 ${promiseY}`}/>
+      <rect className="system-background system-positive-bg" x="1" y="1" width="298" height="188" rx="18" fill="url(#system-background-positive)"/>
+      <rect className="system-background system-risk-bg" x="1" y="1" width="298" height="188" rx="18" fill="url(#system-background-risk)"/>
+      <rect x="1" y="1" width="298" height="188" rx="18" fill="url(#system-grid)"/>
 
-      <g className="glyph-stones" style={{opacity:disrupted?.72:0}}>
-        <g className="glyph-stone glyph-capacity-stone">
-          <path d={stonePath(92,52,peakRadius*.72,.05)} fill="url(#glyph-stone)"/>
-          <path className="glyph-crack" d="M82 36l8 12-7 9 12 13M105 38l-8 11 10 8-8 12"/>
-        </g>
-        <g className="glyph-stone glyph-promise-stone">
-          <path d={stonePath(208,52,peakRadius*.68,.23)} fill="url(#glyph-stone)"/>
-          <path className="glyph-crack" d="M197 35l10 12-8 10 10 12M220 39l-8 10 9 7-7 13"/>
+      <g className="system-gap" opacity={shortfall?1:0}>
+        <path d={`M24 ${promiseY+5} H276 V${capacityY} C218 ${capacityY-4} 84 ${capacityY+5} 24 ${capacityY} Z`} fill="url(#system-gap)"/>
+        {[54,92,130,170,208,246].map((x,index)=><path key={x} className={`system-tension tension-${index%2}`} d={`M${x} ${promiseY+8} C${x+(index%2?7:-7)} ${(promiseY+capacityY)/2} ${x+(index%2?-5:5)} ${(promiseY+capacityY)/2} ${x} ${capacityY-2}`}/>) }
+        <path className="system-gap-pulse" d={`M30 ${(promiseY+capacityY)/2} H270`}/>
+      </g>
+
+      <g className="system-capacity">
+        <path className="system-capacity-field" d={capacityPath} fill={shortfall?'url(#system-field-risk)':'url(#system-field-positive)'}/>
+        <path className="system-capacity-surface" d={capacityLine}/>
+        {[42,72,102,132,168,198,228,258].map((x,index)=><path key={x} className={`system-support support-${index%3}`} d={`M${x} 169 V${Math.min(164,capacityY+7)}`}/>) }
+      </g>
+
+      <g className="system-ai-core" filter="url(#system-soft-shadow)">
+        <circle className="system-core-aura aura-one" cx="150" cy="166" r="23"/>
+        <circle className="system-core-aura aura-two" cx="150" cy="166" r="17"/>
+        <circle className="system-core" cx="150" cy="166" r="11" fill={disrupted?'url(#system-core-off)':'url(#system-core-live)'}/>
+        <path className="system-core-mark" d={disrupted?'M144 160l12 12M156 160l-12 12':'M150 157v18M141 166h18'}/>
+        <path className="system-feed feed-left" d={`M141 158 C120 143 113 124 108 ${Math.min(158,capacityY+8)}`}/>
+        <path className="system-feed feed-right" d={`M159 158 C180 143 187 124 192 ${Math.min(158,capacityY+8)}`}/>
+      </g>
+
+      <g className="system-promise-deck" transform={`translate(0 ${promiseY})`}>
+        <rect className="system-deck-shadow" x="22" y="-1" width="256" height="12" rx="6"/>
+        <rect className="system-deck" x="22" y="-5" width="256" height="10" rx="5" fill={disrupted?'url(#system-deck-risk)':'url(#system-deck-positive)'}/>
+        <path className="system-deck-edge" d="M30 0H270"/>
+        {view.services.map((service,index)=>{
+          const x=rowStart+index*(nodeWidth+nodeGap);
+          const active=index<activeCommitments;
+          return <g key={service.id||index} className={`system-commitment-node ${active?'is-active':'is-future'}`} transform={`translate(${x} 0)`}>
+            <rect x="0" y="-26" width={nodeWidth} height="20" rx="7"/>
+            <circle cx={nodeWidth/2} cy="-16" r="4"/>
+            <path d={`M${nodeWidth/2} -11V-6`}/>
+          </g>;
+        })}
+        <g className="system-lock" opacity={disrupted?1:0} transform="translate(150 -7)">
+          <path d="M-7-7v-4a7 7 0 0114 0v4"/>
+          <rect x="-10" y="-7" width="20" height="15" rx="4"/>
+          <circle cx="0" cy="0" r="2"/>
         </g>
       </g>
 
-      <g className="glyph-orbs">
-        <g className="glyph-orb capacity-orb" filter={disrupted?'url(#glyph-risk-shadow)':'url(#glyph-shadow)'}>
-          <circle className="glyph-orb-aura" cx="92" cy={capacityY} r={capacityRadius+8}/>
-          <circle className="glyph-live-orb" cx="92" cy={capacityY} r={capacityRadius} fill={disrupted?'url(#glyph-capacity-risk)':'url(#glyph-capacity)'}/>
-          <ellipse className="glyph-orb-shine" cx={92-capacityRadius*.27} cy={capacityY-capacityRadius*.34} rx={capacityRadius*.24} ry={capacityRadius*.16}/>
-          <path className="glyph-orbit" d={`M${92-capacityRadius-6} ${capacityY}a${capacityRadius+6} ${Math.max(9,capacityRadius*.42)} 0 0 0 ${2*(capacityRadius+6)} 0`}/>
-        </g>
-        <g className="glyph-orb promise-orb" filter={disrupted?'url(#glyph-risk-shadow)':'url(#glyph-shadow)'}>
-          <circle className="glyph-orb-aura" cx="208" cy={promiseY} r={promiseRadius+8}/>
-          <circle className="glyph-live-orb" cx="208" cy={promiseY} r={promiseRadius} fill={disrupted?'url(#glyph-promise-risk)':'url(#glyph-promise)'}/>
-          <ellipse className="glyph-orb-shine" cx={208-promiseRadius*.27} cy={promiseY-promiseRadius*.34} rx={promiseRadius*.24} ry={promiseRadius*.16}/>
-          <path className="glyph-orbit" d={`M${208-promiseRadius-6} ${promiseY}a${promiseRadius+6} ${Math.max(9,promiseRadius*.42)} 0 0 0 ${2*(promiseRadius+6)} 0`}/>
-        </g>
+      <g className="system-shock" opacity={shockActive?1:0} filter="url(#system-glow)">
+        <circle className="system-shock-ring ring-one" cx="150" cy="154" r="16"/>
+        <circle className="system-shock-ring ring-two" cx="150" cy="154" r="29"/>
+        <path className="system-shock-rays" d="M150 116v20M150 171v16M116 151h20M164 151h23M126 127l14 14M164 166l13 13M175 127l-15 15M138 165l-14 14"/>
+        <path className="system-shards" d="M126 145l-14-9 17 2M173 139l18-12-10 21M127 162l-16 9 18-2M173 165l13 15-4-20"/>
       </g>
-
-      <g className="glyph-blast" style={{'--blast-progress':outageProgress}} filter="url(#glyph-glow)">
-        <circle className="glyph-blast-core" cx="150" cy="92" r="8"/>
-        <circle className="glyph-blast-ring ring-one" cx="150" cy="92" r="19"/>
-        <circle className="glyph-blast-ring ring-two" cx="150" cy="92" r="32"/>
-        <path className="glyph-blast-rays" d="M150 52v22M150 110v23M110 92h23M167 92h24M121 63l16 16M163 105l17 17M179 63l-16 16M137 105l-17 17"/>
-        <path className="glyph-shards" d="M123 84l-13-9 17 2M176 78l16-12-9 20M124 104l-16 9 18-2M175 108l13 14-5-19"/>
-      </g>
-      <circle className="glyph-impact-ember" cx="150" cy="92" r="4"/>
     </svg>
   </section>;
 }
