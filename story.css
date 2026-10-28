@@ -597,3 +597,54 @@ main{height:auto;min-height:100dvh}
 @media(max-width:600px){
   .ai-core.offline,.ai-core.degraded{width:96px}
 }
+
+/* The outage panel is a compact decision report: trajectory first, unmet
+   obligation second, and the organisational consequence last. */
+.outcome{display:flex;flex-direction:column;gap:10px;margin-top:12px;padding-top:12px;border-top:1px solid #b9ccd1}
+.outcome>div{margin:0}
+.outcome .outcome-kicker{display:flex;align-items:center;justify-content:space-between;gap:8px;color:#526a72}
+.outcome-kicker>span{font-size:10px;font-weight:900;letter-spacing:.75px;text-transform:uppercase}
+.outcome-kicker>b{padding:4px 6px;border-radius:4px;background:#dce9ec;color:#315965;font-size:9px;line-height:1.2;text-align:right}
+.outcome-path{display:grid!important;grid-template-columns:minmax(0,1fr) 10px minmax(0,1fr) 10px minmax(0,1fr);align-items:stretch!important;gap:3px!important}
+.outcome-path>div{display:flex;min-width:0;flex-direction:column;justify-content:center;padding:7px 5px;border:1px solid #c2d1d5;border-radius:7px;background:#f4f8f8;text-align:center}
+.outcome-path>div:nth-of-type(2){border-color:#aac69f;background:#f0f7ed}
+.outcome-path>div.after{border-color:#d7a38c;background:#fff2eb;color:#9d492d}
+.outcome-path>i{align-self:center;color:#789097;font-size:13px;font-style:normal;text-align:center}
+.outcome-path span{min-height:23px;color:#536a70;font-size:8px;font-weight:800;line-height:1.15}
+.outcome-path strong{color:#315964;font:700 27px/1 'Space Grotesk',sans-serif}
+.outcome-path>div:nth-of-type(2) strong{color:#457442}
+.outcome-path>div.after strong{color:#ad4f30}
+.outcome-path small{margin-top:4px;color:#718186;font-size:7px;font-weight:700;line-height:1.15}
+.outcome-path>div.after small{color:#99533b}
+.outcome .outcome-gap-card{display:block;margin:0;padding:11px 12px;border:2px solid #c36a49;border-radius:9px;background:#fff0e8;color:#8c3e26;box-shadow:0 3px 10px #9e4b2920}
+.outcome-gap-card>small{display:block;font-size:9px;font-weight:900;letter-spacing:.65px;text-transform:uppercase}
+.outcome-gap-card>div{display:flex;align-items:baseline;gap:8px;margin:3px 0}
+.outcome-gap-card>div strong{color:#a34225;font:800 38px/1 'Space Grotesk',sans-serif}
+.outcome-gap-card>div span{font-size:14px;font-weight:800;line-height:1.1}
+.outcome .outcome-gap-card>p{display:flex;align-items:center;gap:7px;margin:6px 0 0;color:#6e5146;font-size:10px;line-height:1.2}
+.outcome-gap-card p b{font-weight:800}
+.outcome-gap-card p i{width:4px;height:4px;border-radius:50%;background:#bb755c}
+.outcome-gap-card.covered{border-color:#76a371;background:#eef7eb;color:#376d3c}
+.outcome-gap-card.covered>div strong{color:#397440}
+.outcome .outcome-service-impact{display:flex;align-items:flex-start;flex-direction:column;gap:3px;margin:0;padding:9px 10px;border-left:4px solid #ad5938;border-radius:0 7px 7px 0;background:#f7ebe4;color:#673d2e}
+.outcome-service-impact strong{font:800 13px/1.3 'DM Sans',sans-serif}
+.outcome-service-impact span{font-size:10px;line-height:1.3}
+.outcome>p.outcome-conclusion{margin:0;padding:0 2px;color:#53656a;font-size:11px;line-height:1.45}
+@media(min-width:1600px){
+  .outcome{gap:12px}
+  .outcome-kicker>span{font-size:11px}
+  .outcome-kicker>b{font-size:10px}
+  .outcome-path span{font-size:9px}
+  .outcome-path strong{font-size:31px}
+  .outcome-path small{font-size:8px}
+  .outcome-gap-card>small{font-size:10px}
+  .outcome-gap-card>div strong{font-size:44px}
+  .outcome-gap-card>div span{font-size:16px}
+  .outcome .outcome-gap-card>p{font-size:11px}
+  .outcome-service-impact strong{font-size:15px}
+  .outcome-service-impact span,.outcome>p.outcome-conclusion{font-size:12px}
+}
+@media(max-width:1000px){
+  .outcome-path span{font-size:10px}
+  .outcome-path small{font-size:9px}
+}

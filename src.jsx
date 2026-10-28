@@ -68,6 +68,8 @@ function App(){
   const failureText=state.outageLoss>=.99?sector.failure:sector.failure.replaceAll('AI kaob','AI tugi väheneb').replaceAll('AI-ta','väiksema AI-toega');
   const balanceDelta=Math.round(view.capacity-view.promised);
   const balanceComparison=view.shortfall>1?{tone:'deficit',value:`−${Math.round(view.shortfall)}`,label:'puudu'}:balanceDelta>1?{tone:'surplus',value:`+${balanceDelta}`,label:'varu'}:{tone:'balanced',value:'0',label:'tasakaal'};
+  const peakGain=Math.round(view.peak-100),outageDrop=Math.round(view.peak-view.capacity),baselineDelta=Math.round(view.capacity-100);
+  const delayedServices=view.services.filter(service=>service.active&&service.status==='delayed').length;
   const message=outage?view.complete?failureText:state.outageAge<2?`${outageText}. ${sector.staff} ja ${sector.automation.toLocaleLowerCase('et')} kaotavad esimesena töövõimet.`:sector.waiting+' Töö kuhjub ja uued tegevused aeglustuvad või seiskuvad.':view.mature&&state.step>0?(sector.ready||`${sector.org} on kasvanud AI võimekuse ümber. Katkesta AI tugi: kas kõik lubadused ja võetud kohustused on endiselt täidetavad?`):state.step>0?sector.growth:`Käivita kasv. Vaata, kuidas AI lisavõimekusest saavad uued kohustused. ${sector.waiting}`;
   return <main className={`${running?'running':'paused'} ${canDisrupt?'growth-ready':''}`} data-step={state.step}>
     <header className="hero-intro"><div className="header-copy"><div className="hero-top"><div className="simulation-label"><i/>Interaktiivne simulatsioon <span>AI-sõltuvuse kujunemine</span></div><div className="hero-question"><span>Põhiküsimus</span><p>{sectorQuestion}</p></div></div><div className="hero-main"><div className="hero-title"><h1><em>AI-võimestatud töötaja</em> ja organisatsiooni <strong className="continuity-focus">toimepidevus</strong></h1><div className="sector-context"><span className="sector-context-label">Vali näidisasutus</span><div className="hero-sector-select-wrap"><select id="sector" className="hero-sector-select" aria-label="Näidisasutus" value={sectorId} onChange={e=>{changeSector(e.target.value);e.currentTarget.blur();}}>{SORTED_SECTORS.map(item=><option key={item.id} value={item.id}>{item.label}</option>)}</select><span className="hero-sector-action" aria-hidden="true">Muuda<svg className="hero-sector-chevron" viewBox="0 0 20 20"><path d="m5 7 5 5 5-5"/></svg></span></div><span className="sector-context-description">{sectorContext}</span></div></div></div></div></header>
@@ -104,7 +106,7 @@ function App(){
       </div>
       <div className="control-column" ref={controlRef}>
         <aside>
-        <div className="controls-title"><span>{outage?'AI-toe katkestuse mõju':'Simulatsiooni juhtimine'}</span><b className="step-counter">Samm {Math.min(state.step,TOTAL_STEPS)} / {TOTAL_STEPS}</b></div>
+        <div className="controls-title"><span>{outage?'Katkestuse tulemus':'Simulatsiooni juhtimine'}</span><b className="step-counter">{outage&&view.complete?`${TOTAL_STEPS} / ${TOTAL_STEPS} sammu`:`Samm ${Math.min(state.step,TOTAL_STEPS)} / ${TOTAL_STEPS}`}</b></div>
         {!outage&&<>
         <div className="control-phase-title growth-phase"><span>1</span><strong>Kasvata organisatsiooni AI toel</strong></div>
         <label className="ai-label" htmlFor="ai">AI-võimenduse tase <strong>{ai}%</strong></label>
@@ -112,7 +114,7 @@ function App(){
         <div className="range-ends"><span>AI tugi puudub</span><span>Maksimaalne võimendus</span></div>
         </>}
         {(!outage||!view.complete)&&<button className={`grow progress-button ${running?'is-running':'is-paused'}`} data-testid="progress-button" style={{'--progress':`${simulationProgress}%`}} disabled={finished} onClick={()=>setRunning(!running)}><span>{progressLabel}</span></button>}
-        {state.step>0&&!(finished&&!outage)&&<div className={`run-status ${running?'is-running':'is-paused'}`} role="status">{finished?'Katkestuse mõju on nähtav':running?outage?'Katkestuse mõju levib…':'Vajuta pausi, kui tahad AI tuge vähendada.':outage?'Simulatsioon on pausil':'Simulatsioon on pausil. AI tuge saab nüüd vähendada.'}</div>}
+        {state.step>0&&!(finished&&!outage)&&<div className={`run-status ${running?'is-running':'is-paused'}`} role="status">{finished?'Simulatsioon lõpetatud · mõju on arvutatud':running?outage?'Katkestuse mõju levib…':'Vajuta pausi, kui tahad AI tuge vähendada.':outage?'Simulatsioon on pausil':'Simulatsioon on pausil. AI tuge saab nüüd vähendada.'}</div>}
         {!outage&&<div className={`outage-action ${canDisrupt?'is-ready':'is-locked'}`} aria-disabled={!canDisrupt}>
           <div className="control-phase-title outage-phase"><span>2</span><strong>Katkesta AI tugi</strong></div>
           <label className="outage-slider-label" htmlFor="outage-loss"><span>Kui suur osa olemasolevast AI-toest kaob?</span><strong>{Math.round(outageLoss*100)}%</strong></label>
@@ -124,7 +126,22 @@ function App(){
           <button className="disrupt" ref={disruptRef} onClick={cutAI} disabled={!canDisrupt||outageLoss===0}><span>{outageLoss===1?'Katkesta AI tugi täielikult':outageLoss===0?'Vali AI-toe katkestuse ulatus':'Vähenda AI tuge'}</span>{outageLoss>0&&<small>Mõju levib {OUTAGE_STEPS} sammu</small>}</button>
           <div className="disruption-reasons"><strong>Miks võib AI tugi väheneda?</strong><ul><li><span>Tehnika</span><b>Tehniline rike</b></li><li><span>Küber</span><b>Küberrünnak</b></li><li><span>Geopoliitika</span><b>Konflikt või sanktsioonid</b></li><li><span>Tarneahel</span><b>Tarneahela häired</b></li><li><span>Teenusepakkuja</span><b>Teenusepakkuja või tema päritoluriigi otsused</b></li><li><span>Julgeolek</span><b>Hübriid- või otsene sõjaline rünnak</b></li></ul></div>
         </div>}
-        {outage&&<div className="outcome" aria-live="polite"><h2>Mis muutus?</h2><div><span>Enne AI-d</span><strong>100</strong></div><div><span>AI toel</span><strong>{Math.round(view.peak)}</strong></div><div className="after"><span>Pärast katkestust</span><strong>{Math.round(view.capacity)}</strong></div>{view.complete&&<p><b>{view.stopped} {sector.stoppedNoun} seiskus.</b> {state.outageLoss>=.99?`Senise töö jaoks jäi alles ${Math.round(view.manual)}% algsest võimekusest.`:`Alles jäi ${Math.round(view.capacity)} tööühikut, kuid lubatud ja kohustuseks võetud ${Math.round(view.promised)} tööühikut enam täita ei suudeta.`}</p>}</div>}
+        {outage&&<section className={`outcome ${view.complete?'is-complete':'is-progress'}`} aria-live="polite">
+          <div className="outcome-kicker"><span>{view.complete?'Lõpptulemus':'Vahetulemus'}</span><b>{view.complete?'Mõju on kohale jõudnud':'Mõju alles levib'}</b></div>
+          <div className="outcome-path" aria-label={`Baastase 100, AI-toega tipp ${Math.round(view.peak)}, pärast katkestust ${Math.round(view.capacity)} tööühikut`}>
+            <div><span>Baastase</span><strong>100</strong><small>enne AI-d</small></div>
+            <i aria-hidden="true">→</i>
+            <div><span>AI-toega tipp</span><strong>{Math.round(view.peak)}</strong><small>+{peakGain} tööühikut</small></div>
+            <i aria-hidden="true">→</i>
+            <div className="after"><span>Pärast katkestust</span><strong>{Math.round(view.capacity)}</strong><small>{baselineDelta>=0?`+${baselineDelta} baastasemest`:`${Math.abs(baselineDelta)} alla baastaseme`}</small></div>
+          </div>
+          <div className={`outcome-gap-card ${view.shortfall>1?'deficit':'covered'}`}>
+            <small>{view.shortfall>1?'Täitmata kohustus':'Kohustused on kaetud'}</small>
+            <div><strong>{view.shortfall>1?Math.round(view.shortfall):Math.max(0,Math.round(view.capacity-view.promised))}</strong><span>{view.shortfall>1?'tööühikut puudu':'tööühikut varu'}</span></div>
+            <p><b>Suudame {Math.round(view.capacity)}</b><i/> <b>Kohustus {Math.round(view.promised)}</b></p>
+          </div>
+          {view.complete&&<><div className="outcome-service-impact"><strong>{view.stopped} {sector.stoppedNoun} seiskus</strong>{delayedServices>0&&<span>Lisaks {delayedServices} teenust või protsessi hilineb.</span>}</div><p className="outcome-conclusion">AI-toega kasvu ajal võetud kohustused jäid alles. Võimekus langes tipust {outageDrop} tööühiku võrra.{view.shortfall>1?` Organisatsioon suudab teha ${Math.round(view.capacity)}, kuid on kohustunud tegema ${Math.round(view.promised)} tööühikut.`:' Allesjäänud võimekus katab veel võetud kohustused.'}{view.capacity<100?' Töökorralduse ümberkujundamise tõttu jäädi ka alla AI-eelse baastaseme.':''}</p></>}
+        </section>}
         <button className="reset" onClick={()=>reset()} aria-label="Alusta uuesti">Alusta uuesti</button>
         </aside>
       </div>
