@@ -63,7 +63,8 @@ function App(){
   const simulationProgress=outage?outageProgress:growthProgress;
   const stepsRemaining=outage?Math.max(0,OUTAGE_STEPS-state.outageAge):Math.max(0,GROWTH_STEPS-Math.min(state.step,GROWTH_STEPS));
   const progressLabel=finished&&!outage?'Kasvufaas lõpetatud':running?`Paus · ${stepsRemaining} sammu jäänud`:state.step>0&&!finished?`Jätka · ${stepsRemaining} sammu jäänud`:state.crossSector?'Kasvata ühiskonda':'Kasvata organisatsiooni';
-  const outageText=state.outageLoss>=.99?'AI tugi kaob':`${Math.round(state.outageLoss*100)}% AI toest kaob`;
+  const aiAfterDisruption=Math.round(state.ai*(1-(outage?state.outageLoss:outageLoss)));
+  const outageText=state.outageLoss>=.99?`AI-võimendus langes ${state.ai}% tasemelt nulli`:`AI-võimendus langes ${state.ai}% tasemelt ${aiAfterDisruption}% tasemele`;
   const failureText=state.outageLoss>=.99?sector.failure:sector.failure.replaceAll('AI kaob','AI tugi väheneb').replaceAll('AI-ta','väiksema AI-toega');
   const balanceDelta=Math.round(view.capacity-view.promised);
   const balanceComparison=view.shortfall>1?{tone:'deficit',value:`−${Math.round(view.shortfall)}`,label:'puudu'}:balanceDelta>1?{tone:'surplus',value:`+${balanceDelta}`,label:'varu'}:{tone:'balanced',value:'0',label:'tasakaal'};
@@ -114,9 +115,10 @@ function App(){
         {state.step>0&&!(finished&&!outage)&&<div className={`run-status ${running?'is-running':'is-paused'}`} role="status">{finished?'Katkestuse mõju on nähtav':running?outage?'Katkestuse mõju levib…':'Vajuta „Paus“, kui soovid AI tuge vähendada.':outage?'Simulatsioon on pausil':'Simulatsioon on pausil. AI tuge saab nüüd vähendada.'}</div>}
         {!outage&&<div className={`outage-action ${canDisrupt?'is-ready':'is-locked'}`} aria-disabled={!canDisrupt}>
           <div className="control-phase-title outage-phase"><span>2</span><strong>Katkesta AI tugi</strong></div>
-          <label className="outage-slider-label" htmlFor="outage-loss"><span>AI-toe katkestuse ulatus</span><strong>{Math.round(outageLoss*100)}%</strong></label>
+          <label className="outage-slider-label" htmlFor="outage-loss"><span>Kui suur osa olemasolevast AI-toest kaob?</span><strong>{Math.round(outageLoss*100)}%</strong></label>
           <input id="outage-loss" className="outage-range" aria-label="AI-toe katkestuse ulatus" type="range" min="0" max="100" step="10" value={Math.round(outageLoss*100)} disabled={!canDisrupt} onChange={e=>setOutageLoss(Number(e.target.value)/100)} style={{'--range':`${outageLoss*100}%`}}/>
-          <div className="range-ends outage-ends"><span>AI tugi säilib</span><span>AI tugi kaob täielikult</span></div>
+          <div className="range-ends outage-ends"><span>AI tugi säilib</span><span>Kogu AI tugi kaob</span></div>
+          {state.step>0&&<div className="outage-preview" aria-live="polite"><span>AI-võimenduse tase pärast katkestust</span><div><b>{state.ai}%</b><i>→</i><strong>{aiAfterDisruption}%</strong></div><small>Valitud {state.ai}% AI-võimendusest kaob {Math.round(outageLoss*100)}%; alles jääb {aiAfterDisruption}%.</small></div>}
           {!canDisrupt&&<div className="outage-locked-note">{running?'Vajuta „Paus“, et AI tuge vähendada':'Käivita kasv ja peata simulatsioon'}</div>}
           {canDisrupt&&<div className="disruption-cue" role="status"><span aria-hidden="true">↓</span><div><strong>AI-toe vähendamine on nüüd võimalik</strong><small>Vali katkestuse ulatus ja vaata, kas lubatud ning kohustuseks võetud töömaht jääb täidetavaks.</small></div></div>}
           <button className="disrupt" ref={disruptRef} onClick={cutAI} disabled={!canDisrupt||outageLoss===0}>{outageLoss===1?'Katkesta AI tugi täielikult':outageLoss===0?'Vali AI-toe katkestuse ulatus':'Vähenda AI tuge'}</button>
