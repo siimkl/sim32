@@ -21,6 +21,8 @@ assert.ok(await page.locator('.simulation-footer .takeaway p').evaluate(element=
 assert.equal((await page.locator('.takeaway-stage small').innerText()).trim(),'ALUSTA SIIT');
 assert.equal((await page.locator('.takeaway-copy>strong').innerText()).trim(),'Käivita kasv');
 assert.equal((await page.locator('.footer-author strong').innerText()).trim(),'Siim Klais');
+assert.equal((await page.locator('.footer-method small').innerText()).trim(),'ARENDUSMEETOD');
+assert.equal((await page.locator('.footer-method span').innerText()).trim(),'Nõuetepõhine (spec-driven) agentne arendus (tehisaru juhitud programmeerimine, iteratiivne täiustamine ja funktsionaalne testimine).');
 assert.equal((await page.locator('.footer-tools small').innerText()).trim(),'TÖÖRIISTAD');
 assert.equal((await page.locator('.footer-tools span').innerText()).trim(),'VS Code, GPT-5.6 Sol Medium via Codex, GitHub');
 assert.equal((await page.locator('.footer-workload small').innerText()).trim(),'TÖÖMAHT');

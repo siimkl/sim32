@@ -174,6 +174,7 @@ function App(){
       <div className="footer-credit">
         <div className="footer-author"><span className="footer-monogram" aria-hidden="true">SK</span><div><small>Simulatsiooni autor</small><strong>Siim Klais</strong></div></div>
         <div className="footer-meta">
+          <div className="footer-method"><small>Arendusmeetod</small><span>Nõuetepõhine (spec-driven) agentne arendus (tehisaru juhitud programmeerimine, iteratiivne täiustamine ja funktsionaalne testimine).</span></div>
           <div className="footer-tools"><small>Tööriistad</small><span>VS Code, GPT-5.6 Sol Medium via Codex, GitHub</span></div>
           <div className="footer-workload"><small>Töömaht</small><span>Ligikaudu 100 prompti ja 500 000 tokenit</span></div>
         </div>
