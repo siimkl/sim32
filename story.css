@@ -404,8 +404,8 @@ main{height:auto;min-height:100dvh}
 @media(min-width:1600px){.control-column .controls-title{margin-top:-24px;padding-top:18px;padding-bottom:18px;font-size:25px}.control-column .step-counter{padding:8px 12px;font-size:14px}}
 @media(min-width:1001px) and (max-height:850px){.control-column .controls-title{margin:-13px -16px 11px;padding:11px 16px;font-size:19px}.control-column .step-counter{padding:6px 8px;font-size:11px}}
 
-/* Disruption is phase two: its complete control group stays visibly locked
-   until the ten growth steps are finished. */
+/* Disruption is phase two: its controls unlock when growth has started and
+   the user pauses the simulation. */
 .outage-action.is-locked{opacity:.56;filter:saturate(.25)}
 .outage-action.is-locked .control-phase-title.outage-phase{color:#66747a}
 .outage-action.is-locked .control-phase-title.outage-phase>span{background:#75858b}
@@ -458,3 +458,91 @@ main{height:auto;min-height:100dvh}
 @media(min-width:1001px) and (max-height:850px){.balance.has-shortfall{grid-template-columns:minmax(0,1fr) 86px minmax(0,1fr) minmax(230px,.85fr)}.balance-comparison{min-width:72px;padding:5px 6px}.balance-comparison strong{font-size:18px}.balance-comparison small{font-size:8px}}
 @media(max-width:1000px){.balance:not(.has-shortfall),.balance.has-shortfall{grid-template-columns:minmax(0,1fr) 78px minmax(0,1fr)}.balance-comparison{min-width:68px;padding:5px 6px}.balance-comparison strong{font-size:18px}.balance-comparison small{font-size:8px}}
 @media(max-width:600px){.balance:not(.has-shortfall),.balance.has-shortfall{grid-template-columns:minmax(0,1fr) 66px minmax(0,1fr)}.balance-comparison{min-width:58px;padding:5px 4px}.balance-comparison strong{font-size:17px}}
+
+/* Keep the live system and its interpretation as two distinct cards. The
+   controls remain aligned beside both, while the timeline follows the scene. */
+.main-layout{
+  grid-template-areas:
+    "simulation controls"
+    "insight controls";
+  grid-template-rows:auto auto;
+  row-gap:14px;
+}
+.simulation{grid-area:simulation}
+.control-column{grid-area:controls}
+.simulation-insight-card{
+  grid-area:insight;
+  min-width:0;
+  overflow:hidden;
+  border:1px solid #c8d7c1;
+  border-radius:12px;
+  background:#f8faf5;
+  box-shadow:0 4px 16px #4056290d;
+}
+.simulation-insight-card .scene-caption{
+  border-top:0;
+  border-bottom:1px solid #d1ddc9;
+  background:linear-gradient(100deg,#edf4e8,#f7f9f3);
+  padding:15px 20px;
+  font-size:16px;
+}
+.simulation-insight-card .simulation-footer{border-top:0}
+@media(min-width:1600px){
+  .main-layout{row-gap:18px}
+  .simulation-insight-card .scene-caption{padding:18px 24px;font-size:19px}
+}
+@media(max-width:1000px){
+  .main-layout{
+    grid-template-columns:1fr;
+    grid-template-areas:
+      "simulation"
+      "insight"
+      "controls";
+  }
+}
+@media(max-width:600px){
+  .simulation-insight-card .scene-caption{padding:13px 14px;font-size:15px}
+}
+
+/* Existing services do not merely survive the AI phase: their capacity is
+   expanded as well. A baseline marker keeps the original 60% visible. */
+.enhanced-service{display:inline-block;margin-left:5px;padding:2px 5px;border-radius:3px;background:#dcebd8;color:#3d6a39;font-size:9px;font-weight:800;line-height:1.2;letter-spacing:.5px;vertical-align:middle;white-space:nowrap}
+.service-progress.base-growth-progress{position:relative;height:5px;background:linear-gradient(90deg,#d9e8ed 0 60%,#e5eddf 60% 100%);overflow:visible}
+.service-progress.base-growth-progress:after{content:'';position:absolute;left:60%;top:-2px;bottom:-2px;width:2px;border-radius:2px;background:#74939e}
+.service.existing-service .base-growth-progress span{position:relative;z-index:1;background:linear-gradient(90deg,#5f91a3 0 60%,#67a45e 60% 100%);box-shadow:0 0 5px #57954f42}
+
+/* Plausible outage causes make the disruption control a scenario choice,
+   rather than an unexplained red button. */
+.outage-action.is-locked{opacity:1;filter:none}
+.outage-action.is-locked>:not(.disruption-reasons){opacity:.55}
+.disruption-reasons{margin-top:2px;padding:10px 11px;border:1px solid #d7c2b8;border-radius:8px;background:#f7eee9;color:#65483c}
+.disruption-reasons>strong{display:block;margin-bottom:7px;font-size:13px;color:#713d2a}
+.disruption-reasons ul{display:grid;gap:4px;margin:0;padding:0 0 0 17px}
+.disruption-reasons li{padding-left:2px;font-size:11px;line-height:1.3}
+.disruption-reasons li::marker{color:#b65d3b}
+
+/* Work-unit labels must remain readable when the simulation is projected. */
+.balance-metric small{font-size:18px;font-weight:600}
+.worker-number small{font-size:13px;font-weight:700}
+@media(min-width:1600px){
+  .enhanced-service{font-size:11px}
+  .disruption-reasons{padding:12px 13px}
+  .disruption-reasons>strong{font-size:15px}
+  .disruption-reasons li{font-size:13px}
+  .balance-metric small{font-size:21px}
+  .worker-number small{font-size:14px}
+}
+@media(min-width:1001px) and (max-height:850px){
+  .disruption-reasons{padding:7px 9px}
+  .disruption-reasons>strong{margin-bottom:4px;font-size:12px}
+  .disruption-reasons ul{grid-template-columns:1fr 1fr;gap:2px 12px}
+  .disruption-reasons li{font-size:10px}
+  .balance-metric small{font-size:16px}
+  .worker-number small{font-size:12px}
+}
+@media(max-width:600px){
+  .enhanced-service{font-size:8px;margin-left:4px;padding:2px 4px}
+  .disruption-reasons li{font-size:12px}
+  .balance-metric small{font-size:15px}
+  .worker-number small{font-size:10px}
+}

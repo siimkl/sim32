@@ -1,6 +1,6 @@
 import React,{useEffect,useLayoutEffect,useRef,useState} from 'react';
 import {createRoot} from 'react-dom/client';
-import {initialState,advance,disrupt,describe,OUTAGE_STEPS,TOTAL_STEPS} from './story-model.js';
+import {initialState,advance,disrupt,describe,GROWTH_STEPS,OUTAGE_STEPS,TOTAL_STEPS} from './story-model.js';
 import StoryScene from './StoryScene.jsx';
 import CapacityChart from './CapacityChart.jsx';
 import {SECTORS,getSector,sectorServices} from './sectors.js';
@@ -21,9 +21,9 @@ function App(){
   const sector=getSector(sectorId);
   const view=sectorServices(describe(state),sector),outage=state.outageAge!==null;
   const finished=outage?view.complete:state.step>0&&view.mature&&state.ai===ai;
-  const growthReady=finished&&!outage;
+  const canDisrupt=!outage&&state.step>0&&!running&&state.ai>0;
   useLayoutEffect(()=>{
-    if(!growthReady){setReadySignal(null);return;}
+    if(!canDisrupt){setReadySignal(null);return;}
     const updateSignal=()=>{
       const layout=layoutRef.current?.getBoundingClientRect(),control=controlRef.current?.getBoundingClientRect(),button=disruptRef.current?.getBoundingClientRect();
       if(!layout||!control||!button)return;
@@ -39,7 +39,7 @@ function App(){
     [layoutRef.current,controlRef.current,disruptRef.current].forEach(element=>element&&observer.observe(element));
     window.addEventListener('resize',updateSignal);
     return ()=>{observer.disconnect();window.removeEventListener('resize',updateSignal);};
-  },[growthReady,outageLoss,sectorId]);
+  },[canDisrupt,outageLoss,sectorId]);
   useEffect(()=>{
     if(!running||finished)return;
     const timer=setInterval(()=>setState(previous=>advance(previous,ai)),1000);
@@ -61,17 +61,17 @@ function App(){
   const growthProgress=growthTarget===0?100:Math.min(100,state.adaptation/growthTarget*100);
   const outageProgress=outage?Math.min(100,state.outageAge/OUTAGE_STEPS*100):0;
   const simulationProgress=outage?outageProgress:growthProgress;
-  const progressRemaining=Math.max(0,Math.ceil(100-simulationProgress));
-  const progressLabel=finished&&!outage?'Kasvufaas lõpetatud':running?`Paus · ${progressRemaining}% jäänud`:state.step>0&&!finished?`Jätka · ${progressRemaining}% jäänud`:state.crossSector?'Kasvata ühiskonda':'Kasvata organisatsiooni';
+  const stepsRemaining=outage?Math.max(0,OUTAGE_STEPS-state.outageAge):Math.max(0,GROWTH_STEPS-Math.min(state.step,GROWTH_STEPS));
+  const progressLabel=finished&&!outage?'Kasvufaas lõpetatud':running?`Paus · ${stepsRemaining} sammu jäänud`:state.step>0&&!finished?`Jätka · ${stepsRemaining} sammu jäänud`:state.crossSector?'Kasvata ühiskonda':'Kasvata organisatsiooni';
   const outageText=state.outageLoss>=.99?'AI tugi kaob':`${Math.round(state.outageLoss*100)}% AI toest kaob`;
   const failureText=state.outageLoss>=.99?sector.failure:sector.failure.replaceAll('AI kaob','AI tugi väheneb').replaceAll('AI-ta','väiksema AI-toega');
   const balanceDelta=Math.round(view.capacity-view.promised);
   const balanceComparison=view.shortfall>1?{tone:'deficit',value:`−${Math.round(view.shortfall)}`,label:'puudu'}:balanceDelta>1?{tone:'surplus',value:`+${balanceDelta}`,label:'varu'}:{tone:'balanced',value:'0',label:'tasakaal'};
   const message=outage?view.complete?failureText:state.outageAge<2?`${outageText}. ${sector.staff} ja ${sector.automation.toLocaleLowerCase('et')} kaotavad esimesena töövõimet.`:sector.waiting+' Töö kuhjub ja uued tegevused aeglustuvad või seiskuvad.':view.mature&&state.step>0?(sector.ready||`${sector.org} on kasvanud AI võimekuse ümber. Katkesta AI tugi: kas kõik lubadused on endiselt täidetavad?`):state.step>0?sector.growth:`Käivita kasv. Vaata, kuidas AI lisavõimekusest saavad uued kohustused. ${sector.waiting}`;
-  return <main className={`${running?'running':'paused'} ${growthReady?'growth-ready':''}`} data-step={state.step}>
-    <header className="hero-intro"><div className="header-copy"><div className="hero-top"><div className="simulation-label"><i/>Interaktiivne simulatsioon <span>AI-sõltuvuse kujunemine</span></div><div className="hero-question"><span>Põhiküsimus</span><p>{sectorQuestion}</p></div></div><div className="hero-main"><div className="hero-title"><h1><em>AI-võimestatud töötaja</em> ja organisatsiooni <strong className="continuity-focus">toimepidevus</strong></h1><div className="sector-context"><span className="sector-context-label">Valitud valdkond</span><div className="hero-sector-select-wrap"><select id="sector" className="hero-sector-select" aria-label="Valdkond" value={sectorId} onChange={e=>{changeSector(e.target.value);e.currentTarget.blur();}}>{SORTED_SECTORS.map(item=><option key={item.id} value={item.id}>{item.label}</option>)}</select><span className="hero-sector-action" aria-hidden="true">Muuda<svg className="hero-sector-chevron" viewBox="0 0 20 20"><path d="m5 7 5 5 5-5"/></svg></span></div><span className="sector-context-description">{sectorContext}</span></div></div></div></div></header>
+  return <main className={`${running?'running':'paused'} ${canDisrupt?'growth-ready':''}`} data-step={state.step}>
+    <header className="hero-intro"><div className="header-copy"><div className="hero-top"><div className="simulation-label"><i/>Interaktiivne simulatsioon <span>AI-sõltuvuse kujunemine</span></div><div className="hero-question"><span>Põhiküsimus</span><p>{sectorQuestion}</p></div></div><div className="hero-main"><div className="hero-title"><h1><em>AI-võimestatud töötaja</em> ja organisatsiooni <strong className="continuity-focus">toimepidevus</strong></h1><div className="sector-context"><span className="sector-context-label">Vali näidisasutus</span><div className="hero-sector-select-wrap"><select id="sector" className="hero-sector-select" aria-label="Näidisasutus" value={sectorId} onChange={e=>{changeSector(e.target.value);e.currentTarget.blur();}}>{SORTED_SECTORS.map(item=><option key={item.id} value={item.id}>{item.label}</option>)}</select><span className="hero-sector-action" aria-hidden="true">Muuda<svg className="hero-sector-chevron" viewBox="0 0 20 20"><path d="m5 7 5 5 5-5"/></svg></span></div><span className="sector-context-description">{sectorContext}</span></div></div></div></div></header>
     <section className="main-layout" ref={layoutRef}>
-      {growthReady&&readySignal&&<div className="growth-ready-signal" aria-hidden="true">
+      {canDisrupt&&readySignal&&<div className="growth-ready-signal" aria-hidden="true">
         <svg viewBox={`0 0 ${readySignal.width} ${readySignal.height}`} preserveAspectRatio="none">
           <defs><marker id="ready-arrow" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="8" markerHeight="8" orient="auto"><path d="M0 0 10 5 0 10Z"/></marker></defs>
           <path className="ready-signal-rail" d={readySignal.path}/>
@@ -100,10 +100,6 @@ function App(){
           {view.shortfall>1&&<div className="balance-note danger" role="alert" aria-live="polite"><small>Võimekuse puudujääk</small><div><strong>{Math.round(view.shortfall)}</strong><span>ühiku jagu töövõimet on puudu</span></div></div>}
         </div>
         <StoryScene state={state} view={view} sector={sector}/>
-        <div className="simulation-footer">
-          <CapacityChart history={history}/>
-          <div className={`takeaway ${outage?'warning':''}`} aria-live="polite"><span>{phase+1}</span><p>{message}</p></div>
-        </div>
       </div>
       <div className="control-column" ref={controlRef}>
         <aside>
@@ -115,20 +111,28 @@ function App(){
         <div className="range-ends"><span>AI tugi puudub</span><span>Maksimaalne võimendus</span></div>
         </>}
         {(!outage||!view.complete)&&<button className={`grow progress-button ${running?'is-running':'is-paused'}`} data-testid="progress-button" style={{'--progress':`${simulationProgress}%`}} disabled={finished} onClick={()=>setRunning(!running)}><span>{progressLabel}</span></button>}
-        {state.step>0&&!(finished&&!outage)&&<div className={`run-status ${running?'is-running':'is-paused'}`} role="status">{finished?'Katkestuse mõju on nähtav':running?outage?'Katkestus levib…':'Töövõime ja kohustused kasvavad…':'Simulatsioon on pausil'}</div>}
-        {!outage&&<div className={`outage-action ${growthReady?'is-ready':'is-locked'}`} aria-disabled={!growthReady}>
+        {state.step>0&&!(finished&&!outage)&&<div className={`run-status ${running?'is-running':'is-paused'}`} role="status">{finished?'Katkestuse mõju on nähtav':running?outage?'Katkestuse mõju levib…':'Vajuta „Paus“, kui soovid AI tuge vähendada.':outage?'Simulatsioon on pausil':'Simulatsioon on pausil. AI tuge saab nüüd vähendada.'}</div>}
+        {!outage&&<div className={`outage-action ${canDisrupt?'is-ready':'is-locked'}`} aria-disabled={!canDisrupt}>
           <div className="control-phase-title outage-phase"><span>2</span><strong>Katkesta AI tugi</strong></div>
           <label className="outage-slider-label" htmlFor="outage-loss"><span>AI-toe katkestuse ulatus</span><strong>{Math.round(outageLoss*100)}%</strong></label>
-          <input id="outage-loss" className="outage-range" aria-label="AI-toe katkestuse ulatus" type="range" min="0" max="100" step="10" value={Math.round(outageLoss*100)} disabled={running||!growthReady} onChange={e=>setOutageLoss(Number(e.target.value)/100)} style={{'--range':`${outageLoss*100}%`}}/>
+          <input id="outage-loss" className="outage-range" aria-label="AI-toe katkestuse ulatus" type="range" min="0" max="100" step="10" value={Math.round(outageLoss*100)} disabled={!canDisrupt} onChange={e=>setOutageLoss(Number(e.target.value)/100)} style={{'--range':`${outageLoss*100}%`}}/>
           <div className="range-ends outage-ends"><span>AI tugi säilib</span><span>AI tugi kaob täielikult</span></div>
-          {!growthReady&&<div className="outage-locked-note">Saadaval pärast kasvu lõppu</div>}
-          {growthReady&&<div className="disruption-cue" role="status"><span aria-hidden="true">↓</span><div><strong>Organisatsioon on AI-toega kohanenud</strong><small>Vähenda nüüd AI tuge ja vaata, kas lubatud töömaht jääb täidetavaks.</small></div></div>}
-          <button className="disrupt" ref={disruptRef} onClick={cutAI} disabled={!growthReady||state.ai===0||outageLoss===0}>{outageLoss===1?'Katkesta AI tugi täielikult':outageLoss===0?'Vali AI-toe katkestuse ulatus':`Vähenda AI tuge ${Math.round(outageLoss*100)}%`}</button>
+          {!canDisrupt&&<div className="outage-locked-note">{running?'Vajuta „Paus“, et AI tuge vähendada':'Käivita kasv ja peata simulatsioon'}</div>}
+          {canDisrupt&&<div className="disruption-cue" role="status"><span aria-hidden="true">↓</span><div><strong>AI-toe vähendamine on nüüd võimalik</strong><small>Vali katkestuse ulatus ja vaata, kas lubatud töömaht jääb täidetavaks.</small></div></div>}
+          <button className="disrupt" ref={disruptRef} onClick={cutAI} disabled={!canDisrupt||outageLoss===0}>{outageLoss===1?'Katkesta AI tugi täielikult':outageLoss===0?'Vali AI-toe katkestuse ulatus':'Vähenda AI tuge'}</button>
+          <div className="disruption-reasons"><strong>Miks võib AI tugi väheneda?</strong><ul><li>tehniline rike</li><li>küberrünnak</li><li>geopoliitiline konflikt või sanktsioonid</li><li>tarneahela häired</li><li>teenusepakkuja või tema päritoluriigi otsused</li><li>hübriid- või otsene sõjaline rünnak</li></ul></div>
         </div>}
         {outage&&<div className="outcome" aria-live="polite"><h2>Mis muutus?</h2><div><span>Enne AI-d</span><strong>100</strong></div><div><span>AI toel</span><strong>{Math.round(view.peak)}</strong></div><div className="after"><span>Pärast katkestust</span><strong>{Math.round(view.capacity)}</strong></div>{view.complete&&<p><b>{view.stopped} {sector.stoppedNoun} seiskus.</b> {state.outageLoss>=.99?`Senise töö jaoks jäi alles ${Math.round(view.manual)}% algsest võimekusest.`:`Alles jäi ${Math.round(view.capacity)} tööühikut, kuid lubatud ${Math.round(view.promised)} tööühikut enam täita ei suudeta.`}</p>}</div>}
         <button className="reset" onClick={()=>reset()} aria-label="Alusta uuesti">Alusta uuesti</button>
         </aside>
       </div>
+      <section className={`simulation-insight-card ${outage?'warning':''}`} aria-label="Simulatsiooni muutus ajas ja järeldus">
+        <div className="scene-caption">{outage?<><b>Lubadused ei kao koos AI-ga.</b> {sector.waiting}</>:state.adaptation>.1?<><b>{state.crossSector?'AI loob põhiteenuste peale uue ühise juhtimiskihi.':'Lisavõimekus muutub uueks töömahuks.'}</b> {sector.org} eeldab, et AI tugi jääb alles.</>:<><b>Alguses on võimekus ja lubatud töö tasakaalus.</b> {sector.org} täidab oma seniseid kohustusi.</>}</div>
+        <div className="simulation-footer">
+          <CapacityChart history={history}/>
+          <div className={`takeaway ${outage?'warning':''}`} aria-live="polite"><span>{phase+1}</span><p>{message}</p></div>
+        </div>
+      </section>
     </section>
   </main>;
 }
