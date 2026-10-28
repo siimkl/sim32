@@ -167,7 +167,7 @@ function App(){
     </section>
     <footer className="site-footer">
       <strong>Autor: Siim Klais</strong>
-      <span>Tegemist on õppeotstarbelise simulatsiooniga, mis kasutab lihtsustatud ja mitteteaduslikke modelleerimisvõtteid. Tulemusi tuleb hinnata kriitiliselt; need ei ole prognoos ega teaduslik analüüs.</span>
+      <span>Tegemist on õppeotstarbelise simulatsiooniga, mis kasutab lihtsustatud ja mitteteaduslikke modelleerimisvõtteid.</span>
     </footer>
   </main>;
 }
