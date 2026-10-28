@@ -30,6 +30,10 @@ assert.equal((await page.locator('.footer-workload span').innerText()).trim(),'L
 const toolsBox=await page.locator('.footer-tools').boundingBox();
 const workloadBox=await page.locator('.footer-workload').boundingBox();
 assert.ok(workloadBox.y>=toolsBox.y+toolsBox.height-1,'Töömaht must be below Tööriistad');
+const authorBox=await page.locator('.footer-author').boundingBox();
+const methodBox=await page.locator('.footer-method').boundingBox();
+const noteBox=await page.locator('.footer-note').boundingBox();
+assert.ok(Math.abs(authorBox.y-methodBox.y)<=2&&Math.abs(noteBox.y-methodBox.y)<=2,'author, development metadata and methodology note must align to the top');
 assert.equal((await page.locator('.footer-author small').innerText()).trim(),'SIMULATSIOONI AUTOR');
 assert.equal((await page.locator('.footer-note>small').innerText()).trim(),'METOODILINE MÄRKUS');
 const disclaimer=(await page.locator('.footer-note>span').innerText()).toLowerCase();
