@@ -21,7 +21,8 @@ const sceneIsSeparated=async()=>{
 };
 assert.equal(await capacity(),100);
 assert.equal((await page.locator('.step-heading>strong').first().innerText()).trim(),'Baastase');
-assert.ok((await page.locator('.scene-caption').innerText()).includes('Alguses on võimekus ja lubatud töö tasakaalus.'));
+assert.ok((await page.locator('.scene-caption').innerText()).includes('Alguses on võimekus ning lubatud ja kohustuseks võetud töö tasakaalus.'));
+assert.ok((await page.locator('.balance-metric.promises').innerText()).includes('Oleme lubanud ja kohustunud tegema'));
 assert.ok((await page.getByTestId('balance-comparison').innerText()).includes('TASAKAAL'));
 assert.equal(await page.locator('.service.active').count(),2);
 assert.equal(await page.locator('.dependency-rail').count(),9);

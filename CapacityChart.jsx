@@ -27,14 +27,14 @@ export default function CapacityChart({history}){
   const outageCapacityPath=outageIndex>=0?pointPath(capacityPoints.slice(Math.max(0,outageIndex-1))):'';
   const promisedPath=pointPath(promisedPoints);
   const capacityArea=capacityPoints.length>1?`${capacityPath} L${capacityPoints.at(-1).x} ${HEIGHT-BOTTOM} L${capacityPoints[0].x} ${HEIGHT-BOTTOM} Z`:'';
-  return <section className={`trend-chart ${outageIndex>=0?'has-outage':''}`} data-testid="capacity-chart" aria-label="Töövõime ja lubatud töö muutus ajas">
+  return <section className={`trend-chart ${outageIndex>=0?'has-outage':''}`} data-testid="capacity-chart" aria-label="Töövõime ning lubaduste ja kohustuste mahu muutus ajas">
     <div className="trend-heading">
-      <div><small>Muutus ajas</small><strong>Võimekus ja lubatud töö</strong></div>
-      <div className="trend-legend" aria-hidden="true"><span className="capacity-key">Suudame teha <b>{Math.round(latest.capacity)}</b></span><span className="promise-key">Oleme lubanud <b>{Math.round(latest.promised)}</b></span></div>
+      <div><small>Muutus ajas</small><strong>Võimekus, lubadused ja kohustused</strong></div>
+      <div className="trend-legend" aria-hidden="true"><span className="capacity-key">Suudame teha <b>{Math.round(latest.capacity)}</b></span><span className="promise-key">Lubasime ja kohustusime <b>{Math.round(latest.promised)}</b></span></div>
     </div>
     <svg viewBox={`0 0 ${WIDTH} ${HEIGHT}`} role="img" aria-labelledby="capacity-chart-title capacity-chart-description" preserveAspectRatio="none">
-      <title id="capacity-chart-title">Organisatsiooni töövõime ja lubatud töö ajas</title>
-      <desc id="capacity-chart-description">Töövõime kasvab AI toel ning langeb AI-toe katkestuse järel. Lubatud töömaht jääb katkestuse järel alles.</desc>
+      <title id="capacity-chart-title">Organisatsiooni töövõime, lubadused ja kohustused ajas</title>
+      <desc id="capacity-chart-description">Töövõime kasvab AI toel ning langeb AI-toe katkestuse järel. Lubatud ja kohustuseks võetud töömaht jääb katkestuse järel alles.</desc>
       <defs>
         <linearGradient id="capacity-area" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stopColor="#4f8c68" stopOpacity=".22"/><stop offset="1" stopColor="#4f8c68" stopOpacity="0"/></linearGradient>
       </defs>
