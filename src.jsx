@@ -71,11 +71,12 @@ function App(){
   const balanceComparison=view.shortfall>1?{tone:'deficit',value:`−${Math.round(view.shortfall)}`,label:'puudu'}:balanceDelta>1?{tone:'surplus',value:`+${balanceDelta}`,label:'varu'}:{tone:'balanced',value:'0',label:'tasakaal'};
   const peakGain=Math.round(view.peak-100),outageDrop=Math.round(view.peak-view.capacity),baselineDelta=Math.round(view.capacity-100);
   const delayedServices=view.services.filter(service=>service.active&&service.status==='delayed').length;
-  const message=outage?view.complete?failureText:state.outageAge<2?`${sector.staff} ja ${sector.automation.toLocaleLowerCase('et')} kaotavad esimesena töövõimet.`:sector.waiting+' Töö kuhjub ja uued tegevused aeglustuvad või seiskuvad.':view.mature&&state.step>0?(sector.ready||`${sector.org} on kasvanud AI võimekuse ümber. Katkesta AI tugi: kas kõik lubadused ja võetud kohustused on endiselt täidetavad?`):state.step>0?sector.growth:`Käivita kasv. Vaata, kuidas AI lisavõimekusest saavad uued kohustused. ${sector.waiting}`;
+  const isGrowthReady=!outage&&view.mature&&state.step>0;
+  const message=outage?view.complete?failureText:state.outageAge<2?`${sector.staff} ja ${sector.automation.toLocaleLowerCase('et')} kaotavad esimesena töövõimet.`:sector.waiting+' Töö kuhjub ja uued tegevused aeglustuvad või seiskuvad.':isGrowthReady?(sector.ready||`${sector.org} on kasvatanud töömahtu eeldusel, et AI tugi jääb alles. Uued lubadused ja võetud kohustused sõltuvad nüüd sellest võimekusest.`):state.step>0?sector.growth:`Käivita kasv. Vaata, kuidas AI lisavõimekusest saavad uued kohustused. ${sector.waiting}`;
   const takeawayCopy=!outage&&state.step===0
     ?{eyebrow:'Alusta siit',title:'Käivita kasv',body:`Vaata, kuidas AI lisavõimekusest saavad uued kohustused. ${sector.waiting}`}
-    :!outage&&view.mature
-      ?{eyebrow:'Järgmine samm',title:'Vähenda AI tuge',body:message}
+    :isGrowthReady
+      ?{eyebrow:'Valmis testiks',title:'Pane toimepidevus proovile',body:message}
       :!outage
         ?{eyebrow:'Jälgi muutust',title:'Võimekus kasvatab kohustusi',body:message}
         :view.complete
@@ -160,9 +161,9 @@ function App(){
         <div className="scene-caption">{outage?<><b>Lubadused ja võetud kohustused ei kao koos AI-ga.</b> {sector.waiting}</>:state.adaptation>.1?<><b>{state.crossSector?'AI loob põhiteenuste peale uue ühise juhtimiskihi.':'Lisavõimekus muutub uueks töömahuks.'}</b> {sector.org} eeldab, et AI tugi jääb alles.</>:<><b>Alguses on võimekus ning lubatud ja kohustuseks võetud töö tasakaalus.</b> {sector.org} täidab oma seniseid kohustusi.</>}</div>
         <div className="simulation-footer">
           <CapacityChart history={history}/>
-          <div className={`takeaway ${outage?'warning':''}`} aria-live="polite">
+          <div className={`takeaway ${outage?'warning':''} ${isGrowthReady?'ready-to-test':''}`} aria-live="polite">
             <div className="takeaway-stage"><span>{phase+1}</span><small>{takeawayCopy.eyebrow}</small></div>
-            <div className={`takeaway-copy ${outage&&view.complete?'is-conclusion':''}`}><strong>{takeawayCopy.title}</strong><p>{takeawayCopy.body}</p></div>
+            <div className={`takeaway-copy ${outage&&view.complete?'is-conclusion':''}`}><strong>{takeawayCopy.title}</strong><p>{takeawayCopy.body}</p>{isGrowthReady&&<div className="takeaway-next-action"><span>Järgmine tegevus</span><b>Vähenda juhtpaneelil AI tuge</b><small>Vaata, kas kohustuste täitmiseks jätkub töövõimet.</small></div>}</div>
           </div>
         </div>
       </section>

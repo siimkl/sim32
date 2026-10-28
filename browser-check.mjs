@@ -139,6 +139,10 @@ await page.locator('.growth-action.is-complete').evaluate(element=>element.getAn
 const completeGrowthOpacity=await page.locator('.growth-action.is-complete').evaluate(element=>parseFloat(getComputedStyle(element).opacity));
 assert.ok(completeGrowthOpacity<=.6,`completed growth controls must visibly recede (opacity ${completeGrowthOpacity})`);
 assert.equal((await page.locator('.progress-button').innerText()).trim(),'Kasvufaas lõpetatud');
+assert.equal((await page.locator('.takeaway-copy>strong').innerText()).trim(),'Pane toimepidevus proovile');
+assert.ok((await page.locator('.takeaway-copy>p').innerText()).includes('AI tugi jääb alles'));
+assert.equal((await page.locator('.takeaway-next-action>b').innerText()).trim(),'Vähenda juhtpaneelil AI tuge');
+assert.ok((await page.locator('.takeaway-next-action>small').innerText()).includes('kohustuste täitmiseks'));
 assert.ok((await page.locator('.disruption-cue').innerText()).includes('AI-toe vähendamine on nüüd võimalik'));
 assert.equal(await page.getByLabel('AI-toe katkestuse ulatus').isDisabled(),false);
 await page.getByLabel('AI-toe katkestuse ulatus').fill('100');
