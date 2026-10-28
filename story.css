@@ -507,6 +507,9 @@ main{height:auto;min-height:100dvh}
 /* Existing services do not merely survive the AI phase: their capacity is
    expanded as well. A baseline marker keeps the original 60% visible. */
 .enhanced-service{display:inline-block;margin-left:5px;padding:2px 5px;border-radius:3px;background:#dcebd8;color:#3d6a39;font-size:9px;font-weight:800;line-height:1.2;letter-spacing:.5px;vertical-align:middle;white-space:nowrap}
+.enhanced-service-group{display:inline-flex;align-items:center;gap:3px;margin-left:4px;vertical-align:middle}
+.enhanced-service-group>i{width:14px;height:14px;display:grid;place-items:center;flex:0 0 14px;border-radius:50%;background:#6d9165;color:#fff;font:800 10px/1 'DM Sans',sans-serif}
+.enhanced-service-group .enhanced-service{margin-left:0}
 .service-progress.base-growth-progress{position:relative;height:5px;background:linear-gradient(90deg,#d9e8ed 0 60%,#e5eddf 60% 100%);overflow:visible}
 .service-progress.base-growth-progress:after{content:'';position:absolute;left:60%;top:-2px;bottom:-2px;width:2px;border-radius:2px;background:#74939e}
 .service.existing-service .base-growth-progress span{position:relative;z-index:1;background:linear-gradient(90deg,#5f91a3 0 60%,#67a45e 60% 100%);box-shadow:0 0 5px #57954f42}
@@ -547,6 +550,8 @@ main{height:auto;min-height:100dvh}
 }
 @media(max-width:600px){
   .enhanced-service{font-size:8px;margin-left:4px;padding:2px 4px}
+  .enhanced-service-group{gap:2px;margin-left:3px}
+  .enhanced-service-group>i{width:12px;height:12px;flex-basis:12px;font-size:8px}
   .disruption-reasons li{grid-template-columns:86px minmax(0,1fr)}
   .disruption-reasons li>span{font-size:8px}
   .disruption-reasons li>b{font-size:12px}
