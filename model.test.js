@@ -50,11 +50,14 @@ test('all sectors provide complete names, promises and failure descriptions',()=
     view.services.forEach(service=>['name','promise','delayed','stopped'].forEach(key=>assert.ok(service[key]?.length>0)));
   }
 });
-test('doctoral researcher focus covers expertise, control and digital sovereignty',()=>{
+test('doctoral researcher focus covers the actual research, teaching and collaboration workload',()=>{
   const focus=SECTORS.find(sector=>sector.id==='uti-doctoral-researcher');
   assert.ok(focus.label.includes('Nooremteadur'));
   assert.ok(focus.subtitle.includes('ekspertiis')&&focus.subtitle.includes('süsteemide kontroll'));
-  assert.ok(focus.services.some(service=>service.name.includes('Digitaalse suveräänsuse')));
+  for(const activity of ['teadusartiklid','ainearendus','empiiriline analüüs','Konverentsid','Digitaalse suveräänsuse']){
+    assert.ok(focus.services.some(service=>service.name.includes(activity)),`missing doctoral activity: ${activity}`);
+  }
+  assert.ok(focus.failure.includes('artiklite')&&focus.failure.includes('õppetöö')&&focus.failure.includes('konverentsiettekannete'));
 });
 test('cross-sector failure advances one supplier layer per step',()=>{
   let state=initialState(true);
