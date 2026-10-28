@@ -38,6 +38,7 @@ for(const sector of SECTORS){
   await page.clock.runFor(12000);
   assert.equal(await page.locator('.service.active').count(),sector.services.length);
   assert.equal(await page.locator('.enhanced-service').count(),2);
+  assert.ok((await page.locator('.enhanced-service').allInnerTexts()).every(text=>text==='AI TOEL EDASI ARENDATUD'));
   assert.equal(await page.locator('.base-growth-progress span').first().evaluate(element=>parseFloat(element.style.width)),100);
   assert.ok((await page.locator('.added-service .service-state').first().innerText()).includes('Uus võimekus'));
   assert.ok((await page.locator('.added-service .service-state').first().innerText()).includes('uus töö'));
