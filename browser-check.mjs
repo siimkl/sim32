@@ -10,6 +10,13 @@ assert.ok(await page.locator('.hero-question>p').evaluate(element=>element.scrol
 const simulationLabelBox=await page.locator('.simulation-label').boundingBox();
 const questionBox=await page.locator('.hero-question').boundingBox();
 assert.ok(simulationLabelBox.x+simulationLabelBox.width<=questionBox.x+1,'the main question must not overlap the simulation label');
+const questionFit=await page.locator('.hero-question').evaluate(element=>{
+  const card=element.getBoundingClientRect();
+  const badge=element.querySelector(':scope>span').getBoundingClientRect();
+  const style=getComputedStyle(element);
+  return badge.left-card.left-parseFloat(style.paddingLeft);
+});
+assert.ok(Math.abs(questionFit)<=1,'the main-question card must hug its content instead of filling spare header space');
 assert.ok(await page.locator('.simulation-footer .takeaway p').evaluate(element=>parseFloat(getComputedStyle(element).fontSize)>=18),'the core learning point must be prominent');
 assert.equal((await page.locator('.site-footer strong').innerText()).trim(),'Autor: Siim Klais');
 const disclaimer=(await page.locator('.site-footer span').innerText()).toLowerCase();

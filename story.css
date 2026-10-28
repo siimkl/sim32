@@ -652,7 +652,7 @@ main{height:auto;min-height:100dvh}
 /* Keep the central question readable as a single, non-overlapping line on
    desktop while allowing it to wrap naturally on narrower layouts. */
 @media(min-width:1200px){
-  .hero-question{flex:1 1 auto;width:auto;max-width:none;min-width:0}
+  .hero-question{flex:0 1 auto;width:fit-content;max-width:none;min-width:0}
   .hero-question>p{max-width:none;white-space:nowrap;font-size:clamp(12.5px,1.05vw,15px)}
 }
 @media(min-width:1600px){
