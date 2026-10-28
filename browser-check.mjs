@@ -23,6 +23,11 @@ assert.equal((await page.locator('.takeaway-copy>strong').innerText()).trim(),'K
 assert.equal((await page.locator('.footer-author strong').innerText()).trim(),'Siim Klais');
 assert.equal((await page.locator('.footer-tools small').innerText()).trim(),'TÖÖRIISTAD');
 assert.equal((await page.locator('.footer-tools span').innerText()).trim(),'VS Code, GPT-5.6 Sol Medium via Codex, GitHub');
+assert.equal((await page.locator('.footer-workload small').innerText()).trim(),'TÖÖMAHT');
+assert.equal((await page.locator('.footer-workload span').innerText()).trim(),'Ligikaudu 100 prompti ja 500 000 tokenit');
+const toolsBox=await page.locator('.footer-tools').boundingBox();
+const workloadBox=await page.locator('.footer-workload').boundingBox();
+assert.ok(workloadBox.y>=toolsBox.y+toolsBox.height-1,'Töömaht must be below Tööriistad');
 assert.equal((await page.locator('.footer-author small').innerText()).trim(),'SIMULATSIOONI AUTOR');
 assert.equal((await page.locator('.footer-note>small').innerText()).trim(),'METOODILINE MÄRKUS');
 const disclaimer=(await page.locator('.footer-note>span').innerText()).toLowerCase();

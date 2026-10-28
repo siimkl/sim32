@@ -706,9 +706,10 @@ main{height:auto;min-height:100dvh}
 .footer-author>div{display:grid;gap:1px}
 .footer-author small{color:#6c7d68;font-size:8px;font-weight:900;letter-spacing:.8px;text-transform:uppercase;white-space:nowrap}
 .footer-author strong{color:#294b33;font-size:14px;line-height:1.15;white-space:nowrap}
-.footer-tools{display:grid;min-width:0;gap:2px}
-.footer-tools small{color:#6c7d68;font-size:8px;font-weight:900;letter-spacing:.8px;text-transform:uppercase}
-.footer-tools span{color:#3f5746;font-size:11px;font-weight:600;white-space:nowrap}
+.footer-meta{display:grid;min-width:0;gap:5px}
+.footer-tools,.footer-workload{display:grid;min-width:0;gap:2px}
+.footer-tools small,.footer-workload small{color:#6c7d68;font-size:8px;font-weight:900;letter-spacing:.8px;text-transform:uppercase}
+.footer-tools span,.footer-workload span{color:#3f5746;font-size:11px;font-weight:600;white-space:nowrap}
 .footer-note{display:flex;align-items:center;justify-content:flex-end;min-width:0;gap:10px;padding:7px 10px;border:1px solid #d5dfd2;border-radius:8px;background:#ffffff8c}
 .footer-note>small{flex:0 0 auto;padding:3px 6px;border-radius:4px;background:#dce9d9;color:#426044;font-size:8px;font-weight:900;letter-spacing:.65px;text-transform:uppercase;white-space:nowrap}
 .footer-note>span{color:#586956;text-align:right}
@@ -716,15 +717,15 @@ main{height:auto;min-height:100dvh}
 @media(min-width:1600px){
   .site-footer{padding:12px 15px;font-size:14px}
   .footer-monogram{width:38px;height:38px;font-size:13px}
-  .footer-author small,.footer-tools small,.footer-note>small{font-size:9px}
+  .footer-author small,.footer-tools small,.footer-workload small,.footer-note>small{font-size:9px}
   .footer-author strong{font-size:16px}
-  .footer-tools span{font-size:13px}
+  .footer-tools span,.footer-workload span{font-size:13px}
 }
 @media(max-width:1000px){
   .site-footer{align-items:stretch;flex-direction:column;gap:9px;padding:11px}
   .footer-credit{align-items:flex-start;flex-direction:column;gap:8px;padding:0 0 9px;border-bottom:1px solid #c9d7c7}
   .footer-author{padding:0;border-right:0}
-  .footer-tools span{white-space:normal}
+  .footer-tools span,.footer-workload span{white-space:normal}
   .footer-note{align-items:flex-start;flex-direction:column;gap:6px}
   .footer-note>span{text-align:left}
 }
