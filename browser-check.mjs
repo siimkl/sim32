@@ -6,6 +6,7 @@ const errors=[];page.on('pageerror',e=>errors.push(e.message));
 await page.clock.install({time:new Date('2026-10-27T10:00:00Z')});
 await page.clock.pauseAt(new Date('2026-10-27T10:00:01Z'));
 await page.goto('http://127.0.0.1:5332');
+assert.ok((await page.locator('.hero-question').innerText()).replace(/\s+/g,' ').includes('Mis juhtub, kui AI kaob, kuid uute teenustega seotud ootused, kohustused, tähtajad ja sõltuvused jäävad?'));
 assert.equal(await page.locator('.simulation .simulation-footer').count(),0);
 assert.equal(await page.locator('.simulation-insight-card > .simulation-footer').count(),1);
 assert.equal(await page.locator('.simulation-insight-card > .scene-caption').count(),1);

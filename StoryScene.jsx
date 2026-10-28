@@ -1,6 +1,6 @@
 import React from 'react';
 
-function WorkerIcon({robot=false}){return <svg viewBox="0 0 80 80" aria-hidden="true">{robot?<><path d="M40 9V19M15 35H9V52H15M65 35H71V52H65"/><rect x="17" y="20" width="46" height="42" rx="10"/><circle cx="30" cy="37" r="4"/><circle cx="50" cy="37" r="4"/><path d="M29 50H51M28 69H52"/></>:<><circle cx="40" cy="21" r="11"/><path d="M22 54V46Q22 35 40 35Q58 35 58 46V54M29 50V72M51 50V72M20 43L12 59M60 43L68 59"/></>}</svg>}
+function WorkerIcon({robot=false}){return <svg viewBox="0 0 80 80" aria-hidden="true">{robot?<><path d="M40 9V19M15 35H9V52H15M65 35H71V52H65"/><rect x="17" y="20" width="46" height="42" rx="10"/><circle cx="30" cy="37" r="4"/><circle cx="50" cy="37" r="4"/><path d="M29 50H51M28 69H52"/></>:<><circle cx="40" cy="18" r="9"/><rect x="28" y="31" width="24" height="31" rx="9"/><path d="M29 38L20 46L14 59M51 38L60 46L66 59M34 59L32 73M46 59L48 73"/></>}</svg>}
 
 function DependencyPath({d,state='active',arrow=true}){
   const marker=state==='cut'?'url(#dependency-arrow-cut)':state==='future'?'url(#dependency-arrow-future)':'url(#dependency-arrow-active)';
