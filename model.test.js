@@ -61,6 +61,14 @@ test('doctoral researcher focus covers the actual research, teaching and collabo
   }
   assert.ok(focus.failure.includes('artiklite')&&focus.failure.includes('õppetöö')&&focus.failure.includes('konverentsiettekannete'));
 });
+test('social sciences institute focus reflects its curricula, research clusters and external role',()=>{
+  const focus=SECTORS.find(sector=>sector.id==='tartu-social-sciences');
+  for(const cluster of ['ajakirjanduse ja kommunikatsiooni','sotsioloogia ja sotsiaalse heaolu','infoteaduste'])assert.ok(focus.subtitle.includes(cluster));
+  for(const activity of ['Kümne õppekava','Kolme teemaklastri','Isikustatud õpi-','Teemaklastreid ühendav','ekspertiis ja partneritugi']){
+    assert.ok(focus.services.some(service=>service.name.includes(activity)),`missing institute activity: ${activity}`);
+  }
+  assert.ok(focus.waiting.includes('Õppijad')&&focus.waiting.includes('uurimisrühmad')&&focus.waiting.includes('meedia'));
+});
 test('cross-sector failure advances one supplier layer per step',()=>{
   let state=initialState(true);
   for(let i=0;i<GROWTH_STEPS;i++)state=advance(state,100);
