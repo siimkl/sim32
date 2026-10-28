@@ -153,6 +153,10 @@ function App(){
         </div>
       </section>
     </section>
+    <footer className="site-footer">
+      <strong>Autor: Siim Klais</strong>
+      <span>Tegemist on õppeotstarbelise simulatsiooniga, mis kasutab lihtsustatud ja mitteteaduslikke modelleerimisvõtteid. Tulemusi tuleb hinnata kriitiliselt; need ei ole prognoos ega teaduslik analüüs.</span>
+    </footer>
   </main>;
 }
 createRoot(document.getElementById('root')).render(<App/>);

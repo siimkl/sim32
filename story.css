@@ -648,3 +648,45 @@ main{height:auto;min-height:100dvh}
   .outcome-path span{font-size:10px}
   .outcome-path small{font-size:9px}
 }
+
+/* Keep the central question readable as a single, non-overlapping line on
+   desktop while allowing it to wrap naturally on narrower layouts. */
+@media(min-width:1200px){
+  .hero-question{flex:1 1 auto;width:auto;max-width:none;min-width:0}
+  .hero-question>p{max-width:none;white-space:nowrap;font-size:clamp(12.5px,1.05vw,15px)}
+}
+@media(min-width:1600px){
+  .hero-question>p{max-width:none;font-size:16px}
+}
+
+/* The conclusion is the learning point of the simulation, not a footnote. */
+.simulation-footer .takeaway p{font-size:18px;font-weight:650;line-height:1.42}
+.simulation-footer .takeaway>span{font-size:30px}
+@media(min-width:1600px){
+  .simulation-footer .takeaway p{font-size:21px}
+  .simulation-footer .takeaway>span{font-size:34px}
+}
+@media(min-width:1001px) and (max-height:850px){
+  .simulation-footer .takeaway p{font-size:18px}
+  .simulation-footer .takeaway>span{font-size:25px}
+}
+@media(max-width:600px){
+  .simulation-footer .takeaway p{font-size:17px}
+}
+
+/* The possible causes belong to the disruption action. They become fully
+   active only when pausing makes the action available. */
+.outage-action.is-locked>.disruption-reasons{opacity:.45;filter:grayscale(.55);pointer-events:none}
+.outage-action.is-ready>.disruption-reasons{opacity:1;filter:none}
+
+.site-footer{display:flex;align-items:flex-start;justify-content:space-between;gap:24px;margin-top:12px;padding:12px 15px;border:1px solid #cbd8c8;border-radius:10px;background:#f3f7f0;color:#53634e;font-size:12px;line-height:1.45}
+.site-footer strong{flex:0 0 auto;color:#2f4934;font-size:13px;white-space:nowrap}
+.site-footer span{max-width:940px;text-align:right}
+@media(min-width:1600px){
+  .site-footer{padding:14px 18px;font-size:14px}
+  .site-footer strong{font-size:15px}
+}
+@media(max-width:800px){
+  .site-footer{align-items:flex-start;flex-direction:column;gap:5px}
+  .site-footer span{text-align:left}
+}
