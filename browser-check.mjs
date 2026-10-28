@@ -73,6 +73,8 @@ assert.equal(await page.locator('.service.active').count(),2);
 await page.getByRole('button',{name:'Paus'}).click();
 assert.equal(await page.getByLabel('AI-toe katkestuse ulatus').isDisabled(),false);
 assert.equal(await page.getByRole('button',{name:'Vähenda AI tuge'}).isDisabled(),false);
+assert.ok((await page.getByRole('button',{name:'Vähenda AI tuge'}).innerText()).includes('Mõju levib 10 sammu'));
+assert.ok(!(await page.getByRole('button',{name:'Vähenda AI tuge'}).innerText()).includes('%'));
 assert.ok((await page.locator('.run-status').innerText()).includes('AI tuge saab nüüd vähendada'));
 assert.ok((await page.locator('.outage-preview').innerText()).replace(/\s+/g,' ').includes('100% → 50%'));
 await page.screenshot({path:'story-paused.png'});
