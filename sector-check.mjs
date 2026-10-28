@@ -63,7 +63,7 @@ await page.screenshot({path:'sector-cross-desktop.png'});
 await page.setViewportSize({width:1920,height:1080});await page.screenshot({path:'sector-cross-projector.png'});
 await page.setViewportSize({width:390,height:844});await page.screenshot({path:'sector-cross-mobile.png',fullPage:true});
 assert.ok(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth));
-await page.getByRole('button',{name:'Alusta uuesti'}).click();
+await page.getByRole('button',{name:'Käivita simulatsioon uuesti'}).click();
 await page.getByRole('button',{name:'Kasvata ühiskonda'}).click();
 await page.clock.runFor(3000);
 await page.getByLabel('Näidisasutus').selectOption('it');

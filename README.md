@@ -20,7 +20,7 @@ Aadress: http://127.0.0.1:5332. `npm run build` koostab kausta `dist`.
 1. Vali AI võimendus ja vajuta „Kasvata organisatsiooni”. Täielik läbimäng kestab 20 sammu: 10 kasvusammu ja 10 katkestuse leviku sammu. Üks samm kestab ühe sekundi ning simulatsiooni saab peatada ja jätkata.
 2. Vaata, kuidas lisanduvad ööpäevaringne teenindus, personaalsed pakkumised ja kiirteenindus. Organisatsioon peatub automaatselt, kui on valitud AI tasemega kohanenud.
 3. Vajuta „Katkesta AI tugi”. Töövõime langeb esimesena; järgmistel sammudel jõuab mõju teenusteni. Lubatud töömaht ei vähene.
-4. Soovi korral vajuta „Alusta uuesti” ja katseta teist AI taset või valdkonda.
+4. Soovi korral vajuta „Käivita simulatsioon uuesti” ja katseta teist AI taset või valdkonda.
 
 ## Valdkonnad
 

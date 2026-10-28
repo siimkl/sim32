@@ -142,7 +142,7 @@ function App(){
           </div>
           {view.complete&&<><div className="outcome-service-impact"><strong>{view.stopped} {sector.stoppedNoun} seiskus</strong>{delayedServices>0&&<span>Lisaks {delayedServices} teenust või protsessi hilineb.</span>}</div><p className="outcome-conclusion">AI-toega kasvu ajal võetud kohustused jäid alles. Võimekus langes tipust {outageDrop} tööühiku võrra.{view.shortfall>1?` Organisatsioon suudab teha ${Math.round(view.capacity)}, kuid on kohustunud tegema ${Math.round(view.promised)} tööühikut.`:' Allesjäänud võimekus katab veel võetud kohustused.'}{view.capacity<100?' Töökorralduse ümberkujundamise tõttu jäädi ka alla AI-eelse baastaseme.':''}</p></>}
         </section>}
-        <button className="reset" onClick={()=>reset()} aria-label="Alusta uuesti">Alusta uuesti</button>
+        <button className="reset" onClick={()=>reset()} aria-label="Käivita simulatsioon uuesti">Käivita simulatsioon uuesti</button>
         </aside>
       </div>
       <section className={`simulation-insight-card ${outage?'warning':''}`} aria-label="Simulatsiooni muutus ajas ja järeldus">
