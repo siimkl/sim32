@@ -13,7 +13,7 @@ function pointPath(points){
   return points.map((point,index)=>`${index?'L':'M'}${point.x.toFixed(1)} ${point.y.toFixed(1)}`).join(' ');
 }
 
-export default function CapacityChart({history}){
+export default function CapacityChart({history,individual=false}){
   const usableWidth=WIDTH-LEFT-RIGHT;
   const usableHeight=HEIGHT-TOP-BOTTOM;
   const x=index=>LEFT+(history.length===1?0:index/(history.length-1)*usableWidth);
@@ -27,13 +27,15 @@ export default function CapacityChart({history}){
   const outageCapacityPath=outageIndex>=0?pointPath(capacityPoints.slice(Math.max(0,outageIndex-1))):'';
   const promisedPath=pointPath(promisedPoints);
   const capacityArea=capacityPoints.length>1?`${capacityPath} L${capacityPoints.at(-1).x} ${HEIGHT-BOTTOM} L${capacityPoints[0].x} ${HEIGHT-BOTTOM} Z`:'';
-  return <section className={`trend-chart ${outageIndex>=0?'has-outage':''}`} data-testid="capacity-chart" aria-label="Töövõime ning lubaduste ja kohustuste mahu muutus ajas">
+  const capacityLabel=individual?'Suudan teha':'Suudame teha';
+  const promiseLabel=individual?'Olen lubanud ja kohustunud':'Lubasime ja kohustusime';
+  return <section className={`trend-chart ${outageIndex>=0?'has-outage':''}`} data-testid="capacity-chart" aria-label={`${individual?'Doktorandi':'Organisatsiooni'} töövõime ning lubaduste ja kohustuste mahu muutus ajas`}>
     <div className="trend-heading">
       <div><small>Muutus ajas</small><strong>Võimekus, lubadused ja kohustused</strong></div>
-      <div className="trend-legend" aria-hidden="true"><span className="capacity-key">Suudame teha <b>{Math.round(latest.capacity)}</b></span><span className="promise-key">Lubasime ja kohustusime <b>{Math.round(latest.promised)}</b></span></div>
+      <div className="trend-legend" aria-hidden="true"><span className="capacity-key">{capacityLabel} <b>{Math.round(latest.capacity)}</b></span><span className="promise-key">{promiseLabel} <b>{Math.round(latest.promised)}</b></span></div>
     </div>
     <svg viewBox={`0 0 ${WIDTH} ${HEIGHT}`} role="img" aria-labelledby="capacity-chart-title capacity-chart-description" preserveAspectRatio="none">
-      <title id="capacity-chart-title">Organisatsiooni töövõime, lubadused ja kohustused ajas</title>
+      <title id="capacity-chart-title">{individual?'Doktorandi':'Organisatsiooni'} töövõime, lubadused ja kohustused ajas</title>
       <desc id="capacity-chart-description">Töövõime kasvab AI toel ning langeb AI-toe katkestuse järel. Lubatud ja kohustuseks võetud töömaht jääb katkestuse järel alles.</desc>
       <defs>
         <linearGradient id="capacity-area" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stopColor="#4f8c68" stopOpacity=".22"/><stop offset="1" stopColor="#4f8c68" stopOpacity="0"/></linearGradient>

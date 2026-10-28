@@ -53,6 +53,8 @@ test('all sectors provide complete names, promises and failure descriptions',()=
 test('doctoral researcher focus covers the actual research, teaching and collaboration workload',()=>{
   const focus=SECTORS.find(sector=>sector.id==='uti-doctoral-researcher');
   assert.ok(focus.label.includes('Nooremteadur'));
+  assert.equal(focus.individual,true);
+  assert.equal(focus.automation,'Digitoega uurimistöövoog');
   assert.ok(focus.subtitle.includes('ekspertiis')&&focus.subtitle.includes('süsteemide kontroll'));
   for(const activity of ['teadusartiklid','ainearendus','empiiriline analüüs','Konverentsid','Digitaalse suveräänsuse']){
     assert.ok(focus.services.some(service=>service.name.includes(activity)),`missing doctoral activity: ${activity}`);

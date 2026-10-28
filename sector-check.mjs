@@ -37,6 +37,12 @@ for(const sector of SECTORS){
   assert.ok(headerText.includes(subtitleParts?.[1]||sector.subtitle));
   if(subtitleParts?.[2])assert.ok(headerText.includes(subtitleParts[2]));
   assert.ok(await page.locator('.workforce').innerText().then(text=>text.includes(sector.staff)));
+  if(sector.individual){
+    assert.equal((await page.locator('.balance-metric').first().locator(':scope>span').innerText()).trim(),'Suudan teha');
+    assert.equal((await page.locator('.balance-metric.promises>span').innerText()).trim(),'Olen lubanud ja kohustunud tegema');
+    assert.equal((await page.locator('.workforce-actor').nth(1).locator(':scope>strong').innerText()).trim(),'Digitoega uurimistöövoog');
+    assert.equal(await page.locator('.workforce-actor').nth(1).locator(':scope>span').count(),0);
+  }
   await page.getByRole('button',{name:'Käivita simulatsioon',exact:true}).click();
   await page.clock.runFor(12000);
   assert.equal(await page.locator('.service.active').count(),sector.services.length);
@@ -46,6 +52,10 @@ for(const sector of SECTORS){
   assert.equal(await page.locator('.base-growth-progress span').first().evaluate(element=>parseFloat(element.style.width)),100);
   assert.ok((await page.locator('.added-service .service-state').first().innerText()).includes('Uus võimekus'));
   assert.ok((await page.locator('.added-service .service-state').first().innerText()).includes('Toimib'));
+  if(sector.individual){
+    assert.ok((await page.locator('.capacity-key').innerText()).startsWith('Suudan teha'));
+    assert.ok((await page.locator('.promise-key').innerText()).startsWith('Olen lubanud ja kohustunud'));
+  }
   await page.getByLabel('AI-toe katkestuse ulatus').fill('100');
   await page.getByRole('button',{name:'Katkesta AI tugi täielikult'}).click();
   if(sector.id==='cross-sector'){
@@ -54,6 +64,10 @@ for(const sector of SECTORS){
     await page.clock.runFor(3000);assert.equal(await page.locator('.service.stopped').count(),5);
   }else await page.clock.runFor(10000);
   assert.ok(await page.locator('.takeaway').innerText().then(text=>text.includes(sector.failure)));
+  if(sector.individual){
+    assert.ok((await page.locator('.outcome-gap-card').innerText()).includes('Suudan 78'));
+    assert.ok((await page.locator('.outcome-conclusion').innerText()).includes('Suudan teha 78, kuid olen kohustunud tegema 280 tööühikut.'));
+  }
   for(let i=0;i<sector.services.length;i++){
     assert.ok(await page.locator('.service').nth(i).innerText().then(text=>text.includes(i<2?sector.services[i].delayed:sector.services[i].stopped)));
   }

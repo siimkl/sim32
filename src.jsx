@@ -19,6 +19,7 @@ function App(){
   const [readySignal,setReadySignal]=useState(null);
   const layoutRef=useRef(null),controlRef=useRef(null),growRef=useRef(null),disruptRef=useRef(null);
   const sector=getSector(sectorId);
+  const individual=sector.individual===true;
   const view=sectorServices(describe(state),sector),outage=state.outageAge!==null;
   const finished=outage?view.complete:state.step>0&&view.mature&&state.ai===ai;
   const canDisrupt=!outage&&state.step>0&&!running&&state.ai>0;
@@ -108,9 +109,9 @@ function App(){
           </React.Fragment>)}
         </div>
         <div className={`balance ${view.shortfall>1?'has-shortfall':''}`}>
-          <div className={`balance-metric ${outage?'loss':''}`}><span>Suudame teha</span><strong data-testid="capacity">{Math.round(view.capacity)}<small>ühikut tööd</small></strong><div className="capacity-bar"><span style={{width:`${view.capacity/340*100}%`}}/></div></div>
+          <div className={`balance-metric ${outage?'loss':''}`}><span>{individual?'Suudan teha':'Suudame teha'}</span><strong data-testid="capacity">{Math.round(view.capacity)}<small>ühikut tööd</small></strong><div className="capacity-bar"><span style={{width:`${view.capacity/340*100}%`}}/></div></div>
           <div className={`balance-comparison ${balanceComparison.tone}`} data-testid="balance-comparison" aria-label={`${balanceComparison.value} ${balanceComparison.label}`}><strong>{balanceComparison.value}</strong><small>{balanceComparison.label}</small></div>
-          <div className="balance-metric promises"><span>Oleme lubanud ja kohustunud tegema</span><strong data-testid="promised">{Math.round(view.promised)}<small>ühikut tööd</small></strong><div className="capacity-bar"><span style={{width:`${view.promised/340*100}%`}}/></div></div>
+          <div className="balance-metric promises"><span>{individual?'Olen lubanud ja kohustunud tegema':'Oleme lubanud ja kohustunud tegema'}</span><strong data-testid="promised">{Math.round(view.promised)}<small>ühikut tööd</small></strong><div className="capacity-bar"><span style={{width:`${view.promised/340*100}%`}}/></div></div>
           {view.shortfall>1&&<div className="balance-note danger" role="alert" aria-live="polite"><small>Võimekuse puudujääk</small><div><strong>{Math.round(view.shortfall)}</strong><span>ühiku jagu töövõimet on puudu</span></div></div>}
         </div>
         <StoryScene state={state} view={view} sector={sector}/>
@@ -150,9 +151,9 @@ function App(){
           <div className={`outcome-gap-card ${view.shortfall>1?'deficit':'covered'}`}>
             <small>{view.shortfall>1?'Täitmata kohustus':'Kohustused on kaetud'}</small>
             <div><strong>{view.shortfall>1?Math.round(view.shortfall):Math.max(0,Math.round(view.capacity-view.promised))}</strong><span>{view.shortfall>1?'tööühikut puudu':'tööühikut varu'}</span></div>
-            <p><b>Suudame {Math.round(view.capacity)}</b><i/> <b>Kohustus {Math.round(view.promised)}</b></p>
+            <p><b>{individual?'Suudan':'Suudame'} {Math.round(view.capacity)}</b><i/> <b>Kohustus {Math.round(view.promised)}</b></p>
           </div>
-          {view.complete&&<><div className="outcome-service-impact"><strong>{view.stopped} {sector.stoppedNoun} seiskus</strong>{delayedServices>0&&<span>Lisaks {delayedServices} teenust või protsessi hilineb.</span>}</div><p className="outcome-conclusion">AI-toega kasvu ajal võetud kohustused jäid alles. Võimekus langes tipust {outageDrop} tööühiku võrra.{view.shortfall>1?` Organisatsioon suudab teha ${Math.round(view.capacity)}, kuid on kohustunud tegema ${Math.round(view.promised)} tööühikut.`:' Allesjäänud võimekus katab veel võetud kohustused.'}{view.capacity<100?' Töökorralduse ümberkujundamise tõttu jäädi ka alla AI-eelse baastaseme.':''}</p></>}
+          {view.complete&&<><div className="outcome-service-impact"><strong>{view.stopped} {sector.stoppedNoun} seiskus</strong>{delayedServices>0&&<span>Lisaks {delayedServices} teenust või protsessi hilineb.</span>}</div><p className="outcome-conclusion">AI-toega kasvu ajal võetud kohustused jäid alles. Võimekus langes tipust {outageDrop} tööühiku võrra.{view.shortfall>1?(individual?` Suudan teha ${Math.round(view.capacity)}, kuid olen kohustunud tegema ${Math.round(view.promised)} tööühikut.`:` Organisatsioon suudab teha ${Math.round(view.capacity)}, kuid on kohustunud tegema ${Math.round(view.promised)} tööühikut.`):' Allesjäänud võimekus katab veel võetud kohustused.'}{view.capacity<100?' Töökorralduse ümberkujundamise tõttu jäädi ka alla AI-eelse baastaseme.':''}</p></>}
         </section>}
         <button className="reset" onClick={()=>reset()} aria-label="Käivita simulatsioon uuesti">Käivita simulatsioon uuesti</button>
         </aside>
@@ -160,7 +161,7 @@ function App(){
       <section className={`simulation-insight-card ${outage?'warning':''}`} aria-label="Simulatsiooni muutus ajas ja järeldus">
         <div className="scene-caption">{outage?<><b>Lubadused ja võetud kohustused ei kao koos AI-ga.</b> {sector.waiting}</>:state.adaptation>.1?<><b>{state.crossSector?'AI loob põhiteenuste peale uue ühise juhtimiskihi.':'Lisavõimekus muutub uueks töömahuks.'}</b> {sector.org} eeldab, et AI tugi jääb alles.</>:<><b>Alguses on võimekus ning lubatud ja kohustuseks võetud töö tasakaalus.</b> {sector.org} täidab oma seniseid kohustusi.</>}</div>
         <div className="simulation-footer">
-          <CapacityChart history={history}/>
+          <CapacityChart history={history} individual={individual}/>
           <div className={`takeaway ${outage?'warning':''} ${isGrowthReady?'ready-to-test':''}`} aria-live="polite">
             <div className="takeaway-stage"><span>{phase+1}</span><small>{takeawayCopy.eyebrow}</small></div>
             <div className={`takeaway-copy ${outage&&view.complete?'is-conclusion':''}`}><strong>{takeawayCopy.title}</strong><p>{takeawayCopy.body}</p>{isGrowthReady&&<div className="takeaway-next-action"><span>Järgmine tegevus</span><b>Vähenda juhtpaneelil AI tuge</b><small>Vaata, kas kohustuste täitmiseks jätkub töövõimet.</small></div>}</div>
