@@ -738,6 +738,7 @@ main{height:auto;min-height:100dvh}
 .takeaway.warning .takeaway-stage>small{color:#8a6546}
 .takeaway.warning .takeaway-copy>strong{color:#774925}
 .simulation-footer .takeaway.warning .takeaway-copy>p{color:#6e5238}
+.simulation-footer .takeaway-copy.is-conclusion>p{font-weight:400}
 @media(min-width:1600px){
   .simulation-footer .takeaway{gap:19px;padding:22px 24px}
   .takeaway-stage{flex-basis:66px}

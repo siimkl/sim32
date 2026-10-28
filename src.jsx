@@ -162,7 +162,7 @@ function App(){
           <CapacityChart history={history}/>
           <div className={`takeaway ${outage?'warning':''}`} aria-live="polite">
             <div className="takeaway-stage"><span>{phase+1}</span><small>{takeawayCopy.eyebrow}</small></div>
-            <div className="takeaway-copy"><strong>{takeawayCopy.title}</strong><p>{takeawayCopy.body}</p></div>
+            <div className={`takeaway-copy ${outage&&view.complete?'is-conclusion':''}`}><strong>{takeawayCopy.title}</strong><p>{takeawayCopy.body}</p></div>
           </div>
         </div>
       </section>

@@ -187,6 +187,8 @@ assert.ok((await page.locator('.outcome-gap-card').innerText()).includes('202'))
 assert.ok((await page.locator('.outcome-gap-card').innerText()).includes('tööühikut puudu'));
 assert.ok((await page.locator('.outcome-service-impact').innerText()).includes('3 uut teenust seiskus'));
 assert.ok((await page.locator('.outcome-conclusion').innerText()).includes('on kohustunud tegema 280 tööühikut'));
+assert.ok((await page.locator('.takeaway-copy>p').innerText()).includes('osa teenuseid ajutiselt katkeda'));
+assert.ok(parseFloat(await page.locator('.takeaway-copy>p').evaluate(element=>getComputedStyle(element).fontWeight))<500,'the final explanation must use regular text weight');
 await page.screenshot({path:'story-outage.png',fullPage:true});
 assert.ok(await sceneIsSeparated());
 await page.getByRole('button',{name:'Käivita simulatsioon uuesti'}).click();
