@@ -21,6 +21,8 @@ assert.ok(await page.locator('.simulation-footer .takeaway p').evaluate(element=
 assert.equal((await page.locator('.takeaway-stage small').innerText()).trim(),'ALUSTA SIIT');
 assert.equal((await page.locator('.takeaway-copy>strong').innerText()).trim(),'Käivita kasv');
 assert.equal((await page.locator('.footer-author strong').innerText()).trim(),'Siim Klais');
+assert.equal((await page.locator('.footer-tools small').innerText()).trim(),'TÖÖRIISTAD');
+assert.equal((await page.locator('.footer-tools span').innerText()).trim(),'VS Code, GPT-5.6 Sol Medium via Codex, GitHub');
 assert.equal((await page.locator('.footer-author small').innerText()).trim(),'SIMULATSIOONI AUTOR');
 assert.equal((await page.locator('.footer-note>small').innerText()).trim(),'METOODILINE MÄRKUS');
 const disclaimer=(await page.locator('.footer-note>span').innerText()).toLowerCase();
