@@ -29,6 +29,8 @@ assert.ok((await page.locator('.scene-caption').innerText()).includes('Alguses o
 assert.ok((await page.locator('.balance-metric.promises').innerText()).includes('Oleme lubanud ja kohustunud tegema'));
 assert.ok((await page.getByTestId('balance-comparison').innerText()).includes('TASAKAAL'));
 assert.equal(await page.locator('.service.active').count(),2);
+assert.ok((await page.locator('.workforce-actor').first().innerText()).includes('Senised oskused ja tööviisid'));
+assert.ok((await page.locator('.workforce-actor').nth(1).innerText()).includes('Senised infosüsteemid ja automatiseeritud töövood'));
 assert.equal(await page.locator('.dependency-rail').count(),9);
 assert.equal(await page.locator('.dependency-junctions circle').count(),2);
 assert.equal(await page.locator('.dependency-flow[marker-end]').count(),7);
@@ -66,6 +68,7 @@ await page.getByRole('button',{name:'Alusta uuesti'}).click();
 await page.locator('#ai').fill('100');
 await page.getByRole('button',{name:'Kasvata organisatsiooni'}).click();
 await page.clock.runFor(1000);assert.ok(await capacity()>100);
+assert.ok((await page.locator('.workforce-actor').nth(1).innerText()).includes('suurem läbilaskevõime'));
 assert.equal(await page.getByLabel('AI-toe katkestuse ulatus').isDisabled(),true);
 assert.equal((await page.locator('.run-status').innerText()).trim(),'Vajuta pausi, kui tahad AI tuge vähendada.');
 assert.equal((await page.locator('.outage-locked-note').innerText()).trim(),'Vajuta pausi, kui tahad AI tuge vähendada.');

@@ -14,6 +14,11 @@ export default function StoryScene({state,view,sector}){
   const workforceHit=outage&&state.outageAge>=1;
   const remainingAI=outage?Math.round(state.ai*(1-state.outageLoss)):state.ai;
   const partialOutage=outage&&remainingAI>0;
+  const actorDescription=actor=>{
+    if(workforceHit)return actor.robot?(partialOutage?'Väiksema AI-toega läbilaskevõime langes':'AI-ta ei jätku automatiseerimisvõimet'):(partialOutage?'Väiksema AI-toega töövõime langes':'AI-ta ei jätku töövõimet');
+    if(state.ai){const gain=Math.round(actor.value/actor.base*100-100);return actor.robot?`AI toel ${gain}% suurem läbilaskevõime`:`AI toel ${gain}% rohkem`;}
+    return actor.robot?'Senised infosüsteemid ja automatiseeritud töövood':'Senised oskused ja tööviisid';
+  };
   return <div className={`story-scene ${outage?'outage':''} ${state.crossSector?'cross-sector':''}`}>
     <div className="scene-content">
       <svg className="supply-lines" viewBox="0 0 1000 420" preserveAspectRatio="none" aria-hidden="true">
@@ -42,7 +47,7 @@ export default function StoryScene({state,view,sector}){
       </svg>
       <div className="ai-source"><div className={`ai-core ${outage?'offline':''} ${partialOutage?'degraded':''}`}><span className="ai-core-label">AI võimendus</span>{outage?<div className="ai-level-change" aria-label={`AI-võimendus langes tasemelt ${state.ai}% tasemele ${remainingAI}%`}><span>{state.ai}%</span><i>→</i><strong>{remainingAI}%</strong></div>:<strong>{remainingAI}%</strong>}</div>{outage&&<span className="source-alert">{remainingAI>0?`AI-võimendus langes ${state.ai}% tasemelt ${remainingAI}% tasemele`:`AI-võimendus langes ${state.ai}% tasemelt nulli`}</span>}</div>
       <div className="workforce">
-        {[{name:sector.staff,value:view.people,base:55,robot:false},{name:sector.automation,value:view.automation,base:45,robot:true}].map(actor=><div key={actor.name} className={`workforce-actor ${workforceHit?'weakened':''}`}><div className="icon-stage"><div className={`worker-symbol ${actor.robot?'robot':''}`} style={{transform:`scale(${.72+Math.sqrt(actor.value/actor.base)*.3})`}}><WorkerIcon robot={actor.robot}/></div><span className="worker-number">{Math.round(actor.value)}<small>ühikut tööd</small></span></div><strong>{actor.name}</strong><span>{workforceHit?(partialOutage?'Väiksema AI-toega töövõime langes':'AI-ta ei jätku töövõimet'):state.ai?`AI toel ${Math.round(actor.value/actor.base*100-100)}% rohkem`:'Senised oskused ja tööviisid'}</span></div>)}
+        {[{name:sector.staff,value:view.people,base:55,robot:false},{name:sector.automation,value:view.automation,base:45,robot:true}].map(actor=><div key={actor.name} className={`workforce-actor ${workforceHit?'weakened':''}`}><div className="icon-stage"><div className={`worker-symbol ${actor.robot?'robot':''}`} style={{transform:`scale(${.72+Math.sqrt(actor.value/actor.base)*.3})`}}><WorkerIcon robot={actor.robot}/></div><span className="worker-number">{Math.round(actor.value)}<small>ühikut tööd</small></span></div><strong>{actor.name}</strong><span>{actorDescription(actor)}</span></div>)}
       </div>
       <div className="services">
         {view.services.map(service=><div key={service.id} data-service={service.id} title={state.crossSector?`${service.promise}${service.parent?'. Sõltub: '+view.services.find(s=>s.id===service.parent)?.name:'. Ahela algus'}`:service.promise} className={`service ${service.base?'existing-service':'added-service'} ${service.active?'active':'not-created'} ${service.status}`}>
