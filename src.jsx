@@ -166,8 +166,8 @@ function App(){
       </section>
     </section>
     <footer className="site-footer">
-      <strong>Autor: Siim Klais</strong>
-      <span>Tegemist on õppeotstarbelise simulatsiooniga, mis kasutab lihtsustatud ja mitteteaduslikke modelleerimisvõtteid.</span>
+      <div className="footer-author"><span className="footer-monogram" aria-hidden="true">SK</span><div><small>Simulatsiooni autor</small><strong>Siim Klais</strong></div></div>
+      <div className="footer-note"><small>Metoodiline märkus</small><span>Tegemist on õppeotstarbelise simulatsiooniga, mis kasutab lihtsustatud ja mitteteaduslikke modelleerimisvõtteid.</span></div>
     </footer>
   </main>;
 }

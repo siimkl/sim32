@@ -20,11 +20,13 @@ assert.ok(Math.abs(questionFit)<=1,'the main-question card must hug its content 
 assert.ok(await page.locator('.simulation-footer .takeaway p').evaluate(element=>parseFloat(getComputedStyle(element).fontSize)>=18),'the core learning point must be prominent');
 assert.equal((await page.locator('.takeaway-stage small').innerText()).trim(),'ALUSTA SIIT');
 assert.equal((await page.locator('.takeaway-copy>strong').innerText()).trim(),'Käivita kasv');
-assert.equal((await page.locator('.site-footer strong').innerText()).trim(),'Autor: Siim Klais');
-const disclaimer=(await page.locator('.site-footer span').innerText()).toLowerCase();
+assert.equal((await page.locator('.footer-author strong').innerText()).trim(),'Siim Klais');
+assert.equal((await page.locator('.footer-author small').innerText()).trim(),'SIMULATSIOONI AUTOR');
+assert.equal((await page.locator('.footer-note>small').innerText()).trim(),'METOODILINE MÄRKUS');
+const disclaimer=(await page.locator('.footer-note>span').innerText()).toLowerCase();
 assert.ok(disclaimer.includes('õppeotstarbelise simulatsiooniga')&&disclaimer.includes('mitteteaduslikke'));
 assert.ok(!disclaimer.includes('tulemusi tuleb hinnata kriitiliselt')&&!disclaimer.includes('teaduslik analüüs'));
-assert.ok(await page.locator('.site-footer span').evaluate(element=>element.scrollWidth<=element.clientWidth+1&&getComputedStyle(element).whiteSpace==='nowrap'),'desktop disclaimer must stay on one line');
+assert.ok(await page.locator('.footer-note>span').evaluate(element=>element.scrollWidth<=element.clientWidth+1&&getComputedStyle(element).whiteSpace==='nowrap'),'desktop disclaimer must stay on one line');
 assert.ok(await page.locator('.outage-action.is-locked>.disruption-reasons').evaluate(element=>parseFloat(getComputedStyle(element).opacity)<.6),'outage causes must look inactive while disruption is locked');
 assert.ok((await page.locator('.hero-question').innerText()).replace(/\s+/g,' ').includes('Mis juhtub, kui AI kaob, kuid uute teenustega seotud ootused, kohustused, tähtajad ja sõltuvused jäävad?'));
 const heroHeading=await page.locator('.hero-title h1').boundingBox();
