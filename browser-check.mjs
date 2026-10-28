@@ -59,6 +59,9 @@ assert.ok(await page.locator('.balance-metric small').first().evaluate(element=>
 assert.ok(await page.locator('.worker-number small').first().evaluate(element=>parseFloat(getComputedStyle(element).fontSize)>=13));
 assert.equal(await page.getByTestId('capacity-chart').count(),1);
 assert.equal(await page.locator('.capacity-point').count(),1);
+const trendKickerBox=await page.locator('.trend-heading>div:first-child>small').boundingBox();
+const trendTitleBox=await page.locator('.trend-heading>div:first-child>strong').boundingBox();
+assert.ok(trendKickerBox.y+trendKickerBox.height<=trendTitleBox.y+1,'chart context label and title must not overlap');
 const buttonColors=await page.evaluate(()=>({grow:getComputedStyle(document.querySelector('.progress-button')).backgroundColor,reset:getComputedStyle(document.querySelector('.reset')).backgroundColor}));
 assert.notEqual(buttonColors.grow,buttonColors.reset);
 assert.equal(buttonColors.reset,'rgb(220, 227, 229)');
@@ -122,6 +125,9 @@ const matured=await step();await page.clock.runFor(2000);assert.equal(await step
 assert.equal(matured,10);
 assert.equal(await page.locator('.growth-action.is-complete').count(),1);
 assert.equal(await page.locator('#ai').isDisabled(),true);
+const completedGrowthBox=await page.locator('.growth-action.is-complete').boundingBox();
+const readyOutageBox=await page.locator('.outage-action.is-ready').boundingBox();
+assert.ok(readyOutageBox.y-(completedGrowthBox.y+completedGrowthBox.height)>=17,'completed growth and disruption controls need a clear visual pause');
 await page.locator('.growth-action.is-complete').evaluate(element=>element.getAnimations({subtree:true}).forEach(animation=>animation.finish()));
 const completeGrowthOpacity=await page.locator('.growth-action.is-complete').evaluate(element=>parseFloat(getComputedStyle(element).opacity));
 assert.ok(completeGrowthOpacity<=.6,`completed growth controls must visibly recede (opacity ${completeGrowthOpacity})`);
