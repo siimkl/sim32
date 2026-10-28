@@ -43,7 +43,7 @@ test('lowering AI does not remove commitments or unlearn adaptation',()=>{
   assert.ok(describe(lowered).capacity<describe(state).capacity);
 });
 test('all sectors provide complete names, promises and failure descriptions',()=>{
-  assert.equal(new Set(SECTORS.map(s=>s.id)).size,10);
+  assert.equal(new Set(SECTORS.map(s=>s.id)).size,11);
   for(const sector of SECTORS){
     const view=sectorServices(describe(initialState(sector.id==='cross-sector')),sector);
     assert.equal(view.services.length,sector.id==='cross-sector'?7:5);

@@ -68,4 +68,4 @@ await page.clock.runFor(3000);
 await page.getByLabel('Näidisasutus').selectOption('it');
 await page.clock.runFor(2000);assert.equal(await page.locator('main').getAttribute('data-step'),'0');
 assert.deepEqual(errors,[]);await browser.close();
-console.log('PASS: ten example-organisation stories, reset on change, customized failures, seven-layer cascade, desktop/projector/mobile.');
+console.log('PASS: eleven example-organisation stories, reset on change, customized failures, seven-layer cascade, desktop/projector/mobile.');
