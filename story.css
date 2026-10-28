@@ -759,14 +759,35 @@ main{height:auto;min-height:100dvh}
 .system-promise-deck{transition:transform .72s ease;filter:drop-shadow(0 4px 5px #28463635)}
 .system-deck-shadow{fill:#24493a;opacity:.18}
 .system-deck-edge{fill:none;stroke:#eaffd9;stroke-width:1.4;stroke-linecap:round;opacity:.72}
+.system-delivery-line{fill:none;stroke:#67a966;stroke-width:2.2;stroke-linecap:round;stroke-dasharray:5 6;opacity:.58;transition:d .72s ease,stroke .45s,opacity .45s;animation:systemLift 1.25s linear infinite}
+.system-delivery-line.status-delayed{stroke:#c69235;stroke-dasharray:3 6;opacity:.82;animation-duration:1.8s}
+.system-delivery-line.status-stopped{stroke:#b74838;stroke-dasharray:2 9;opacity:.85;animation:none}
+.system-dependency-link{fill:none;stroke:#679a65;stroke-width:1.7;stroke-linecap:round;stroke-dasharray:4 5;opacity:.7;animation:systemFlow 1.35s linear infinite;transition:stroke .45s,opacity .45s}
+.system-dependency-link.is-future{opacity:.1;animation:none}
+.system-dependency-link.status-delayed{stroke:#c69235;stroke-dasharray:3 6;animation-duration:1.9s}
+.system-dependency-link.status-stopped{stroke:#b74838;stroke-dasharray:2 8;opacity:.82;animation:none}
 .system-commitment-node{transition:opacity .45s ease,transform .45s ease}
-.system-commitment-node rect{fill:#f7fff0;stroke:#4d8c59;stroke-width:1.4;transition:fill .55s,stroke .55s}
-.system-commitment-node circle{fill:#6aaa62;transition:fill .55s}
-.system-commitment-node path{fill:none;stroke:#6aaa62;stroke-width:2;stroke-linecap:round;transition:stroke .55s}
+.system-node-shell{fill:#f7fff0;stroke:#4d8c59;stroke-width:1.4;transition:fill .55s,stroke .55s}
+.system-node-track{fill:#d8e6d2}
+.system-node-delivery{fill:#69a965;transition:width .65s ease,fill .45s}
+.system-node-status{fill:#e8f4e3;stroke:#5c9660;stroke-width:1.2;transition:fill .45s,stroke .45s}
+.system-status-mark{fill:#5b9660;stroke:#5b9660;stroke-width:1.5;stroke-linecap:round;stroke-linejoin:round}
+.system-node-pin{fill:none;stroke:#6aaa62;stroke-width:2;stroke-linecap:round;transition:stroke .45s}
 .system-commitment-node.is-future{opacity:.16;transform:translateY(8px)}
-.is-disrupted .system-commitment-node.is-active rect{fill:#fff0e4;stroke:#a8503d}
-.is-disrupted .system-commitment-node.is-active circle{fill:#c26747}
-.is-disrupted .system-commitment-node.is-active path{stroke:#c26747}
+.system-commitment-node.is-future .system-node-delivery{width:0}
+.system-commitment-node.status-delayed .system-node-shell{fill:#fff8e8;stroke:#c28a2f}
+.system-commitment-node.status-delayed .system-node-delivery{fill:#c69235}
+.system-commitment-node.status-delayed .system-node-status{fill:#f7e7b7;stroke:#b87c25}
+.system-commitment-node.status-delayed .system-status-mark,.system-commitment-node.status-delayed .system-node-pin{fill:none;stroke:#a96e20}
+.system-commitment-node.status-stopped .system-node-shell{fill:#fff0e9;stroke:#b54838}
+.system-commitment-node.status-stopped .system-node-delivery{fill:#b54838}
+.system-commitment-node.status-stopped .system-node-status{fill:#c15b47;stroke:#9c382f}
+.system-commitment-node.status-stopped .system-status-mark{fill:none;stroke:#fff3e8}
+.system-commitment-node.status-stopped .system-node-pin{fill:none;stroke:#b54838}
+.is-disrupted .system-commitment-node.status-working .system-node-shell{fill:#fff5e9;stroke:#b86a45}
+.is-disrupted .system-commitment-node.status-working .system-node-status{fill:#f3d6bd;stroke:#b86a45}
+.is-disrupted .system-commitment-node.status-working .system-status-mark{fill:#b86a45;stroke:#b86a45}
+.is-disrupted .system-commitment-node.status-working .system-node-pin{stroke:#b86a45}
 .system-lock{transform-box:fill-box;transform-origin:center;transition:opacity .4s;filter:drop-shadow(0 2px 3px #5d28294d)}
 .system-lock path{fill:none;stroke:#fff1dc;stroke-width:2.2;stroke-linecap:round}
 .system-lock rect{fill:#9f4538;stroke:#ffe9d2;stroke-width:1.2}
