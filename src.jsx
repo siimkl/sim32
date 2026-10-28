@@ -3,7 +3,6 @@ import {createRoot} from 'react-dom/client';
 import {initialState,advance,disrupt,describe,GROWTH_STEPS,OUTAGE_STEPS,TOTAL_STEPS} from './story-model.js';
 import StoryScene from './StoryScene.jsx';
 import CapacityChart from './CapacityChart.jsx';
-import ContinuityGlyph from './ContinuityGlyph.jsx';
 import {SECTORS,getSector,sectorServices} from './sectors.js';
 import './story.css';
 
@@ -157,7 +156,6 @@ function App(){
         </section>}
         <button className="reset" onClick={()=>reset()} aria-label="Käivita simulatsioon uuesti">Käivita simulatsioon uuesti</button>
         </aside>
-        <ContinuityGlyph state={state} view={view} running={running}/>
       </div>
       <section className={`simulation-insight-card ${outage?'warning':''}`} aria-label="Simulatsiooni muutus ajas ja järeldus">
         <div className="scene-caption">{outage?<><b>Lubadused ja võetud kohustused ei kao koos AI-ga.</b> {sector.waiting}</>:state.adaptation>.1?<><b>{state.crossSector?'AI loob põhiteenuste peale uue ühise juhtimiskihi.':'Lisavõimekus muutub uueks töömahuks.'}</b> {sector.org} eeldab, et AI tugi jääb alles.</>:<><b>Alguses on võimekus ning lubatud ja kohustuseks võetud töö tasakaalus.</b> {sector.org} täidab oma seniseid kohustusi.</>}</div>
