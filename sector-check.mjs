@@ -45,7 +45,7 @@ for(const sector of SECTORS){
   assert.equal(await page.locator('.enhanced-service-group>i').count(),2);
   assert.equal(await page.locator('.base-growth-progress span').first().evaluate(element=>parseFloat(element.style.width)),100);
   assert.ok((await page.locator('.added-service .service-state').first().innerText()).includes('Uus võimekus'));
-  assert.ok((await page.locator('.added-service .service-state').first().innerText()).includes('uus töö'));
+  assert.ok((await page.locator('.added-service .service-state').first().innerText()).includes('Toimib'));
   await page.getByLabel('AI-toe katkestuse ulatus').fill('100');
   await page.getByRole('button',{name:'Katkesta AI tugi täielikult'}).click();
   if(sector.id==='cross-sector'){
