@@ -16,17 +16,6 @@ export default function ContinuityGlyph({state,view,running}){
   const nodeGap=maximumCommitments>5?5:8;
   const rowWidth=maximumCommitments*nodeWidth+(maximumCommitments-1)*nodeGap;
   const rowStart=150-rowWidth/2;
-  const nodes=view.services.map((service,index)=>({
-    ...service,
-    index,
-    x:rowStart+index*(nodeWidth+nodeGap),
-    centerX:rowStart+index*(nodeWidth+nodeGap)+nodeWidth/2,
-    status:service.active?service.status:'future',
-    ratio:clamp(service.ratio||0,0,1)
-  }));
-  const nodeById=Object.fromEntries(nodes.map(node=>[node.id,node]));
-  const dependencies=nodes.filter(node=>node.parent&&nodeById[node.parent]).map(node=>({from:nodeById[node.parent],to:node,active:node.active&&nodeById[node.parent].active,status:node.status}));
-  const activeStatuses=nodes.filter(node=>node.active).map(node=>node.status);
   const capacityPath=`M18 ${capacityY.toFixed(1)} C58 ${(capacityY-5).toFixed(1)} 91 ${(capacityY+5).toFixed(1)} 130 ${capacityY.toFixed(1)} S216 ${(capacityY-4).toFixed(1)} 282 ${capacityY.toFixed(1)} L282 174 L18 174 Z`;
   const capacityLine=`M18 ${capacityY.toFixed(1)} C58 ${(capacityY-5).toFixed(1)} 91 ${(capacityY+5).toFixed(1)} 130 ${capacityY.toFixed(1)} S216 ${(capacityY-4).toFixed(1)} 282 ${capacityY.toFixed(1)}`;
   return <section
@@ -36,8 +25,6 @@ export default function ContinuityGlyph({state,view,running}){
     data-capacity-y={capacityY.toFixed(1)}
     data-promise-y={promiseY.toFixed(1)}
     data-active-commitments={activeCommitments}
-    data-dependency-links={dependencies.filter(link=>link.active).length}
-    data-service-statuses={activeStatuses.join(',')}
     data-shortfall={shortfall?'true':'false'}
     aria-label="Võimekuse ja kohustuste sõnadeta süsteemivaade: AI-toega töövõime kannab kohustusi, katkestuse järel võimekus langeb, kuid kohustused jäävad"
   >
@@ -73,10 +60,6 @@ export default function ContinuityGlyph({state,view,running}){
         {[42,72,102,132,168,198,228,258].map((x,index)=><path key={x} className={`system-support support-${index%3}`} d={`M${x} 169 V${Math.min(164,capacityY+7)}`}/>) }
       </g>
 
-      <g className="system-delivery-lines">
-        {nodes.filter(node=>node.active).map(node=><path key={node.id} className={`system-delivery-line status-${node.status}`} d={`M${node.centerX} ${promiseY-5} C${node.centerX} ${(promiseY+capacityY)/2} ${node.centerX} ${(promiseY+capacityY)/2} ${node.centerX} ${capacityY}`}/>) }
-      </g>
-
       <g className="system-ai-core" filter="url(#system-soft-shadow)">
         <circle className="system-core-aura aura-one" cx="150" cy="166" r="23"/>
         <circle className="system-core-aura aura-two" cx="150" cy="166" r="17"/>
@@ -87,26 +70,16 @@ export default function ContinuityGlyph({state,view,running}){
       </g>
 
       <g className="system-promise-deck" transform={`translate(0 ${promiseY})`}>
-        <g className="system-dependency-network">
-          {dependencies.map(link=>{
-            const lift=Math.min(48,24+Math.abs(link.to.centerX-link.from.centerX)*.16);
-            return <path key={`${link.from.id}-${link.to.id}`} className={`system-dependency-link ${link.active?'is-active':'is-future'} status-${link.status}`} d={`M${link.from.centerX} -27 C${link.from.centerX} ${-lift} ${link.to.centerX} ${-lift} ${link.to.centerX} -27`}/>;
-          })}
-        </g>
         <rect className="system-deck-shadow" x="22" y="-1" width="256" height="12" rx="6"/>
         <rect className="system-deck" x="22" y="-5" width="256" height="10" rx="5" fill={disrupted?'url(#system-deck-risk)':'url(#system-deck-positive)'}/>
         <path className="system-deck-edge" d="M30 0H270"/>
-        {nodes.map(node=>{
-          const status=node.status;
-          return <g key={node.id||node.index} className={`system-commitment-node ${node.active?'is-active':'is-future'} status-${status}`} transform={`translate(${node.x} 0)`}>
-            <rect className="system-node-shell" x="0" y="-27" width={nodeWidth} height="21" rx="7"/>
-            <rect className="system-node-track" x="4" y="-11" width={nodeWidth-8} height="3" rx="1.5"/>
-            <rect className="system-node-delivery" x="4" y="-11" width={(nodeWidth-8)*node.ratio} height="3" rx="1.5"/>
-            <circle className="system-node-status" cx={nodeWidth/2} cy="-19" r="5"/>
-            {status==='working'&&<circle className="system-status-mark" cx={nodeWidth/2} cy="-19" r="2"/>}
-            {status==='delayed'&&<path className="system-status-mark" d={`M${nodeWidth/2} -22v3l3 2`}/>}
-            {status==='stopped'&&<path className="system-status-mark" d={`M${nodeWidth/2-2.5} -21.5l5 5M${nodeWidth/2+2.5} -21.5l-5 5`}/>}
-            <path className="system-node-pin" d={`M${nodeWidth/2} -6V-1`}/>
+        {view.services.map((service,index)=>{
+          const x=rowStart+index*(nodeWidth+nodeGap);
+          const active=index<activeCommitments;
+          return <g key={service.id||index} className={`system-commitment-node ${active?'is-active':'is-future'}`} transform={`translate(${x} 0)`}>
+            <rect x="0" y="-26" width={nodeWidth} height="20" rx="7"/>
+            <circle cx={nodeWidth/2} cy="-16" r="4"/>
+            <path d={`M${nodeWidth/2} -11V-6`}/>
           </g>;
         })}
         <g className="system-lock" opacity={disrupted?1:0} transform="translate(150 -7)">
