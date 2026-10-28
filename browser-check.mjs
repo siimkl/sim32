@@ -157,7 +157,8 @@ await page.locator('.growth-action.is-complete').evaluate(element=>element.getAn
 const completeGrowthOpacity=await page.locator('.growth-action.is-complete').evaluate(element=>parseFloat(getComputedStyle(element).opacity));
 assert.ok(completeGrowthOpacity<=.6,`completed growth controls must visibly recede (opacity ${completeGrowthOpacity})`);
 assert.equal((await page.locator('.progress-button').innerText()).trim(),'Kasvufaas lõpetatud');
-assert.ok(Number(await mechanism.getAttribute('data-capacity-radius'))>initialMechanismCapacityRadius,'the capability orb must grow with AI-supported capacity');
+const growthMechanismCapacityRadius=Number(await mechanism.getAttribute('data-capacity-radius'));
+assert.ok(growthMechanismCapacityRadius>initialMechanismCapacityRadius,'the capability orb must grow with AI-supported capacity');
 assert.equal((await page.locator('.takeaway-copy>strong').innerText()).trim(),'Pane toimepidevus proovile');
 assert.ok((await page.locator('.takeaway-copy>p').innerText()).includes('AI tugi jääb alles'));
 assert.equal((await page.locator('.takeaway-next-action>b').innerText()).trim(),'Vähenda juhtpaneelil AI tuge');
@@ -216,6 +217,7 @@ assert.ok((await page.locator('.outcome-gap-card').innerText()).includes('202'))
 assert.ok((await page.locator('.outcome-gap-card').innerText()).includes('tööühikut puudu'));
 assert.ok((await page.locator('.outcome-service-impact').innerText()).includes('3 uut teenust seiskus'));
 assert.ok((await page.locator('.outcome-conclusion').innerText()).includes('on kohustunud tegema 280 tööühikut'));
+assert.ok(Number(await mechanism.getAttribute('data-capacity-radius'))<growthMechanismCapacityRadius,'the new capability orb must contract after disruption');
 assert.ok(Number(await mechanism.getAttribute('data-capacity-radius'))<Number(await mechanism.getAttribute('data-promise-radius')),'after disruption the capability orb must be smaller than the commitment orb');
 assert.ok(Number(await mechanism.getAttribute('data-promise-radius'))<disruptionPromiseRadius,'the new commitment orb must also contract, but more slowly than capability');
 assert.ok((await page.locator('.takeaway-copy>p').innerText()).includes('osa teenuseid ajutiselt katkeda'));
