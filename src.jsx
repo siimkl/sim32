@@ -70,6 +70,15 @@ function App(){
   const peakGain=Math.round(view.peak-100),outageDrop=Math.round(view.peak-view.capacity),baselineDelta=Math.round(view.capacity-100);
   const delayedServices=view.services.filter(service=>service.active&&service.status==='delayed').length;
   const message=outage?view.complete?failureText:state.outageAge<2?`${sector.staff} ja ${sector.automation.toLocaleLowerCase('et')} kaotavad esimesena töövõimet.`:sector.waiting+' Töö kuhjub ja uued tegevused aeglustuvad või seiskuvad.':view.mature&&state.step>0?(sector.ready||`${sector.org} on kasvanud AI võimekuse ümber. Katkesta AI tugi: kas kõik lubadused ja võetud kohustused on endiselt täidetavad?`):state.step>0?sector.growth:`Käivita kasv. Vaata, kuidas AI lisavõimekusest saavad uued kohustused. ${sector.waiting}`;
+  const takeawayCopy=!outage&&state.step===0
+    ?{eyebrow:'Alusta siit',title:'Käivita kasv',body:`Vaata, kuidas AI lisavõimekusest saavad uued kohustused. ${sector.waiting}`}
+    :!outage&&view.mature
+      ?{eyebrow:'Järgmine samm',title:'Vähenda AI tuge',body:message}
+      :!outage
+        ?{eyebrow:'Jälgi muutust',title:'Võimekus kasvatab kohustusi',body:message}
+        :view.complete
+          ?{eyebrow:'Järeldus',title:'Toimepidevus on proovile pandud',body:message}
+          :{eyebrow:'Jälgi mõju',title:'Katkestus levib',body:message};
   return <main className={`${running?'running':'paused'} ${canDisrupt?'growth-ready':''}`} data-step={state.step}>
     <header className="hero-intro"><div className="header-copy"><div className="hero-top"><div className="simulation-label"><i/>Interaktiivne simulatsioon <span>AI-sõltuvuse kujunemine</span></div><div className="hero-question"><span>Põhiküsimus</span><p>{sectorQuestion}</p></div></div><div className="hero-main"><div className="hero-title"><h1><em>AI-võimestatud töötaja</em> ja organisatsiooni <strong className="continuity-focus">toimepidevus</strong></h1><div className="sector-context"><span className="sector-context-label">Vali näidisasutus</span><div className="hero-sector-select-wrap"><select id="sector" className="hero-sector-select" aria-label="Näidisasutus" value={sectorId} onChange={e=>{changeSector(e.target.value);e.currentTarget.blur();}}>{SORTED_SECTORS.map(item=><option key={item.id} value={item.id}>{item.label}</option>)}</select><span className="hero-sector-action" aria-hidden="true">Muuda<svg className="hero-sector-chevron" viewBox="0 0 20 20"><path d="m5 7 5 5 5-5"/></svg></span></div><span className="sector-context-description">{sectorContext}</span></div></div></div></div></header>
     <section className="main-layout" ref={layoutRef}>
@@ -149,7 +158,10 @@ function App(){
         <div className="scene-caption">{outage?<><b>Lubadused ja võetud kohustused ei kao koos AI-ga.</b> {sector.waiting}</>:state.adaptation>.1?<><b>{state.crossSector?'AI loob põhiteenuste peale uue ühise juhtimiskihi.':'Lisavõimekus muutub uueks töömahuks.'}</b> {sector.org} eeldab, et AI tugi jääb alles.</>:<><b>Alguses on võimekus ning lubatud ja kohustuseks võetud töö tasakaalus.</b> {sector.org} täidab oma seniseid kohustusi.</>}</div>
         <div className="simulation-footer">
           <CapacityChart history={history}/>
-          <div className={`takeaway ${outage?'warning':''}`} aria-live="polite"><span>{phase+1}</span><p>{message}</p></div>
+          <div className={`takeaway ${outage?'warning':''}`} aria-live="polite">
+            <div className="takeaway-stage"><span>{phase+1}</span><small>{takeawayCopy.eyebrow}</small></div>
+            <div className="takeaway-copy"><strong>{takeawayCopy.title}</strong><p>{takeawayCopy.body}</p></div>
+          </div>
         </div>
       </section>
     </section>

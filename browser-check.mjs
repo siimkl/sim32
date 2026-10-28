@@ -18,6 +18,8 @@ const questionFit=await page.locator('.hero-question').evaluate(element=>{
 });
 assert.ok(Math.abs(questionFit)<=1,'the main-question card must hug its content instead of filling spare header space');
 assert.ok(await page.locator('.simulation-footer .takeaway p').evaluate(element=>parseFloat(getComputedStyle(element).fontSize)>=18),'the core learning point must be prominent');
+assert.equal((await page.locator('.takeaway-stage small').innerText()).trim(),'ALUSTA SIIT');
+assert.equal((await page.locator('.takeaway-copy>strong').innerText()).trim(),'Käivita kasv');
 assert.equal((await page.locator('.site-footer strong').innerText()).trim(),'Autor: Siim Klais');
 const disclaimer=(await page.locator('.site-footer span').innerText()).toLowerCase();
 assert.ok(disclaimer.includes('õppeotstarbelise simulatsiooniga')&&disclaimer.includes('mitteteaduslikke')&&disclaimer.includes('kriitiliselt'));
