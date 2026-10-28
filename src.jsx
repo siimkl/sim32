@@ -17,29 +17,31 @@ function App(){
   const [sectorId,setSectorId]=useState('public'),[outageLoss,setOutageLoss]=useState(.5);
   const [history,setHistory]=useState(()=>[historyPoint(initialState())]);
   const [readySignal,setReadySignal]=useState(null);
-  const layoutRef=useRef(null),controlRef=useRef(null),disruptRef=useRef(null);
+  const layoutRef=useRef(null),controlRef=useRef(null),growRef=useRef(null),disruptRef=useRef(null);
   const sector=getSector(sectorId);
   const view=sectorServices(describe(state),sector),outage=state.outageAge!==null;
   const finished=outage?view.complete:state.step>0&&view.mature&&state.ai===ai;
   const canDisrupt=!outage&&state.step>0&&!running&&state.ai>0;
+  const signalMode=canDisrupt?'disrupt':!outage&&state.step===0&&!running?'start':null;
   useLayoutEffect(()=>{
-    if(!canDisrupt){setReadySignal(null);return;}
+    if(!signalMode){setReadySignal(null);return;}
+    const target=signalMode==='disrupt'?disruptRef.current:growRef.current;
     const updateSignal=()=>{
-      const layout=layoutRef.current?.getBoundingClientRect(),control=controlRef.current?.getBoundingClientRect(),button=disruptRef.current?.getBoundingClientRect();
+      const layout=layoutRef.current?.getBoundingClientRect(),control=controlRef.current?.getBoundingClientRect(),button=target?.getBoundingClientRect();
       if(!layout||!control||!button)return;
       const gap=parseFloat(getComputedStyle(layoutRef.current).columnGap)||20;
       const x=control.left-layout.left-gap/2;
       const endX=button.left-layout.left+2;
       const endY=button.top-layout.top+button.height/2;
       const startY=Math.max(80,Math.min(endY-80,layout.height*.28));
-      setReadySignal({width:layout.width,height:layout.height,path:`M${x} ${startY} V${endY} H${endX}`,endX,endY});
+      setReadySignal({mode:signalMode,width:layout.width,height:layout.height,path:`M${x} ${startY} V${endY} H${endX}`,endX,endY});
     };
     updateSignal();
     const observer=new ResizeObserver(updateSignal);
-    [layoutRef.current,controlRef.current,disruptRef.current].forEach(element=>element&&observer.observe(element));
+    [layoutRef.current,controlRef.current,target].forEach(element=>element&&observer.observe(element));
     window.addEventListener('resize',updateSignal);
     return ()=>{observer.disconnect();window.removeEventListener('resize',updateSignal);};
-  },[canDisrupt,outageLoss,sectorId]);
+  },[signalMode,outageLoss,sectorId]);
   useEffect(()=>{
     if(!running||finished)return;
     const timer=setInterval(()=>setState(previous=>advance(previous,ai)),1000);
@@ -62,7 +64,7 @@ function App(){
   const outageProgress=outage?Math.min(100,state.outageAge/OUTAGE_STEPS*100):0;
   const simulationProgress=outage?outageProgress:growthProgress;
   const stepsRemaining=outage?Math.max(0,OUTAGE_STEPS-state.outageAge):Math.max(0,GROWTH_STEPS-Math.min(state.step,GROWTH_STEPS));
-  const progressLabel=finished&&!outage?'Kasvufaas lõpetatud':running?`Paus · ${stepsRemaining} sammu jäänud`:state.step>0&&!finished?`Jätka · ${stepsRemaining} sammu jäänud`:state.crossSector?'Kasvata ühiskonda':'Kasvata organisatsiooni';
+  const progressLabel=finished&&!outage?'Kasvufaas lõpetatud':running?`Paus · ${stepsRemaining} sammu jäänud`:state.step>0&&!finished?`Jätka · ${stepsRemaining} sammu jäänud`:'Käivita simulatsioon';
   const aiAfterDisruption=Math.round(state.ai*(1-(outage?state.outageLoss:outageLoss)));
   const failureText=state.outageLoss>=.99?sector.failure:sector.failure.replaceAll('AI kaob','AI tugi väheneb').replaceAll('AI-ta','väiksema AI-toega');
   const balanceDelta=Math.round(view.capacity-view.promised);
@@ -79,10 +81,10 @@ function App(){
         :view.complete
           ?{eyebrow:'Järeldus',title:'Toimepidevus on proovile pandud',body:message}
           :{eyebrow:'Jälgi mõju',title:'Katkestus levib',body:message};
-  return <main className={`${running?'running':'paused'} ${canDisrupt?'growth-ready':''}`} data-step={state.step}>
+  return <main className={`${running?'running':'paused'} ${canDisrupt?'growth-ready':''} ${signalMode==='start'?'start-ready':''}`} data-step={state.step}>
     <header className="hero-intro"><div className="header-copy"><div className="hero-top"><div className="simulation-label"><i/>Interaktiivne simulatsioon <span>AI-sõltuvuse kujunemine</span></div><div className="hero-question"><span>Põhiküsimus</span><p>{sectorQuestion}</p></div></div><div className="hero-main"><div className="hero-title"><h1><em>AI-võimestatud töötaja</em> ja organisatsiooni <strong className="continuity-focus">toimepidevus</strong></h1><div className="sector-context"><span className="sector-context-label">Vali näidisasutus</span><div className="hero-sector-select-wrap"><select id="sector" className="hero-sector-select" aria-label="Näidisasutus" value={sectorId} onChange={e=>{changeSector(e.target.value);e.currentTarget.blur();}}>{SORTED_SECTORS.map(item=><option key={item.id} value={item.id}>{item.label}</option>)}</select><span className="hero-sector-action" aria-hidden="true">Muuda<svg className="hero-sector-chevron" viewBox="0 0 20 20"><path d="m5 7 5 5 5-5"/></svg></span></div><span className="sector-context-description">{sectorContext}</span></div></div></div></div></header>
     <section className="main-layout" ref={layoutRef}>
-      {canDisrupt&&readySignal&&<div className="growth-ready-signal" aria-hidden="true">
+      {readySignal&&<div className={`growth-ready-signal ${readySignal.mode==='start'?'start-ready-signal':''}`} aria-hidden="true">
         <svg viewBox={`0 0 ${readySignal.width} ${readySignal.height}`} preserveAspectRatio="none">
           <defs><marker id="ready-arrow" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="8" markerHeight="8" orient="auto"><path d="M0 0 10 5 0 10Z"/></marker></defs>
           <path className="ready-signal-rail" d={readySignal.path}/>
@@ -120,7 +122,7 @@ function App(){
           <label className="ai-label" htmlFor="ai">AI-võimenduse tase <strong>{ai}%</strong></label>
           <input id="ai" aria-label="AI-võimenduse tase" type="range" min="0" max="100" step="5" value={ai} disabled={running||finished} onChange={e=>setAI(Number(e.target.value))} style={{'--range':`${ai}%`}}/>
           <div className="range-ends"><span>AI tugi puudub</span><span>Maksimaalne võimendus</span></div>
-          <button className={`grow progress-button ${running?'is-running':'is-paused'}`} data-testid="progress-button" style={{'--progress':`${simulationProgress}%`}} disabled={finished} onClick={()=>setRunning(!running)}><span>{progressLabel}</span></button>
+          <button className={`grow progress-button ${running?'is-running':'is-paused'}`} ref={growRef} data-testid="progress-button" style={{'--progress':`${simulationProgress}%`}} disabled={finished} onClick={()=>setRunning(!running)}><span>{progressLabel}</span></button>
         </div>}
         {outage&&!view.complete&&<button className={`grow progress-button ${running?'is-running':'is-paused'}`} data-testid="progress-button" style={{'--progress':`${simulationProgress}%`}} onClick={()=>setRunning(!running)}><span>{progressLabel}</span></button>}
         {state.step>0&&!(finished&&!outage)&&<div className={`run-status ${running?'is-running':'is-paused'}`} role="status">{finished?'Simulatsioon lõpetatud · mõju on arvutatud':running?outage?'Katkestuse mõju levib…':'Vajuta pausi, kui tahad AI tuge vähendada.':outage?'Simulatsioon on pausil':'Simulatsioon on pausil. AI tuge saab nüüd vähendada.'}</div>}

@@ -361,6 +361,10 @@ main{height:auto;min-height:100dvh}
 .growth-ready-signal #ready-arrow path{fill:#b95a29;stroke:none;filter:none}
 .ready-signal-pulse{fill:none;stroke:#c96e32;stroke-width:3;vector-effect:non-scaling-stroke;transform-box:fill-box;transform-origin:center;animation:readyPulse 1.8s ease-out infinite}
 .ready-signal-pulse.pulse-two{animation-delay:.9s}
+.start-ready-signal .ready-signal-rail{stroke:#f0ecff;filter:drop-shadow(0 0 9px #7665ae)}
+.start-ready-signal .ready-signal-flow{stroke:#6653a2;filter:drop-shadow(0 0 4px #eee8ff)}
+.start-ready-signal #ready-arrow path{fill:#59458f}
+.start-ready-signal .ready-signal-pulse{stroke:#7665ae}
 .growth-ready .control-column{position:relative;z-index:12}
 .growth-ready .outage-action{position:relative;border:1px solid #d28a58;border-radius:10px;padding:12px;background:#fff7f0;box-shadow:0 0 0 4px #d9814430,0 9px 24px #8c431e24;animation:targetLift 2.3s ease-in-out infinite}
 .growth-ready .disruption-cue{border-width:2px;border-color:#bd5f35;background:#fff0e5;box-shadow:0 0 0 4px #cf72402b}
