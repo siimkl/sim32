@@ -19,7 +19,7 @@ const questionFit=await page.locator('.hero-question').evaluate(element=>{
 assert.ok(Math.abs(questionFit)<=1,'the main-question card must hug its content instead of filling spare header space');
 assert.equal(await page.getByLabel('Fookus').inputValue(),'tartu-social-sciences','the social sciences institute must be the default focus');
 assert.ok((await page.locator('header').innerText()).includes('TÜ Ühiskonnateaduste instituut'));
-assert.ok((await page.locator('.hero-question').innerText()).includes('Mis juhtub, kui AI toel laiendatud õpe, uuringud ja partneritöö jäävad, kuid AI-tugi kaob?'));
+assert.ok((await page.locator('.hero-question').innerText()).includes('Mis juhtub, kui AI-tugi kaob, kuid suurem õppe- ja uurimismaht ning koostöökohustused jäävad?'));
 assert.equal((await page.locator('.service-name').first().innerText()).replace(/OLEMAS ENNE AI-D.*/s,'').trim(),'Kümne õppekava õppetöö');
 await page.getByLabel('Fookus').selectOption('public');
 assert.ok(await page.locator('.simulation-footer .takeaway p').evaluate(element=>parseFloat(getComputedStyle(element).fontSize)>=18),'the core learning point must be prominent');
