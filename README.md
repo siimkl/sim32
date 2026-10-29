@@ -4,6 +4,8 @@
 
 Rakendus avaldatakse `main` haru iga muudatuse järel automaatselt GitHub Pagesi kaudu. Töövoog käivitab mudelitestid, loob Vite'i produktsiooniversiooni ning avaldab `dist` kausta. Repositooriumi **Settings → Pages → Build and deployment** all peab allikaks olema valitud **GitHub Actions**.
 
+Avalik aadress: https://siimkl.github.io/sim32/
+
 Eestikeelne Reacti ja SVG-ga õppewidget. Üks põhjuslik ahel: AI annab töötajatele ja automaatikale lisavõimekust → ettevõte avab uusi teenuseid → AI katkeb, kuid lubatud töö jääb alles.
 
 ## Käivitamine
