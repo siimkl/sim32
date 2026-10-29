@@ -14,7 +14,7 @@ const historyPoint=state=>{
 
 function App(){
   const [ai,setAI]=useState(50),[state,setState]=useState(initialState),[running,setRunning]=useState(false);
-  const [sectorId,setSectorId]=useState('public'),[outageLoss,setOutageLoss]=useState(.5);
+  const [sectorId,setSectorId]=useState('tartu-social-sciences'),[outageLoss,setOutageLoss]=useState(.5);
   const [history,setHistory]=useState(()=>[historyPoint(initialState())]);
   const [readySignal,setReadySignal]=useState(null);
   const layoutRef=useRef(null),controlRef=useRef(null),growRef=useRef(null),disruptRef=useRef(null);
